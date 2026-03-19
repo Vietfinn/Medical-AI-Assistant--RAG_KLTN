@@ -1,0 +1,29 @@
+# --- BACKEND FRAMEWORK ---
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.3
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+python-multipart>=0.0.6
+aiofiles>=23.2.1
+
+# --- VECTOR DATABASE ---
+# Dùng bản >= 1.8.0 để hỗ trợ Hybrid Search (Vector + BM25) tích hợp sẵn, không cần thư viện rank-bm25 bên ngoài
+qdrant-client>=1.8.0
+
+# --- EMBEDDINGS, RERANKER & ML ---
+# Cập nhật phiên bản mới để chạy mượt mô hình BAAI/bge-reranker-v2-m3
+sentence-transformers>=2.6.0
+torch
+transformers>=4.38.0
+datasets>=2.16.0
+
+# --- LARGE LANGUAGE MODEL ---
+# Cập nhật để hỗ trợ Gemini 1.5 Flash tốt nhất
+google-generativeai>=0.5.0
+
+# --- DATA PROCESSING & NLP ---
+numpy
+pandas>=2.1.4
+underthesea>=6.7.0
+rank-bm25
