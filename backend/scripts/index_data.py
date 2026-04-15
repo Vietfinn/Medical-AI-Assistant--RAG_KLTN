@@ -1,6 +1,7 @@
 """
-Script to index ViHealthQA data into Qdrant vector database
-Hỗ trợ cả Qdrant Local và Qdrant Cloud
+Script to index ViHealthQA data into Qdrant vector database.
+Tạo collection với Dense + Sparse (fastembed BM25) vector config,
+sau đó đẩy toàn bộ embedding lên Qdrant Cloud/Local.
 """
 
 import json
@@ -104,21 +105,33 @@ def main():
         logger.error(f"Failed to initialize services: {str(e)}")
         return
 
-    # 2. XÁC ĐỊNH ĐƯỜNG DẪN FILE CSV (Giữ nguyên đoạn bạn đã sửa trước đó)
+    # 2. XÁC ĐỊNH ĐƯỜNG DẪN FILE CSV
     project_root = Path(__file__).parent.parent.parent
-    data_file = project_root / "data" / "train_clean.csv"
+    files_to_index = ["train_clean.csv", "val_clean.csv"]
+    
+    all_documents = []
+    
+    for filename in files_to_index:
+        data_file = project_root / "data" / filename
+        if not data_file.exists():
+            logger.warning(f"⚠️ Không tìm thấy file dữ liệu tại: {data_file}. Bỏ qua file này.")
+            continue
+            
+        try:
+            data = load_data(str(data_file))
+            documents = prepare_documents(data)
+            all_documents.extend(documents)
+        except Exception as e:
+            logger.error(f"❌ Lỗi khi tải file {filename}: {str(e)}")
 
-    if not data_file.exists():
-        logger.error(f"❌ Không tìm thấy file dữ liệu tại: {data_file}")
+    if not all_documents:
+        logger.error("❌ Không có bản ghi nào được nạp từ các file. Dừng quá trình index.")
         return
 
     # 3. Load và Index Data
     try:
-        data = load_data(str(data_file))
-        documents = prepare_documents(data)
-
-        logger.info(f"Bắt đầu index {len(documents)} bản ghi...")
-        retriever.index_documents(documents)
+        logger.info(f"Bắt đầu index tổng cộng {len(all_documents)} bản ghi...")
+        retriever.index_documents(all_documents)
 
         logger.info("✅ INDEXING COMPLETED SUCCESSFULLY!")
 

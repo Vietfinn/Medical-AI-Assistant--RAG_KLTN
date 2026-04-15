@@ -1,114 +1,285 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2 } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Send, ArrowDown, Sparkles, Square } from 'lucide-react';
 import MessageList from './MessageList';
 import './ChatInterface.css';
 
-const ChatInterface = ({ onSendMessage, messages, isLoading }) => {
+const ChatInterface = ({
+  onSendMessage,
+  onStopGeneration,
+  messages,
+  isLoading,
+  streamingContent,
+  statusMessage,
+  isStreaming,
+  safetyReviewing,
+}) => {
   const [input, setInput] = useState('');
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const chatContainerRef = useRef(null);
+  const textareaRef = useRef(null);
+  const isUserScrollingRef = useRef(false);
+  const lastUserMsgRef = useRef(null);
+  const spacerRef = useRef(null);
+  const justSentRef = useRef(false);
+  const firstMessageRef = useRef(null);
+  const firstLoadRef = useRef(true);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const scrollToBottom = useCallback((behavior = 'smooth') => {
+    const container = chatContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior });
+    }
+  }, []);
+
+  const updateSpacer = useCallback(() => {
+    const container = chatContainerRef.current;
+    const userEl = lastUserMsgRef.current;
+    const spacerEl = spacerRef.current;
+    if (!container || !userEl || !spacerEl) return;
+
+    spacerEl.style.height = '0px';
+    void container.scrollHeight;
+
+    const userMsgTop = userEl.offsetTop;
+    const totalContent = container.scrollHeight;
+    const contentBelowUser = totalContent - userMsgTop;
+    const viewportH = container.clientHeight;
+
+    const needed = Math.max(0, viewportH - contentBelowUser);
+    spacerEl.style.height = needed + 'px';
+  }, []);
+
+  const scrollUserToTop = useCallback(() => {
+    const userEl = lastUserMsgRef.current;
+    const container = chatContainerRef.current;
+    if (userEl && container) {
+      const containerRect = container.getBoundingClientRect();
+      const elRect = userEl.getBoundingClientRect();
+      const offset = elRect.top - containerRect.top + container.scrollTop;
+      container.scrollTo({ top: offset - 12, behavior: 'smooth' });
+    }
+  }, []);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (justSentRef.current) {
+      requestAnimationFrame(() => {
+        updateSpacer();
+        scrollUserToTop();
+        justSentRef.current = false;
+      });
+    }
+  }, [messages, updateSpacer, scrollUserToTop]);
+
+  useEffect(() => {
+    const currentFirst = messages.length > 0 ? messages[0].content : null;
+    if (messages.length > 0 && (firstLoadRef.current || currentFirst !== firstMessageRef.current)) {
+      firstMessageRef.current = currentFirst;
+      firstLoadRef.current = false;
+      requestAnimationFrame(() => {
+        updateSpacer();
+        scrollUserToTop();
+      });
+    }
+  }, [messages, updateSpacer, scrollUserToTop]);
+
+  useEffect(() => {
+    if (isStreaming && streamingContent) {
+      requestAnimationFrame(() => {
+        updateSpacer();
+      });
+    }
+  }, [streamingContent, isStreaming, updateSpacer]);
+
+  useEffect(() => {
+    if (isLoading && !isStreaming && !streamingContent) {
+      requestAnimationFrame(() => {
+        updateSpacer();
+      });
+    }
+  }, [isLoading, isStreaming, streamingContent, updateSpacer]);
+
+  useEffect(() => {
+    if (!isStreaming && !isLoading && messages.length > 0) {
+      requestAnimationFrame(() => {
+        updateSpacer();
+      });
+    }
+  }, [isStreaming, isLoading, messages, updateSpacer]);
+
+  const handleScroll = () => {
+    const container = chatContainerRef.current;
+    if (!container) return;
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    setShowScrollBtn(distanceFromBottom > 150);
+
+    if (isStreaming) {
+      isUserScrollingRef.current = distanceFromBottom > 80;
+    }
+  };
+
+  const autoResize = () => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+    autoResize();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (input.trim() && !isLoading) {
+      justSentRef.current = true;
+      isUserScrollingRef.current = false;
       onSendMessage(input.trim());
       setInput('');
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
     }
   };
 
-  const quickQuestions = [
-    'Làm sao để chữa đau đầu?',
-    'Dấu hiệu của bệnh tiểu đường?',
-    'Cách phòng ngừa cảm cúm?',
-    'Cách giảm huyết áp tự nhiên?',
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  const suggestions = [
+    { icon: '🩺', text: 'Dấu hiệu của bệnh tiểu đường?' },
+    { icon: '💊', text: 'Cách giảm huyết áp tự nhiên?' },
+    { icon: '🤒', text: 'Cách phòng ngừa cảm cúm?' },
+    { icon: '🧠', text: 'Làm sao để chữa đau đầu?' },
   ];
 
-  const handleQuickQuestion = (question) => {
+  const handleSuggestion = (text) => {
     if (!isLoading) {
-      onSendMessage(question);
+      justSentRef.current = true;
+      isUserScrollingRef.current = false;
+      onSendMessage(text);
     }
   };
 
   return (
-    <div className="chat-interface">
-      <div className="chat-header">
-        <div className="header-content">
-          <div className="header-icon">🏥</div>
-          <div>
-            <h2>Trợ lý Y tế AI</h2>
-            <p className="header-subtitle">Hỏi đáp y tế với độ chính xác cao</p>
-          </div>
-        </div>
-      </div>
+    <div className="chat-canvas">
+      <div
+        className="chat-messages"
+        ref={chatContainerRef}
+        onScroll={handleScroll}
+      >
+        {messages.length === 0 && !isLoading && !isStreaming ? (
+          <div className="welcome-screen">
+            <div className="welcome-greeting">
+              <Sparkles size={40} className="welcome-sparkle" />
+              <h1>Xin chào!</h1>
+              <p>Tôi là trợ lý y tế AI. Hãy hỏi tôi bất kỳ câu hỏi nào về sức khỏe.</p>
+            </div>
 
-      <div className="chat-messages">
-        {messages.length === 0 && (
-          <div className="welcome-message">
-            <div className="welcome-icon">👋</div>
-            <h3>Chào mừng bạn đến với Trợ lý Y tế AI!</h3>
-            <p>
-              Tôi có thể giúp bạn tìm hiểu về các vấn đề sức khỏe, bệnh tật, và
-              phương pháp điều trị. Hãy đặt câu hỏi hoặc chọn một câu hỏi mẫu bên dưới.
-            </p>
-            <div className="quick-questions">
-              <p className="quick-label">💡 Câu hỏi gợi ý:</p>
-              {quickQuestions.map((question, index) => (
+            <div className="suggestions-grid">
+              {suggestions.map((s, i) => (
                 <button
-                  key={index}
-                  className="quick-question-btn"
-                  onClick={() => handleQuickQuestion(question)}
+                  key={i}
+                  className="suggestion-chip"
+                  onClick={() => handleSuggestion(s.text)}
                   disabled={isLoading}
                 >
-                  {question}
+                  <span className="chip-icon">{s.icon}</span>
+                  <span className="chip-text">{s.text}</span>
                 </button>
               ))}
             </div>
           </div>
-        )}
+        ) : (
+          <>
+            <MessageList
+              messages={messages}
+              streamingContent={streamingContent}
+              isStreaming={isStreaming}
+              safetyReviewing={safetyReviewing}
+              lastUserMsgRef={lastUserMsgRef}
+            />
 
-        <MessageList messages={messages} />
-        
-        {isLoading && (
-          <div className="loading-message fade-in">
-            <div className="loading-content">
-              <Loader2 className="spin" size={20} />
-              <span>Đang tìm kiếm và phân tích thông tin...</span>
-            </div>
-          </div>
+            {/* Status indicator — replaces typing dots during pipeline phases */}
+            {isLoading && !isStreaming && (
+              <div className="typing-indicator fade-in">
+                <div className="typing-avatar">
+                  <Sparkles size={18} />
+                </div>
+                <div className="typing-dots">
+                  <span className="dot" />
+                  <span className="dot" />
+                  <span className="dot" />
+                </div>
+              </div>
+            )}
+
+            {statusMessage && (
+              <div className="status-indicator fade-in">
+                <div className="typing-avatar">
+                  <Sparkles size={18} />
+                </div>
+                <span className="status-text">{statusMessage}</span>
+              </div>
+            )}
+
+            {/* Dynamic spacer — LAST element in scroll container */}
+            <div ref={spacerRef} className="dynamic-spacer" />
+          </>
         )}
-        
-        <div ref={messagesEndRef} />
       </div>
 
-      <div className="chat-input-container">
-        <form onSubmit={handleSubmit} className="chat-input-form">
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Nhập câu hỏi của bạn về sức khỏe..."
-            disabled={isLoading}
-            className="chat-input"
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="send-button"
-          >
-            {isLoading ? <Loader2 className="spin" size={20} /> : <Send size={20} />}
-          </button>
+      {showScrollBtn && (
+        <button
+          className="scroll-bottom-btn"
+          onClick={() => scrollToBottom()}
+          title="Cuộn xuống cuối"
+        >
+          <ArrowDown size={18} />
+        </button>
+      )}
+
+      <div className="input-area">
+        <form onSubmit={handleSubmit} className="input-form">
+          <div className="input-wrapper">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Nhập câu hỏi về sức khỏe..."
+              disabled={isLoading}
+              rows={1}
+              className="chat-textarea"
+            />
+            {isLoading || isStreaming ? (
+              <button
+                type="button"
+                onClick={onStopGeneration}
+                className="send-btn stop-btn"
+                title="Dừng xử lý"
+              >
+                <Square size={16} fill="currentColor" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={!input.trim()}
+                className="send-btn"
+              >
+                <Send size={18} />
+              </button>
+            )}
+          </div>
         </form>
         <p className="disclaimer">
-          ⚠️ Lưu ý: Thông tin chỉ mang tính tham khảo. Vui lòng tham khảo bác sĩ cho chẩn đoán chính xác.
+          Thông tin chỉ mang tính tham khảo. Vui lòng tham khảo ý kiến bác sĩ chuyên khoa.
         </p>
       </div>
     </div>

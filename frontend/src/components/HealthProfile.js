@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
-import { User, Plus, X, Save } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Plus, User, Heart, AlertTriangle, Pill } from 'lucide-react';
 import './HealthProfile.css';
 
-const HealthProfile = ({ profile, onProfileChange }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
   const [newDisease, setNewDisease] = useState('');
   const [newAllergy, setNewAllergy] = useState('');
   const [newMedication, setNewMedication] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleAddDisease = () => {
     if (newDisease.trim()) {
@@ -56,29 +66,36 @@ const HealthProfile = ({ profile, onProfileChange }) => {
     onProfileChange({ ...profile, current_medications: updated });
   };
 
-  return (
-    <div className="health-profile">
-      <div className="profile-header" onClick={() => setIsExpanded(!isExpanded)}>
-        <div className="profile-title">
-          <User size={20} />
-          <h3>Hồ sơ Sức khỏe</h3>
-        </div>
-        <button className="expand-btn">
-          {isExpanded ? '−' : '+'}
-        </button>
-      </div>
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
 
-      {isExpanded && (
-        <div className="profile-content fade-in">
+  return (
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal-card fade-in">
+        <div className="modal-header">
+          <div className="modal-title-row">
+            <User size={22} />
+            <h2>Hồ sơ Sức khỏe</h2>
+          </div>
+          <button className="modal-close" onClick={onClose}>
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="modal-body">
           {/* Chronic Diseases */}
           <div className="profile-section">
-            <h4>🏥 Bệnh Mãn tính</h4>
+            <div className="section-label">
+              <Heart size={16} />
+              <h4>Bệnh Mãn tính</h4>
+            </div>
             <div className="tags">
               {profile.chronic_diseases?.map((disease, index) => (
                 <div key={index} className="tag">
                   <span>{disease}</span>
                   <button onClick={() => handleRemoveDisease(index)}>
-                    <X size={14} />
+                    <X size={12} />
                   </button>
                 </div>
               ))}
@@ -88,10 +105,10 @@ const HealthProfile = ({ profile, onProfileChange }) => {
                 type="text"
                 value={newDisease}
                 onChange={(e) => setNewDisease(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddDisease()}
-                placeholder="Nhập bệnh (VD: Đau dạ dày, Tiểu đường...)"
+                onKeyDown={(e) => e.key === 'Enter' && handleAddDisease()}
+                placeholder="VD: Đau dạ dày, Tiểu đường..."
               />
-              <button onClick={handleAddDisease}>
+              <button onClick={handleAddDisease} disabled={!newDisease.trim()}>
                 <Plus size={16} />
               </button>
             </div>
@@ -99,13 +116,16 @@ const HealthProfile = ({ profile, onProfileChange }) => {
 
           {/* Allergies */}
           <div className="profile-section">
-            <h4>⚠️ Dị ứng</h4>
+            <div className="section-label">
+              <AlertTriangle size={16} />
+              <h4>Dị ứng</h4>
+            </div>
             <div className="tags">
               {profile.allergies?.map((allergy, index) => (
                 <div key={index} className="tag tag-warning">
                   <span>{allergy}</span>
                   <button onClick={() => handleRemoveAllergy(index)}>
-                    <X size={14} />
+                    <X size={12} />
                   </button>
                 </div>
               ))}
@@ -115,10 +135,10 @@ const HealthProfile = ({ profile, onProfileChange }) => {
                 type="text"
                 value={newAllergy}
                 onChange={(e) => setNewAllergy(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddAllergy()}
-                placeholder="Nhập dị ứng (VD: Aspirin, Penicillin...)"
+                onKeyDown={(e) => e.key === 'Enter' && handleAddAllergy()}
+                placeholder="VD: Aspirin, Penicillin..."
               />
-              <button onClick={handleAddAllergy}>
+              <button onClick={handleAddAllergy} disabled={!newAllergy.trim()}>
                 <Plus size={16} />
               </button>
             </div>
@@ -126,13 +146,16 @@ const HealthProfile = ({ profile, onProfileChange }) => {
 
           {/* Current Medications */}
           <div className="profile-section">
-            <h4>💊 Thuốc Đang Dùng</h4>
+            <div className="section-label">
+              <Pill size={16} />
+              <h4>Thuốc Đang Dùng</h4>
+            </div>
             <div className="tags">
               {profile.current_medications?.map((medication, index) => (
                 <div key={index} className="tag tag-info">
                   <span>{medication}</span>
                   <button onClick={() => handleRemoveMedication(index)}>
-                    <X size={14} />
+                    <X size={12} />
                   </button>
                 </div>
               ))}
@@ -142,10 +165,10 @@ const HealthProfile = ({ profile, onProfileChange }) => {
                 type="text"
                 value={newMedication}
                 onChange={(e) => setNewMedication(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddMedication()}
-                placeholder="Nhập tên thuốc (VD: Metformin...)"
+                onKeyDown={(e) => e.key === 'Enter' && handleAddMedication()}
+                placeholder="VD: Metformin, Losartan..."
               />
-              <button onClick={handleAddMedication}>
+              <button onClick={handleAddMedication} disabled={!newMedication.trim()}>
                 <Plus size={16} />
               </button>
             </div>
@@ -153,21 +176,26 @@ const HealthProfile = ({ profile, onProfileChange }) => {
 
           {/* Age and Gender */}
           <div className="profile-section">
-            <h4>👤 Thông tin Cá nhân</h4>
+            <div className="section-label">
+              <User size={16} />
+              <h4>Thông tin Cá nhân</h4>
+            </div>
             <div className="info-grid">
               <div className="info-field">
-                <label>Tuổi:</label>
+                <label>Tuổi</label>
                 <input
                   type="number"
                   value={profile.age || ''}
-                  onChange={(e) => onProfileChange({ ...profile, age: parseInt(e.target.value) || null })}
+                  onChange={(e) =>
+                    onProfileChange({ ...profile, age: parseInt(e.target.value) || null })
+                  }
                   placeholder="Nhập tuổi"
                   min="0"
                   max="120"
                 />
               </div>
               <div className="info-field">
-                <label>Giới tính:</label>
+                <label>Giới tính</label>
                 <select
                   value={profile.gender || ''}
                   onChange={(e) => onProfileChange({ ...profile, gender: e.target.value })}
@@ -182,10 +210,13 @@ const HealthProfile = ({ profile, onProfileChange }) => {
           </div>
 
           <div className="profile-note">
-            <p>💡 <strong>Lưu ý:</strong> Thông tin hồ sơ giúp hệ thống đưa ra lời khuyên an toàn và phù hợp hơn với tình trạng sức khỏe của bạn.</p>
+            <p>
+              💡 <strong>Lưu ý:</strong> Thông tin này giúp AI đưa ra lời khuyên an toàn và phù
+              hợp hơn với tình trạng sức khỏe của bạn.
+            </p>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

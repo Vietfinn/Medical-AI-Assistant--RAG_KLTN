@@ -4,11 +4,16 @@
   "description": "Frontend for Medical AI Assistant",
   "private": true,
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@clerk/clerk-react": "^5.61.4",
     "axios": "^1.6.5",
     "lucide-react": "^0.309.0",
-    "react-scripts": "5.0.1"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.14.0",
+    "react-scripts": "5.0.1",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

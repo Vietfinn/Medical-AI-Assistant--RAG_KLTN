@@ -9,27 +9,26 @@ const Citation = ({ citation, index }) => {
     <div className="citation">
       <div className="citation-header" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="citation-title">
-          <FileText size={16} />
-          <span>
-            [{index}] {citation.doc_id}
-          </span>
+          <FileText size={14} />
+          <span className="citation-index">{index}</span>
+          <span className="citation-id">{citation.doc_id}</span>
           <span className="citation-score">
-            ({(citation.score * 100).toFixed(1)}% phù hợp)
+            {(citation.score * 100).toFixed(0)}%
           </span>
         </div>
-        <button className="citation-toggle">
-          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        <button className="citation-toggle-btn">
+          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
       </div>
-      
+
       {isExpanded && (
         <div className="citation-content fade-in">
           <div className="citation-section">
-            <strong>Câu hỏi gốc:</strong>
+            <strong>Câu hỏi gốc</strong>
             <p>{citation.question}</p>
           </div>
           <div className="citation-section">
-            <strong>Câu trả lời từ bác sĩ:</strong>
+            <strong>Câu trả lời từ bác sĩ</strong>
             <p>{citation.answer}</p>
           </div>
         </div>

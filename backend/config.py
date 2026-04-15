@@ -18,6 +18,13 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
+    # Groq API (Llama 3)
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+
+    # Cohere API (Reranker)
+    COHERE_API_KEY: str = os.getenv("COHERE_API_KEY", "")
+
     # Qdrant Configuration
     # Hỗ trợ cả Local và Cloud
     QDRANT_MODE: str = os.getenv("QDRANT_MODE", "local")  # "local" hoặc "cloud"
@@ -35,7 +42,7 @@ class Settings(BaseSettings):
 
     # Embedding Model
     EMBEDDING_MODEL: str = "bkai-foundation-models/vietnamese-bi-encoder"
-    RERANKER_MODEL: str = "BAAI/bge-reranker-v2-m3"
+    RERANKER_MODEL: str = "rerank-v4.0-pro"
 
     # Retrieval Configuration
     TOP_K_RETRIEVAL: int = 15
@@ -45,6 +52,23 @@ class Settings(BaseSettings):
     # Safety Configuration
     ENABLE_SAFETY_CHECK: bool = True
     WARNING_THRESHOLD: float = 0.7
+
+    # Agent Configuration
+    ENABLE_TRIAGE_AGENT: bool = True
+    ENABLE_SAFETY_AGENT: bool = True
+
+    # MongoDB Configuration (supports mongodb:// and mongodb+srv://)
+    MONGODB_URL: str = os.getenv("MONGODB_URL", "mongodb://localhost:27017/medical_ai")
+
+    # Clerk Authentication
+    CLERK_JWKS_URL: str = os.getenv(
+        "CLERK_JWKS_URL", "https://<your-clerk-domain>/.well-known/jwks.json"
+    )
+    CLERK_ISSUER: str = os.getenv("CLERK_ISSUER", "https://<your-clerk-domain>")
+
+    # Resend Email
+    RESEND_API_KEY: str = os.getenv("RESEND_API_KEY", "")
+    RESEND_FROM_EMAIL: str = os.getenv("RESEND_FROM_EMAIL", "Medical AI <onboarding@resend.dev>")
 
     # CORS
     CORS_ORIGINS: list = [
