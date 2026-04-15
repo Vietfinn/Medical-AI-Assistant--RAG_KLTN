@@ -232,8 +232,12 @@ HÃY TRẢ LỜI:"""
             try:
                 response = self.model.generate_content(prompt, stream=True)
                 for chunk in response:
-                    if chunk.text:
-                        yield chunk.text
+                    try:
+                        if chunk.text:
+                            yield chunk.text
+                    except ValueError:
+                        # Chunk doesn't have a valid text part (usually the final metadata chunk)
+                        continue
                 return
             except Exception as e:
                 error_msg = str(e)
