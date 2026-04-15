@@ -19,7 +19,8 @@ Hệ thống được module hóa cao với sự tham gia của các công ngh�
 - **Gemini 2.5 Flash**: Agent tạo sinh (Generator) chính. Đọc ngữ cảnh RAG và cho ra các giải thích y học phức tạp kèm trích dẫn.
 - **Llama 3.3 70B (Groq)**: Xử lý 2 Tác nhân hỗ trợ là **Triage Agent** (phân loại ý định, từ chối câu hỏi hệ thống ngoài chuyên môn) và **Safety Guard Agent** (kiểm định an toàn y tế dựa trên hồ sơ bệnh án).
 - **Cohere Rerank V4**: Tối ưu lại (Cross-Encoder) danh sách các tài liệu lấy từ DB để đảm bảo Context top đầu luôn liên quan nhất.
-- **Resend**: Dịch vụ Mail Delivery tự động bắn Onboarding/Welcome Message một cách chuyên nghiệp.
+- **Gmail SMTP (smtplib)**: Cơ chế gửi Mail nội bộ bằng App Password để tự động bắn Onboarding/Welcome email cho người dùng mới đăng ký.
+- **Docker**: Công nghệ Container hóa giúp triển khai (deploy) backend dễ dàng trên các nền tảng serverless.
 
 ### 💾 Cơ Sở Dữ Liệu (Databases)
 - **Qdrant Cloud**: Vector Database kết hợp **Hybrid Search** (Dense Vector qua `vi-bi-encoder` + Sparse Vector BM25 qua `fastembed`). Sử dụng Prefetch + Fusion RRF Native cho tốc độ và độ chính xác tối ưu.
@@ -76,17 +77,17 @@ sequenceDiagram
 ```
 
 ### Các Luồng Nổi Bật Khác
-- **Luồng Đăng ký (Onboarding):** Khi User trỏ tới app qua Clerk -> Auth Token hợp lệ -> Lần đầu API phát hiện User mới -> Bắn API qua Resend gửi Welcome Email -> UI Backend yêu cầu điền Form Profile.
+- **Luồng Đăng ký (Onboarding):** Khi User trỏ tới app qua Clerk -> Auth Token hợp lệ -> Lần đầu API phát hiện User mới -> Kích hoạt Thread độc lập gửi Welcome Email qua Gmail SMTP -> UI yêu cầu điền Form Profile sức khỏe.
 - **Luồng Quản Lý Phiên Chat:** Hỗ trợ tính năng đổi tên (Rename Modal), Ghim (Pin) lên đầu danh sách và Xoá bằng giao diện cửa sổ Floating 3-Dots Menu.
 
 ---
 
-## 🛠️ 3. Hướng Dẫn Cài Đặt (Setup & Deploy)
+## 🛠️ 3. Hướng Dẫn Cài Đặt & Triển Khai (Setup & Deploy)
 
-### Yêu Cầu Cấu Hình
+### Yêu Cầu Cấu Hình Cục Bộ
 - Python 3.10 trở lên
 - Node.js 18+ (Dành cho bản Build Frontend)
-- Các tài khoản API: Gemini, Groq, Cohere, Clerk, Resend.
+- Các tài khoản API: Gemini, Groq, Cohere, Clerk, và 1 thẻ App Password Gmail.
 
 ### Bước 1: Khởi Tạo API Keys (.env)
 Tại thư mục `backend`, nhân bản file `.env.example` thành `.env`:
@@ -108,11 +109,14 @@ QDRANT_COLLECTION=vnhealthqa
 # MongoDB Database
 MONGODB_URL=mongodb+srv://admin:<password>@cluster0.xxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
-# Clerk & Resend
+# Clerk & Email
 CLERK_JWKS_URL=https://<your_clerk_domain>/.well-known/jwks.json
 CLERK_ISSUER=https://<your_clerk_domain>
-RESEND_API_KEY=re_xxx
-RESEND_FROM_EMAIL=onboarding@resend.dev
+GMAIL_SENDER=vietfinn8@gmail.com
+GMAIL_APP_PASSWORD=your_16_char_password
+
+# CORS - Để Backend cho phép URL của Frontend khi deploy
+FRONTEND_URL=https://your-app.vercel.app
 ```
 
 ### Bước 2: Setup Backend và Vector Database
@@ -124,36 +128,37 @@ venv\Scripts\activate
 pip install -r requirements.txt
 
 # 2. Xây dựng Database Vector
-# Đảm bảo file train_clean.csv và val_clean.csv đang nằm trong mục data/ ở root project
+# Đảm bảo file train_clean.csv và val_clean.csv đang nằm trong mục data/ ở root
 # Tập lệnh này sẽ đẩy ĐỒNG THỜI Train/Val lên hệ thống Qdrant.
 python scripts/index_data.py
 
 # 3. Chạy Server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
-Backend sẽ khởi chạy ở `http://localhost:8000`.
 
-### Bước 3: Setup Frontend
-Tạo file `.env` nằm trong thư mục `frontend`:
-```env
-REACT_APP_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-Xây dựng giao diện:
-```bash
-cd frontend
-npm install
-npm start
-```
-Frontend sẽ phản hồi ở `http://localhost:3000`.
+### Bước 3: Build và Deploy (Lên Cloud)
 
-*(Để deploy hệ thống lên Production như Vercel/Render, bạn chỉ cần chạy lệnh `npm run build` cho folder React và trỏ Backend endpoint URL vào file cấu hình.)*
+Kịch bản Deploy chuẩn nhất cho bộ hệ thống này là phân tách Frontend và Backend:
+
+1. **Backend (Hugging Face Spaces - Docker SDK):**
+   - Quá trình deploy hoàn toàn tự động thông qua `Dockerfile` đã được cấp sẵn.
+   - Thêm quyền Remote tới Hugging Face Space và `git push hf main`.
+   - Setup Environment Variables/Secrets tương tự file `.env` trên Settings của Space. Nó sẽ lộ port 7860 lên public URL.
+2. **Frontend (Vercel):**
+   - Cập nhật biến môi trường trong file `frontend/.env`:
+     ```env
+     REACT_APP_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxx
+     REACT_APP_API_URL=https://<your-hf-space-endpoint>.hf.space
+     ```
+   - Link Github project vào Vercel, cài đặt Root folder là `frontend` và ấn Deploy.
 
 ---
 
 ## 📌 Các Tính Năng Đã Mở Khóa Đáng Chú Ý (Changelog)
 - Đăng nhập đa tài khoản liền mạch (Multi-Session Switcher).
+- Kịch bản Onboarding chuyên nghiệp (Welcome Email + Profile Form).
 - Cơ chế AI Tự động định danh đoạn hội thoại (Triage AI Auto Titling).
-- Sliding Window Context Memory - Không bao giờ tràn Token Context bằng cách thiết lập chặn Sliding-Window Pydantic cho Chat History.
+- Sliding Window Context Memory - Không bao giờ tràn Token Context cho Chat History.
 - Trích xuất tài liệu nguồn bằng Card Hover CSS UI.
 
 *Chúc mọi người có một kỳ Khóa Luận Tốt Nghiệp / Triển khai dự án thành công rực rỡ!* 🎓

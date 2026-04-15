@@ -1,24 +1,30 @@
 """
-Resend Email Service for Medical AI Assistant.
-Sends styled HTML welcome emails to new users on first login.
+Gmail SMTP Email Service for Medical AI Assistant.
+Sends styled HTML welcome emails to new users on first login
+using Gmail App Password authentication.
 """
 
 import logging
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from typing import Optional
 
-import resend
 from config import settings
 
 logger = logging.getLogger(__name__)
 
+_gmail_ready = False
 
-def configure_resend():
-    """Initialize the Resend SDK with the API key."""
-    if settings.RESEND_API_KEY:
-        resend.api_key = settings.RESEND_API_KEY
-        logger.info("✅ Resend email service configured")
+
+def configure_gmail():
+    """Validate Gmail SMTP credentials on startup."""
+    global _gmail_ready
+    if settings.GMAIL_SENDER and settings.GMAIL_APP_PASSWORD:
+        _gmail_ready = True
+        logger.info("✅ Gmail SMTP email service configured")
     else:
-        logger.warning("⚠️ RESEND_API_KEY not set — email service disabled")
+        logger.warning("⚠️ GMAIL_SENDER or GMAIL_APP_PASSWORD not set — email service disabled")
 
 
 def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http://localhost:3000") -> str:
@@ -126,29 +132,33 @@ def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http:/
 
 def send_welcome_email(email: str, first_name: Optional[str] = None):
     """
-    Send a welcome HTML email to a newly registered user.
-    Designed to be called inside FastAPI BackgroundTasks (non-blocking).
+    Send a welcome HTML email to a newly registered user via Gmail SMTP.
+    Designed to be called inside asyncio.to_thread (non-blocking).
 
     Args:
         email: Recipient email address
         first_name: User's first name for personalized greeting
     """
-    if not settings.RESEND_API_KEY:
-        logger.warning(f"Skipping welcome email to {email} — RESEND_API_KEY not configured")
+    if not _gmail_ready:
+        logger.warning(f"Skipping welcome email to {email} — Gmail SMTP not configured")
         return
 
     try:
-        html_content = _build_welcome_html(first_name=first_name)
+        app_url = settings.FRONTEND_URL if settings.FRONTEND_URL else "http://localhost:3000"
+        html_content = _build_welcome_html(first_name=first_name, app_url=app_url)
 
-        params = {
-            "from": settings.RESEND_FROM_EMAIL,
-            "to": [email],
-            "subject": "🩺 Chào mừng đến với Medical AI Assistant!",
-            "html": html_content,
-        }
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = "🩺 Chào mừng đến với Medical AI Assistant!"
+        msg["From"] = f"Medical AI <{settings.GMAIL_SENDER}>"
+        msg["To"] = email
 
-        result = resend.Emails.send(params)
-        logger.info(f"✅ Welcome email sent to {email} (ID: {result.get('id', 'N/A')})")
+        msg.attach(MIMEText(html_content, "html", "utf-8"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(settings.GMAIL_SENDER, settings.GMAIL_APP_PASSWORD)
+            server.sendmail(settings.GMAIL_SENDER, email, msg.as_string())
+
+        logger.info(f"✅ Welcome email sent to {email} via Gmail SMTP")
 
     except Exception as e:
         logger.error(f"❌ Failed to send welcome email to {email}: {e}")

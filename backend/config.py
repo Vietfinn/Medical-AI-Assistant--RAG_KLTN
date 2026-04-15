@@ -66,9 +66,9 @@ class Settings(BaseSettings):
     )
     CLERK_ISSUER: str = os.getenv("CLERK_ISSUER", "https://<your-clerk-domain>")
 
-    # Resend Email
-    RESEND_API_KEY: str = os.getenv("RESEND_API_KEY", "")
-    RESEND_FROM_EMAIL: str = os.getenv("RESEND_FROM_EMAIL", "Medical AI <onboarding@resend.dev>")
+    # Gmail SMTP (Welcome Email)
+    GMAIL_SENDER: str = os.getenv("GMAIL_SENDER", "")
+    GMAIL_APP_PASSWORD: str = os.getenv("GMAIL_APP_PASSWORD", "")
 
     # CORS — thêm FRONTEND_URL (Vercel) vào danh sách Origins khi deploy
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "")

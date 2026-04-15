@@ -22,7 +22,7 @@ from models import (
     HealthProfile,
 )
 from services import EmbeddingService, HybridRetriever, Reranker, GeminiService, GroqService
-from services.email_service import configure_resend, send_welcome_email
+from services.email_service import configure_gmail, send_welcome_email
 from agents import TriageAgent, ClinicalRAGAgent, SafetyGuardAgent
 from auth import get_current_user
 
@@ -82,8 +82,8 @@ async def lifespan(app: FastAPI):
         # ===== Initialize MongoDB =====
         await MongoDB.connect(url=settings.MONGODB_URL, db_name="medical_ai")
 
-        # ===== Initialize Resend Email =====
-        configure_resend()
+        # ===== Initialize Gmail SMTP Email =====
+        configure_gmail()
 
         # ===== Initialize Embedding Service =====
         logger.info("Loading embedding model...")
