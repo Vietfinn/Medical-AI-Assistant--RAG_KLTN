@@ -66,9 +66,9 @@ class Settings(BaseSettings):
     )
     CLERK_ISSUER: str = os.getenv("CLERK_ISSUER", "https://<your-clerk-domain>")
 
-    # Gmail SMTP (Welcome Email)
+    # Mail Service (Google Apps Script)
     GMAIL_SENDER: str = os.getenv("GMAIL_SENDER", "")
-    GMAIL_APP_PASSWORD: str = os.getenv("GMAIL_APP_PASSWORD", "")
+    GOOGLE_APPS_SCRIPT_URL: str = os.getenv("GOOGLE_APPS_SCRIPT_URL", "")
 
     # CORS — thêm FRONTEND_URL (Vercel) vào danh sách Origins khi deploy
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "")
@@ -107,6 +107,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"
 
 
 settings = Settings()

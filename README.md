@@ -77,7 +77,7 @@ sequenceDiagram
 ```
 
 ### Các Luồng Nổi Bật Khác
-- **Luồng Đăng ký (Onboarding):** Khi User trỏ tới app qua Clerk -> Auth Token hợp lệ -> Lần đầu API phát hiện User mới -> Kích hoạt Thread độc lập gửi Welcome Email qua Gmail SMTP -> UI yêu cầu điền Form Profile sức khỏe.
+- **Luồng Đăng ký (Onboarding):** Khi User trỏ tới app qua Clerk -> Auth Token hợp lệ -> Lần đầu API phát hiện User mới -> Kích hoạt Thread độc lập gửi Welcome Email qua Google Apps Script (Mã hoá Base64 bọc HTTPS) -> UI yêu cầu điền Form Profile sức khỏe.
 - **Luồng Quản Lý Phiên Chat:** Hỗ trợ tính năng đổi tên (Rename Modal), Ghim (Pin) lên đầu danh sách và Xoá bằng giao diện cửa sổ Floating 3-Dots Menu.
 
 ---
@@ -87,7 +87,7 @@ sequenceDiagram
 ### Yêu Cầu Cấu Hình Cục Bộ
 - Python 3.10 trở lên
 - Node.js 18+ (Dành cho bản Build Frontend)
-- Các tài khoản API: Gemini, Groq, Cohere, Clerk, và 1 thẻ App Password Gmail.
+- Các tài khoản API: Gemini, Groq, Cohere, Clerk, và URL của Google Apps Script (Web App Deploy).
 
 ### Bước 1: Khởi Tạo API Keys (.env)
 Tại thư mục `backend`, nhân bản file `.env.example` thành `.env`:
@@ -113,7 +113,7 @@ MONGODB_URL=mongodb+srv://admin:<password>@cluster0.xxx.mongodb.net/?retryWrites
 CLERK_JWKS_URL=https://<your_clerk_domain>/.well-known/jwks.json
 CLERK_ISSUER=https://<your_clerk_domain>
 GMAIL_SENDER=vietfinn8@gmail.com
-GMAIL_APP_PASSWORD=your_16_char_password
+GOOGLE_APPS_SCRIPT_URL=https://script.google.com/macros/s/.../exec
 
 # CORS - Để Backend cho phép URL của Frontend khi deploy
 FRONTEND_URL=https://your-app.vercel.app
@@ -157,6 +157,7 @@ Kịch bản Deploy chuẩn nhất cho bộ hệ thống này là phân tách Fr
 ## 📌 Các Tính Năng Đã Mở Khóa Đáng Chú Ý (Changelog)
 - Đăng nhập đa tài khoản liền mạch (Multi-Session Switcher).
 - Kịch bản Onboarding chuyên nghiệp (Welcome Email + Profile Form).
+- Cơ chế gửi Email xuyên thủng mọi tường lửa Cloud/Hugging Face thông qua Google Apps Script Proxy.
 - Cơ chế AI Tự động định danh đoạn hội thoại (Triage AI Auto Titling).
 - Sliding Window Context Memory - Không bao giờ tràn Token Context cho Chat History.
 - Trích xuất tài liệu nguồn bằng Card Hover CSS UI.

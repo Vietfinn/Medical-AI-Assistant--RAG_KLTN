@@ -1,4 +1,11 @@
 import asyncio
+import sys
+from pathlib import Path
+
+# Thêm thư mục backend vào sys.path để python nhận diện đường dẫn module config
+backend_dir = Path(__file__).resolve().parent.parent
+sys.path.append(str(backend_dir))
+
 from config import settings
 from database.mongo import MongoDB, get_db
 
