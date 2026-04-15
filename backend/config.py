@@ -70,12 +70,19 @@ class Settings(BaseSettings):
     RESEND_API_KEY: str = os.getenv("RESEND_API_KEY", "")
     RESEND_FROM_EMAIL: str = os.getenv("RESEND_FROM_EMAIL", "Medical AI <onboarding@resend.dev>")
 
-    # CORS
-    CORS_ORIGINS: list = [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3000",
-    ]
+    # CORS — thêm FRONTEND_URL (Vercel) vào danh sách Origins khi deploy
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "")
+
+    @property
+    def CORS_ORIGINS(self) -> list:
+        origins = [
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000",
+        ]
+        if self.FRONTEND_URL:
+            origins.append(self.FRONTEND_URL)
+        return origins
 
     def get_qdrant_client_params(self):
         """
