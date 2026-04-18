@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, ArrowDown, Square } from 'lucide-react';
 import MessageList from './MessageList';
 import './ChatInterface.css';
