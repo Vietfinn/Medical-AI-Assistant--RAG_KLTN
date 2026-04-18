@@ -32,7 +32,8 @@ def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http:/
 
     Includes:
     - Personalized greeting with first_name
-    - CTA button to update Health Profile
+    - Intro about A.I.M Care
+    - CTA button to access the app
     - Medical Disclaimer footer
     """
     name_display = first_name if first_name else "bạn"
@@ -52,13 +53,9 @@ def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http:/
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #2dd4bf 100%); padding:40px 32px; text-align:center;">
-              <div style="font-size:36px; margin-bottom:12px;">&#129658;</div>
-              <h1 style="color:#ffffff; font-size:24px; font-weight:700; margin:0 0 8px 0;">
-                Chào mừng đến với Medical AI
+              <h1 style="color:#ffffff; font-size:32px; font-weight:800; margin:0; letter-spacing:1px;">
+                A.I.M Care
               </h1>
-              <p style="color:rgba(255,255,255,0.9); font-size:15px; margin:0;">
-                Trợ lý sức khỏe cá nhân thông minh của bạn
-              </p>
             </td>
           </tr>
 
@@ -66,16 +63,16 @@ def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http:/
           <tr>
             <td style="padding:32px;">
               <h2 style="color:#1f2937; font-size:20px; font-weight:600; margin:0 0 16px 0;">
-                Xin chào {name_display}! &#128075;
+                Xin chào {name_display},
               </h2>
               <p style="color:#4b5563; font-size:15px; line-height:1.7; margin:0 0 16px 0;">
-                Cảm ơn bạn đã đăng ký tài khoản tại <strong>Medical AI Assistant</strong>.
-                Hệ thống của chúng tôi sử dụng trí tuệ nhân tạo đa tác nhân (Multi-Agent AI) để cung cấp
-                thông tin y tế chính xác và an toàn.
+                Chào mừng bạn đến với <strong>A.I.M Care</strong> — Trợ lý Y tế Thông minh thế hệ mới. Chúng tôi rất vui khi có bạn đồng hành.
+              </p>
+              <p style="color:#4b5563; font-size:15px; line-height:1.7; margin:0 0 16px 0;">
+                Giữa kỷ nguyên số với hàng triệu luồng thông tin sức khỏe nhiễu loạn, A.I.M Care được thiết kế để trở thành trợ lý y khoa đáng tin cậy của bạn. Bằng cách ứng dụng kiến trúc Đa tác nhân (Multi-Agent) tiên tiến, hệ thống mang đến những phân tích triệu chứng và thông tin y khoa nhanh chóng, an toàn và chính xác nhất.
               </p>
               <p style="color:#4b5563; font-size:15px; line-height:1.7; margin:0 0 24px 0;">
-                Để AI có thể đưa ra lời khuyên <strong>an toàn và phù hợp nhất</strong> với tình trạng
-                sức khỏe của bạn, hãy cập nhật Hồ sơ Sức khỏe ngay bây giờ:
+                Bạn đã sẵn sàng trải nghiệm sự kết hợp giữa công nghệ hiện đại và sự tận tâm? Hãy thử đặt câu hỏi đầu tiên ngay bây giờ.
               </p>
 
               <!-- CTA Button -->
@@ -87,7 +84,7 @@ def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http:/
                               color:#ffffff; text-decoration:none; font-size:16px; font-weight:600;
                               padding:14px 36px; border-radius:12px;
                               box-shadow:0 4px 14px rgba(13,148,136,0.35);">
-                      &#128203; Cập nhật Hồ sơ Sức khỏe ngay
+                      Truy cập A.I.M Care
                     </a>
                   </td>
                 </tr>
@@ -98,12 +95,16 @@ def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http:/
                 <tr>
                   <td style="background-color:#f0fdfa; border-left:4px solid #14b8a6; border-radius:8px; padding:16px 20px;">
                     <p style="color:#0f766e; font-size:14px; line-height:1.6; margin:0;">
-                      &#128161; <strong>Mẹo:</strong> Điền đầy đủ thông tin về bệnh nền, dị ứng và thuốc đang dùng
-                      sẽ giúp AI kiểm tra chéo và cảnh báo khi có xung đột y khoa.
+                      Nếu bạn cần hỗ trợ hoặc muốn tìm hiểu thêm về cách hệ thống hoạt động, hãy xem trang <a href="{app_url}/about" style="color:#0d9488; text-decoration:underline;">Giới thiệu về kiến trúc hệ thống</a> hoặc trả lời trực tiếp email này.
                     </p>
                   </td>
                 </tr>
               </table>
+              
+              <p style="color:#4b5563; font-size:15px; line-height:1.7; margin:24px 0 0 0;">
+                Trân trọng,<br/>
+                <strong>Đội ngũ A.I.M Care</strong>
+              </p>
             </td>
           </tr>
 
@@ -111,12 +112,11 @@ def _build_welcome_html(first_name: Optional[str] = None, app_url: str = "http:/
           <tr>
             <td style="background-color:#f9fafb; padding:24px 32px; border-top:1px solid #e5e7eb;">
               <p style="color:#9ca3af; font-size:12px; line-height:1.6; margin:0; text-align:center;">
-                <strong>Miễn trừ trách nhiệm y tế:</strong> Medical AI Assistant là công cụ hỗ trợ
-                thông tin, không phải là bác sĩ. Vui lòng luôn tham khảo ý kiến chuyên gia y tế
-                trước khi đưa ra quyết định sức khỏe.
+                <strong>Lưu ý:</strong> A.I.M Care cung cấp thông tin tham khảo dựa trên y khoa, không thay thế cho chẩn đoán của bác sĩ.
               </p>
               <p style="color:#d1d5db; font-size:11px; margin:12px 0 0 0; text-align:center;">
-                © 2026 Medical AI Assistant — Đồ án tốt nghiệp KLTN
+                © 2026 A.I.M Care. Mọi quyền được bảo lưu.<br/>
+                <a href="mailto:aimcare.chat@gmail.com" style="color:#9ca3af; text-decoration:none;">aimcare.chat@gmail.com</a>
               </p>
             </td>
           </tr>
@@ -155,14 +155,14 @@ def send_welcome_email(email: str, first_name: Optional[str] = None):
         # Chuẩn bị Data Payload để bắn qua Apps Script
         payload = {
             "to": email,
-            "subject": "[Medical AI] Chào mừng đến với Trợ lý Sức khỏe!",
+            "subject": "Chào mừng đến với A.I.M Care. Cùng bắt đầu nhé!",
             "htmlBodyB64": html_b64
         }
 
         # Nếu có thiết lập tên người gửi, truyền sang Apps Script (để Apps Script chỉnh name/from)
         if hasattr(settings, "GMAIL_SENDER") and settings.GMAIL_SENDER:
              payload["from"] = settings.GMAIL_SENDER
-             payload["name"] = "Medical AI"
+             payload["name"] = "A.I.M Care"
 
         # Bắn Request HTTPS POST qua Google (Follow redirect để đảm bảo request thành công)
         response = httpx.post(

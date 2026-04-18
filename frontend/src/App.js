@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import HealthProfile from './components/HealthProfile';
 import Homepage from './components/Homepage';
+import About from './components/About';
 import {
   sendChatMessageStream,
   checkHealth,
@@ -12,6 +13,7 @@ import {
   deleteSession,
   saveHealthProfile,
 } from './services/api';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
 
 function AuthenticatedApp() {
@@ -45,6 +47,8 @@ function AuthenticatedApp() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('appTheme') || 'dark';
   });
+  const currentSession = chatSessions.find((session) => session._id === currentSessionId);
+  const conversationTitle = currentSession?.title || 'Cuộc trò chuyện mới';
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -394,6 +398,7 @@ function AuthenticatedApp() {
           statusMessage={statusMessage}
           isStreaming={isStreaming}
           safetyReviewing={safetyReviewing}
+          conversationTitle={conversationTitle}
         />
       </main>
 
@@ -431,14 +436,22 @@ function AuthenticatedApp() {
 
 function App() {
   return (
-    <>
-      <SignedOut>
-        <Homepage />
-      </SignedOut>
-      <SignedIn>
-        <AuthenticatedApp />
-      </SignedIn>
-    </>
+    <Routes>
+      <Route path="/about" element={<About />} />
+      <Route
+        path="/*"
+        element={
+          <>
+            <SignedOut>
+              <Homepage />
+            </SignedOut>
+            <SignedIn>
+              <AuthenticatedApp />
+            </SignedIn>
+          </>
+        }
+      />
+    </Routes>
   );
 }
 

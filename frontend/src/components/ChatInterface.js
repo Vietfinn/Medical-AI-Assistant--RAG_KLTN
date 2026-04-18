@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, ArrowDown, Sparkles, Square } from 'lucide-react';
+﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Send, ArrowDown, Square } from 'lucide-react';
 import MessageList from './MessageList';
 import './ChatInterface.css';
 
@@ -12,6 +12,7 @@ const ChatInterface = ({
   statusMessage,
   isStreaming,
   safetyReviewing,
+  conversationTitle,
 }) => {
   const [input, setInput] = useState('');
   const [showScrollBtn, setShowScrollBtn] = useState(false);
@@ -153,10 +154,10 @@ const ChatInterface = ({
   };
 
   const suggestions = [
-    { icon: '🩺', text: 'Dấu hiệu của bệnh tiểu đường?' },
-    { icon: '💊', text: 'Cách giảm huyết áp tự nhiên?' },
-    { icon: '🤒', text: 'Cách phòng ngừa cảm cúm?' },
-    { icon: '🧠', text: 'Làm sao để chữa đau đầu?' },
+    'Dấu hiệu của bệnh tiểu đường?',
+    'Cách giảm huyết áp tự nhiên?',
+    'Cách phòng ngừa cảm cúm?',
+    'Làm sao để chữa đau đầu?',
   ];
 
   const handleSuggestion = (text) => {
@@ -169,6 +170,12 @@ const ChatInterface = ({
 
   return (
     <div className="chat-canvas">
+      <div className="chat-topbar">
+        <span className="chat-topbar-brand">A.I.M Care</span>
+        <h2 className="chat-topbar-title">{conversationTitle}</h2>
+        <div className="chat-topbar-spacer" aria-hidden="true" />
+      </div>
+
       <div
         className="chat-messages"
         ref={chatContainerRef}
@@ -177,21 +184,20 @@ const ChatInterface = ({
         {messages.length === 0 && !isLoading && !isStreaming ? (
           <div className="welcome-screen">
             <div className="welcome-greeting">
-              <Sparkles size={40} className="welcome-sparkle" />
+              <img src="/images/Logo_chat.png?v=20260417" alt="A.I.M Care" className="welcome-avatar" />
               <h1>Xin chào!</h1>
-              <p>Tôi là trợ lý y tế AI. Hãy hỏi tôi bất kỳ câu hỏi nào về sức khỏe.</p>
+              <p>Tôi là A.I.M Care, trợ lý y tế cá nhân của bạn. Hãy chia sẻ các triệu chứng hoặc đặt bất kỳ câu hỏi nào về sức khỏe nhé.</p>
             </div>
 
             <div className="suggestions-grid">
-              {suggestions.map((s, i) => (
+              {suggestions.map((text, i) => (
                 <button
                   key={i}
                   className="suggestion-chip"
-                  onClick={() => handleSuggestion(s.text)}
+                  onClick={() => handleSuggestion(text)}
                   disabled={isLoading}
                 >
-                  <span className="chip-icon">{s.icon}</span>
-                  <span className="chip-text">{s.text}</span>
+                  <span className="chip-text">{text}</span>
                 </button>
               ))}
             </div>
@@ -206,11 +212,11 @@ const ChatInterface = ({
               lastUserMsgRef={lastUserMsgRef}
             />
 
-            {/* Status indicator — replaces typing dots during pipeline phases */}
+            {/* Status indicator â€” replaces typing dots during pipeline phases */}
             {isLoading && !isStreaming && (
               <div className="typing-indicator fade-in">
                 <div className="typing-avatar">
-                  <Sparkles size={18} />
+                  <img src="/images/Logo_chat.png?v=20260417" alt="A.I.M Care" className="typing-avatar-img" />
                 </div>
                 <div className="typing-dots">
                   <span className="dot" />
@@ -223,13 +229,13 @@ const ChatInterface = ({
             {statusMessage && (
               <div className="status-indicator fade-in">
                 <div className="typing-avatar">
-                  <Sparkles size={18} />
+                  <img src="/images/Logo_chat.png?v=20260417" alt="A.I.M Care" className="typing-avatar-img" />
                 </div>
                 <span className="status-text">{statusMessage}</span>
               </div>
             )}
 
-            {/* Dynamic spacer — LAST element in scroll container */}
+            {/* Dynamic spacer â€” LAST element in scroll container */}
             <div ref={spacerRef} className="dynamic-spacer" />
           </>
         )}
@@ -239,7 +245,7 @@ const ChatInterface = ({
         <button
           className="scroll-bottom-btn"
           onClick={() => scrollToBottom()}
-          title="Cuộn xuống cuối"
+          title="Cuá»™n xuá»‘ng cuá»‘i"
         >
           <ArrowDown size={18} />
         </button>
@@ -253,7 +259,7 @@ const ChatInterface = ({
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Nhập câu hỏi về sức khỏe..."
+              placeholder="Nháº­p cÃ¢u há»i vá» sá»©c khá»e..."
               disabled={isLoading}
               rows={1}
               className="chat-textarea"
@@ -263,7 +269,7 @@ const ChatInterface = ({
                 type="button"
                 onClick={onStopGeneration}
                 className="send-btn stop-btn"
-                title="Dừng xử lý"
+                title="Dá»«ng xá»­ lÃ½"
               >
                 <Square size={16} fill="currentColor" />
               </button>
@@ -279,7 +285,7 @@ const ChatInterface = ({
           </div>
         </form>
         <p className="disclaimer">
-          Thông tin chỉ mang tính tham khảo. Vui lòng tham khảo ý kiến bác sĩ chuyên khoa.
+          ThÃ´ng tin chá»‰ mang tÃ­nh tham kháº£o. Vui lÃ²ng tham kháº£o Ã½ kiáº¿n bÃ¡c sÄ© chuyÃªn khoa.
         </p>
       </div>
     </div>
@@ -287,3 +293,4 @@ const ChatInterface = ({
 };
 
 export default ChatInterface;
+

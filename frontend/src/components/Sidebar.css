@@ -13,8 +13,9 @@
   flex-direction: column;
   z-index: 100;
   transform: translateX(-100%);
-  transition: transform var(--transition-slow);
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), width 520ms cubic-bezier(0.22, 1, 0.36, 1);
   border-right: 1px solid var(--bg-tertiary);
+  will-change: transform, width;
 }
 
 .sidebar.open {
@@ -27,30 +28,6 @@
   background: rgba(0, 0, 0, 0.5);
   z-index: 99;
   animation: fadeIn 0.2s ease;
-}
-
-/* ---- Hamburger (visible when sidebar closed) ---- */
-
-.sidebar-hamburger {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 50;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 10px;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.sidebar-hamburger:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
 }
 
 /* ---- Top section ---- */
@@ -500,15 +477,72 @@
     display: none;
   }
 
-  /* Maintain fixed position so it glides over the padding smoothly without snapping */
+  /* Keep a mini rail when sidebar is collapsed */
   .sidebar.open {
     position: fixed;
     transform: translateX(0);
+    width: var(--sidebar-width);
   }
 
   .sidebar.collapsed {
     position: fixed;
-    transform: translateX(-100%);
+    transform: translateX(0);
+    width: 76px;
+  }
+
+  .new-chat-btn,
+  .sidebar-sessions {
+    transition: opacity 260ms ease, visibility 260ms ease;
+  }
+
+  .sidebar.collapsed .new-chat-btn,
+  .sidebar.collapsed .sidebar-sessions {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .sidebar.collapsed .sidebar-top,
+  .sidebar.collapsed .sidebar-bottom {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .sidebar.collapsed .sidebar-bottom {
+    margin-top: auto;
+  }
+
+  .sidebar.collapsed .sidebar-top {
+    align-items: center;
+  }
+
+  .sidebar.collapsed .sidebar-toggle {
+    align-self: center;
+    width: 44px;
+    height: 44px;
+  }
+
+  .sidebar.collapsed .profile-btn {
+    justify-content: center;
+    padding: 12px 8px;
+    position: relative;
+  }
+
+  .sidebar.collapsed .profile-btn span {
+    display: none;
+  }
+
+  .sidebar.collapsed .sidebar-red-dot {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    margin-left: 0;
+  }
+
+  .sidebar.collapsed .sidebar-settings-dropdown {
+    left: 72px;
+    bottom: 8px;
+    margin-bottom: 0;
   }
 }
 
@@ -518,8 +552,7 @@
     max-width: 320px;
   }
 
-  .sidebar-hamburger {
-    top: 12px;
-    left: 12px;
+  .sidebar.collapsed {
+    transform: translateX(-100%);
   }
 }

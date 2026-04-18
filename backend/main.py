@@ -509,7 +509,7 @@ async def chat_stream(
                         })
 
             # ===== GIAI ĐOẠN 1: TRIAGE AGENT =====
-            yield sse_event("status", {"message": "🧠 Đang phân tích câu hỏi..."})
+            yield sse_event("status", {"message": "Đang phân tích câu hỏi..."})
 
             if settings.ENABLE_TRIAGE_AGENT:
                 triage_result = triage_agent.execute(query=query.query)
@@ -552,7 +552,7 @@ async def chat_stream(
                 pipeline_meta["triage_time"] = 0.0
 
             # ===== GIAI ĐOẠN 2: HYBRID RETRIEVAL & RERANKING =====
-            yield sse_event("status", {"message": "🔍 Đang tìm kiếm tài liệu y khoa..."})
+            yield sse_event("status", {"message": "Đang tìm kiếm tài liệu y khoa..."})
 
             retrieval_start = time.time()
             retrieved_docs = retriever.hybrid_search(
@@ -560,7 +560,7 @@ async def chat_stream(
             )
             pipeline_meta["retrieval_time"] = time.time() - retrieval_start
 
-            yield sse_event("status", {"message": "📊 Đang sắp xếp kết quả..."})
+            yield sse_event("status", {"message": "Đang sắp xếp kết quả..."})
 
             rerank_start = time.time()
             reranked_docs = reranker.rerank(
@@ -569,7 +569,7 @@ async def chat_stream(
             pipeline_meta["rerank_time"] = time.time() - rerank_start
 
             # ===== GIAI ĐOẠN 3: CLINICAL RAG AGENT (STREAMING) =====
-            yield sse_event("status", {"message": "✍️ Đang soạn câu trả lời..."})
+            yield sse_event("status", {"message": "Đang soạn câu trả lời..."})
 
             health_profile_dict = current_user.get("health_profile")
             generation_start = time.time()
@@ -625,7 +625,7 @@ async def chat_stream(
                     logger.warning("[Stream] Failed to parse health profile for Safety Agent")
 
             if settings.ENABLE_SAFETY_AGENT and safety_health_profile:
-                yield sse_event("status", {"message": "🛡️ Đang kiểm tra an toàn..."})
+                yield sse_event("status", {"message": "Đang kiểm tra an toàn..."})
 
                 safety_result = safety_guard_agent.execute(
                     draft_response=full_response_text,

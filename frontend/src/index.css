@@ -45,6 +45,8 @@
   /* Sidebar */
   --sidebar-width: 280px;
   --sidebar-bg: #1e1f20;
+  --bot-avatar-bg: rgba(255, 255, 255, 0.1);
+  --bot-avatar-border: rgba(255, 255, 255, 0.16);
 
   /* Spacing */
   --radius-sm: 8px;
@@ -106,6 +108,8 @@
 
   /* Sidebar */
   --sidebar-bg: #f0f4f9;
+  --bot-avatar-bg: #e8f0fe;
+  --bot-avatar-border: #cfe0fc;
 }
 
 /* ============ Reset & Base ============ */

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Info, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { AlertTriangle, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
@@ -52,7 +52,7 @@ const MessageList = ({
           ) : (
             <div className="assistant-row">
               <div className="assistant-avatar">
-                <Sparkles size={18} />
+                <img src="/images/Logo_chat.png?v=20260417" alt="A.I.M Care" className="assistant-avatar-img" />
               </div>
 
               <div className="assistant-content">
@@ -146,7 +146,7 @@ const MessageList = ({
         <div className={`message assistant fade-in ${safetyReviewing ? 'safety-reviewing' : ''}`}>
           <div className="assistant-row">
             <div className="assistant-avatar">
-              <Sparkles size={18} />
+              <img src="/images/Logo_chat.png?v=20260417" alt="A.I.M Care" className="assistant-avatar-img" />
             </div>
             <div className="assistant-content">
               {safetyReviewing && (

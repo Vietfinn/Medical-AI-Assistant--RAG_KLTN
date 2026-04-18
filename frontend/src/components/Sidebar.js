@@ -104,8 +104,8 @@ const Sidebar = ({
 
       <aside className={`sidebar ${isOpen ? 'open' : 'collapsed'}`}>
         <div className="sidebar-top">
-          <button className="sidebar-toggle" onClick={onToggle} title="Đóng menu">
-            <X size={20} />
+          <button className="sidebar-toggle" onClick={onToggle} title={isOpen ? 'Thu gọn menu' : 'Mở rộng menu'}>
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
           <button className="new-chat-btn" onClick={onNewChat}>
@@ -203,12 +203,6 @@ const Sidebar = ({
           </div>
         </div>
       </aside>
-
-      {!isOpen && (
-        <button className="sidebar-hamburger" onClick={onToggle} title="Mở menu">
-          <Menu size={22} />
-        </button>
-      )}
 
       {/* Rename Confirmation Modal */}
       {renameData && (
