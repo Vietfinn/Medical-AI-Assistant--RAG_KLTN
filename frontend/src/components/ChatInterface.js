@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, ArrowDown, Square } from 'lucide-react';
 import MessageList from './MessageList';
 import './ChatInterface.css';
@@ -245,7 +245,7 @@ const ChatInterface = ({
         <button
           className="scroll-bottom-btn"
           onClick={() => scrollToBottom()}
-          title="Cuá»™n xuá»‘ng cuá»‘i"
+          title="Cuộn xuống cuối"
         >
           <ArrowDown size={18} />
         </button>
@@ -259,7 +259,7 @@ const ChatInterface = ({
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Nháº­p cÃ¢u há»i vá» sá»©c khá»e..."
+              placeholder="Nhập câu hỏi về sức khỏe..."
               disabled={isLoading}
               rows={1}
               className="chat-textarea"
@@ -269,7 +269,7 @@ const ChatInterface = ({
                 type="button"
                 onClick={onStopGeneration}
                 className="send-btn stop-btn"
-                title="Dá»«ng xá»­ lÃ½"
+                title="Dừng xử lý"
               >
                 <Square size={16} fill="currentColor" />
               </button>
@@ -285,8 +285,8 @@ const ChatInterface = ({
           </div>
         </form>
         <p className="disclaimer">
-          ThÃ´ng tin chá»‰ mang tÃ­nh tham kháº£o. Vui lÃ²ng tham kháº£o Ã½ kiáº¿n bÃ¡c sÄ© chuyÃªn khoa.
-        </p>
+            Thông tin chỉ mang tính tham khảo. Vui lòng tham khảo ý kiến bác sĩ chuyên khoa.
+          </p>
       </div>
     </div>
   );
