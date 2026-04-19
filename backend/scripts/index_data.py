@@ -107,7 +107,7 @@ def main():
 
     # 2. XÁC ĐỊNH ĐƯỜNG DẪN FILE CSV
     project_root = Path(__file__).parent.parent.parent
-    files_to_index = ["train_clean.csv", "val_clean.csv"]
+    files_to_index = ["train_clean.csv", "val_clean.csv", "test_clean.csv"]
     
     all_documents = []
     
