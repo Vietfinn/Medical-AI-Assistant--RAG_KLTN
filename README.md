@@ -45,26 +45,29 @@ sequenceDiagram
         participant MongoDB
     end
 
-    User->>Server: Gửi câu hỏi (Chat Message) + Token
-    Server->>TriageAgent: 1. Kiểm tra (Có phải Y tế không?) + Gợi ý gợi tên cuộc trò chuyện
+    User->>Server: Gửi câu hỏi (Chat Message) + Token + Session ID
+    
+    Note over Server: Middleware (Auth): Xác thực Token & Tải Hồ sơ bệnh án User
+    
+    Server->>MongoDB: 1. Trích xuất hoặc khởi tạo Session Chat
+    Server->>TriageAgent: 2. Kiểm tra (Có phải Y tế không?) + Gợi ý tên tự động
     
     alt Không phải y tế (Non-Medical)
         TriageAgent-->>Server: Early Exit (Từ chối khéo)
         Server-->>User: Trả về câu từ chối & Dừng lại
     else Y Tế (Medical)
         TriageAgent-->>Server: TiepTuc
-        Server->>MongoDB: Trích xuất lịch sử Chat + Hồ sơ bệnh án
-        Server->>VectorDB: 2. Hybrid Search (BM25 + Dense Vectors)
+        Server->>VectorDB: 3. Search (BM25 + Dense Vectors)
         VectorDB-->>Server: Trả về Top 30 Documents
-        Server->>Reranker: 3. Cross-Encoder Rerank
-        Reranker-->>Server: Lấy Top 3 Documents tinh tuý nhất
+        Server->>Reranker: 4. Cross-Encoder Rerank
+        Reranker-->>Server: Lấy Top N Documents tinh tuý nhất
         
-        Server->>ClinicalAgent: 4. Đưa Ngữ cảnh, Lịch sử & Câu hỏi vào Prompt
+        Server->>ClinicalAgent: 5. Đưa Ngữ cảnh, Lịch sử, Hồ sơ & Câu hỏi vào Prompt
         
         Note right of ClinicalAgent: Sinh câu trả lời (Streaming)
         ClinicalAgent-->>Server: Draft Answer + Citations (Trích dẫn)
         
-        Server->>SafetyAgent: 5. Kiểm tra chéo (Cross-check) Draft với Hồ sơ bệnh án
+        Server->>SafetyAgent: 6. Kiểm tra chéo (Cross-check) Draft với Hồ sơ bệnh án
         alt Bệnh lý/Dị ứng xung đột với tư vấn?
             SafetyAgent-->>Server: Phát cảnh báo (Warnings)
         else An toàn
@@ -72,7 +75,7 @@ sequenceDiagram
         end
         
         Server-->>User: Stream Text + Cảnh báo an toàn (UI Alerts)
-        Server->>MongoDB: Đẩy đoạn chat mới (Lưu Memory)
+        Server->>MongoDB: 7. $push đoạn chat mới vào mảng Messages (Lưu DB)
     end
 ```
 
