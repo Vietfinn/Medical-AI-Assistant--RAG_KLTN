@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Academic System Architecture Diagram</title>    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'linear', // Nét mũi tên thẳng góc cạnh (giống hệt ảnh học thuật)
+                nodeSpacing: 50,
+                rankSpacing: 50
+            },
+            themeVariables: {
+                fontFamily: 'Times New Roman, serif', // Font chữ nghiêm túc chuyên chuẩn báo cáo
+                primaryTextColor: '#000',
+                lineColor: '#333'
+            }
+        });
+        
+        window.downloadSVG = function() {
+            var btn = document.getElementById('dl-btn-svg');
+            
+            const svgElement = document.querySelector('.mermaid svg');
+            if (!svgElement) {
+                alert("Sơ đồ chưa load xong!");
+                return;
+            }
+
+            if (!svgElement.getAttribute('xmlns')) {
+                svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            }
+
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            
+            const blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Academic_Paper_Architecture.svg";
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .mermaid-container {
+            border: 1px solid #e2e8f0;
+            padding: 40px;
+            background-color: white;
+        }
+        .instruction {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn-svg {
+            background-color: #2563eb; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-bottom: 20px;
+        }
+        .btn-svg:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="instruction">
+        <h2>Sơ đồ Kiến trúc - Phong cách Học thuật (Academic Paper)</h2>
+        <p>Phiên bản tối giản tuyệt đối, dùng quy tắc màu sắc và khối y hệt ảnh minh hoạ của bạn (Font Times New Roman, nền viền đứt đoạn).</p>
+        <button id="dl-btn-svg" class="btn-svg" onclick="downloadSVG()">Tải Ảnh Academic (File .SVG)</button>
+    </div>
+
+    <div class="mermaid-container">
+        <pre class="mermaid">
+        flowchart TD
+            %% Định hình mã màu theo đúng chuẩn hình mẫu
+            classDef db fill:#e2e8f0,stroke:#64748b,stroke-width:1px
+            classDef preprocess fill:#dcfce7,stroke:#22c55e,stroke-width:1px
+            classDef retriever fill:#fef08a,stroke:#eab308,stroke-width:1px
+            classDef doc fill:#fff,stroke:#000,stroke-width:1px
+            classDef bluebox fill:#dbeafe,stroke:#3b82f6,stroke-width:1px
+            classDef purplebox fill:#f3e8ff,stroke:#a855f7,stroke-width:1px
+            classDef redbox fill:#fee2e2,stroke:#ef4444,stroke-width:1px
+
+            %% Tầng 1: Truy xuất Database chuẩn (First Stage)
+            subgraph Stage1 [First Stage: BM25 Dense Retrieval]
+                Dataset[(Train Dataset)]:::db
+                PreProcess[Pre-Processing and Embedding]:::preprocess
+                DocIcon[Document Collection]:::doc
+                
+                Question((Question))
+                
+                Qdrant[Qdrant Hybrid Search Retriever]:::retriever
+                TopK[Top K Documents]:::doc
+                
+                Dataset --> PreProcess
+                PreProcess --> DocIcon
+                DocIcon --> Qdrant
+                Question --> Qdrant
+                
+                Qdrant -->|Retrieve| TopK
+            end
+
+            %% Tầng 2: Reranking và LLM (Second Stage)
+            subgraph Stage2 [Second Stage: LLM Generation and Verification]
+                Cohere[Cohere Rerank V4 Cross-Encoder]:::bluebox
+                ClinicalLLM[Clinical RAG Agent Gemini 2.5 Flash]:::purplebox
+                SafetyAgent[Safety Guard Agent Llama 3.3]:::redbox
+                
+                FinalAnswer[Safe Candidate Answer và Citations]:::doc
+                
+                TopK --> Cohere
+                Question -.-> Cohere
+                
+                Cohere -->|Context| ClinicalLLM
+                ClinicalLLM -->|Draft text| SafetyAgent
+                SafetyAgent -->|Semantic Check| FinalAnswer
+            end
+
+            %% Định dạng lại viền cho hai cụm lớn mô phỏng đúng Border nét đứt của Paper
+            style Stage1 fill:transparent,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5
+            style Stage2 fill:transparent,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5
+        </pre>
+    </div>
+
+</body>
+</html>

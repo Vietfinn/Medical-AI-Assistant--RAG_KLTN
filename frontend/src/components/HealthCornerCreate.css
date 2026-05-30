@@ -1,0 +1,179 @@
+.corner-create-canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 2rem;
+  animation: cornerCreateFadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 35%, rgba(82, 109, 248, 0.16) 0%, rgba(244, 143, 177, 0.08) 40%, transparent 70%), var(--bg-primary);
+  position: relative;
+}
+
+@keyframes cornerCreateFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.corner-create-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  max-width: 520px;
+  width: 100%;
+  z-index: 2;
+}
+
+/* Centered circular container for heartbeat icon */
+.corner-create-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(82, 109, 248, 0.12), rgba(244, 143, 177, 0.12));
+  color: var(--accent-blue, #3b82f6);
+  margin-bottom: 0.5rem;
+  animation: heartPulseGlow 2.5s infinite ease-in-out;
+}
+
+@keyframes heartPulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.15);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 20px 4px rgba(59, 130, 246, 0.25);
+  }
+}
+
+/* Heading style */
+.corner-create-heading {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text-primary, #e2e8f0);
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* Centered Input row/wrapper */
+.corner-create-input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  position: relative;
+  border-bottom: 1.5px solid transparent;
+  transition: border-color var(--transition-fast, 0.2s) ease;
+  padding-bottom: 4px;
+  max-width: 440px;
+}
+
+.corner-create-input-wrapper:focus-within {
+  border-color: var(--accent-blue-dim, rgba(66, 133, 244, 0.25));
+}
+
+.corner-create-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 2.25rem;
+  font-weight: 400;
+  color: var(--text-primary, #e2e8f0);
+  font-family: inherit;
+  width: 100%;
+  text-align: center;
+  padding: 4px 0;
+  caret-color: var(--accent-blue, #3b82f6);
+}
+
+.corner-create-input::placeholder {
+  color: var(--text-tertiary, #475569);
+  opacity: 0.45;
+  font-weight: 300;
+}
+
+/* Submit button next to centered input */
+.corner-create-submit-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-blue-dim, #1e40af);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color var(--transition-fast, 0.2s) ease;
+  pointer-events: none;
+  position: absolute;
+  right: -50px;
+}
+
+.corner-create-submit-btn.visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.corner-create-submit-btn.visible:hover {
+  background: var(--accent-blue, #3b82f6);
+  transform: scale(1.05);
+}
+
+.corner-create-submit-btn.visible:active {
+  transform: scale(0.95);
+}
+
+/* Tip card */
+.corner-create-tip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 16px;
+  background: var(--bg-secondary, #f0f4f9);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.04));
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.corner-tip-spark-icon {
+  color: var(--accent-blue, #3b82f6);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.corner-tip-text {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.6;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  .corner-create-tip-card {
+    background: rgba(255, 255, 255, 0.02);
+  }
+}

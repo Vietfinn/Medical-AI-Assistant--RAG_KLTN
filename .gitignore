@@ -54,3 +54,27 @@ data/*.json
 
 # Testing
 /coverage
+
+# Agent Workspace & AI logs
+brain/
+.system_generated/
+.gemini/
+
+# Scratch & Temporary testing scripts
+backend/scratch/
+*.txt
+*.js.raw
+frontend/replace_tooltips.js
+
+# Internal audit and validation reports
+*_report.md
+
+# Nested frontend build directories
+frontend/build/
+frontend/dist/
+
+# Draft HTML assets
+*3stages.html
+
+# Ignore root-level lock file (React uses nested frontend/package-lock.json)
+/package-lock.json

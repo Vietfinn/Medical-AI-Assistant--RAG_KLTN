@@ -1,39 +1,37 @@
 import logging
 from typing import List, Dict, Optional
-import google.generativeai as genai
 from config import settings
-from utils.quota_logger import log_quota_errors
+from utils.health_utils import calculate_bmi_status
+from groq import Groq
 
 logger = logging.getLogger(__name__)
 
 
-class GeminiService:
-    """Service for interacting with Google Gemini API (Clinical RAG Agent)"""
+class ClinicalLLMService:
+    """Service for interacting with Groq API for clinical RAG generation (using GROQ_API_KEY2)"""
 
-    def __init__(self, api_key: str, model_name: str = "gemini-2.5-flash"):
+    def __init__(self, api_key: str, model_name: str = "llama-3.3-70b-versatile"):
         """
-        Initialize Gemini service
+        Initialize Clinical LLM service using Groq
 
         Args:
-            api_key: Google Gemini API key
+            api_key: Groq API key
             model_name: Model name to use
         """
         self.api_key = api_key
         self.model_name = model_name
-        self.model = None
+        self.client = None
 
-    def configure(self):
-        """Configure Gemini API"""
+    def configure(self) -> bool:
+        """Configure Groq client"""
         try:
-            genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel(self.model_name)
-            logger.info(f"Gemini API configured with model: {self.model_name}")
+            self.client = Groq(api_key=self.api_key)
+            logger.info(f"Clinical Groq LLM configured with model: {self.model_name}")
             return True
         except Exception as e:
-            logger.error(f"Failed to configure Gemini API: {str(e)}")
+            logger.error(f"Failed to configure Clinical Groq LLM: {str(e)}")
             return False
 
-    @log_quota_errors
     def generate_response(
         self,
         query: str,
@@ -41,12 +39,13 @@ class GeminiService:
         health_profile: Optional[Dict] = None,
         system_prompt: Optional[str] = None,
         chat_history: Optional[List[Dict]] = None,
+        strict_mode: bool = True,
     ) -> str:
-        import time
-        import re
-
-        if self.model is None:
-            raise RuntimeError("Gemini not configured. Call configure() first.")
+        """
+        Generate a RAG-grounded response using Groq Llama 3.3.
+        """
+        if self.client is None:
+            raise RuntimeError("Clinical Groq LLM not configured. Call configure() first.")
 
         context = self._build_context(documents)
         profile_text = (
@@ -54,31 +53,58 @@ class GeminiService:
             if health_profile
             else "Không có thông tin hồ sơ sức khỏe."
         )
-        prompt = self._build_prompt(query, context, profile_text, system_prompt, chat_history)
+        prompt = self._build_prompt(query, context, profile_text, system_prompt, chat_history, strict_mode)
 
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                response = self.model.generate_content(prompt)
-                return response.text
-            except Exception as e:
-                error_msg = str(e)
-                # Retry cho lỗi 429 hoặc 503
-                if "429" in error_msg or "ResourceExhausted" in error_msg or "503" in error_msg or "ServiceUnavailable" in error_msg:
-                    if attempt < max_retries - 1:
-                        # Thử phân tích số giây để đợi từ thông báo lỗi
-                        wait_match = re.search(r"retry in (\d+(\.\d+)?)s", error_msg)
-                        wait_t = float(wait_match.group(1)) + 1.0 if wait_match else 10.0
-                        logger.warning(f"⚠️ Gemini API Quota/Overload (429/503). Tự động đợi {wait_t}s (Lần thử {attempt + 1}/{max_retries})...")
-                        time.sleep(wait_t)
-                        continue
-                    else:
-                        logger.error("❌ Đã thử lại nhiều lần nhưng vẫn lỗi 429/503.")
-                        return "Hệ thống AI đang quá tải tạm thời. Xin vui lòng chờ một lát rồi thử lại!"
-                
-                # Các lỗi khác (như 403) thì raise thẳng
-                logger.error(f"Error generating response: {error_msg}")
-                raise
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+            )
+            return response.choices[0].message.content or ""
+        except Exception as e:
+            logger.error(f"Error generating clinical response from Groq: {str(e)}")
+            raise
+
+    def generate_response_stream(
+        self,
+        query: str,
+        documents: List[Dict],
+        health_profile: Optional[Dict] = None,
+        system_prompt: Optional[str] = None,
+        chat_history: Optional[List[Dict]] = None,
+        strict_mode: bool = True,
+        context_addon: Optional[str] = None,
+    ):
+        """
+        Stream response chunks from Groq.
+        Yields text chunks as they arrive.
+        """
+        if self.client is None:
+            raise RuntimeError("Clinical Groq LLM not configured. Call configure() first.")
+
+        context = self._build_context(documents)
+        profile_text = (
+            self._build_profile_text(health_profile)
+            if health_profile
+            else "Không có thông tin hồ sơ sức khỏe."
+        )
+        prompt = self._build_prompt(query, context, profile_text, system_prompt, chat_history, strict_mode, context_addon)
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+                stream=True,
+            )
+            for chunk in response:
+                content = chunk.choices[0].delta.content
+                if content:
+                    yield content
+        except Exception as e:
+            logger.error(f"Error in streaming response from Clinical Groq: {str(e)}")
+            raise
 
     def _build_context(self, documents: List[Dict]) -> str:
         """Build context text from documents"""
@@ -98,7 +124,7 @@ Câu trả lời từ bác sĩ: {doc.get('answer', 'N/A')}
         return "\n\n".join(context_parts)
 
     def _build_profile_text(self, health_profile: Dict) -> str:
-        """Build health profile text"""
+        """Build health profile text with defensive BMI logic"""
         parts = ["HỒ SƠ SỨC KHỎE BỆNH NHÂN:"]
 
         chronic_diseases = health_profile.get("chronic_diseases", [])
@@ -120,6 +146,17 @@ Câu trả lời từ bác sĩ: {doc.get('answer', 'N/A')}
         gender = health_profile.get("gender")
         if gender:
             parts.append(f"- Giới tính: {gender}")
+            
+        height = health_profile.get("height")
+        weight = health_profile.get("weight")
+        bmi_info = calculate_bmi_status(height, weight)
+        
+        if height:
+            parts.append(f"- Chiều cao: {height} cm")
+        if weight:
+            parts.append(f"- Cân nặng: {weight} kg")
+        if "Không xác định" not in bmi_info:
+            parts.append(f"- Chỉ số BMI: {bmi_info}")
 
         return (
             "\n".join(parts) if len(parts) > 1 else "Không có thông tin hồ sơ sức khỏe."
@@ -132,16 +169,22 @@ Câu trả lời từ bác sĩ: {doc.get('answer', 'N/A')}
         profile_text: str,
         system_prompt: Optional[str] = None,
         chat_history: Optional[List[Dict]] = None,
+        strict_mode: bool = True,
+        context_addon: Optional[str] = None,
     ) -> str:
-        """Build complete prompt for Gemini"""
-
+        """Build complete prompt"""
         if system_prompt is None:
-            system_prompt = """Bạn là một Trợ lý Y tế AI chuyên nghiệp và cẩn trọng.
+            rule_1 = """1. TRẢ LỜI DỰA TRÊN TÀI LIỆU (ZERO-HALLUCINATION):
+   - Chỉ trả lời dựa CHÍNH XÁC vào các thông tin có trong phần [CÁC TÀI LIỆU THAM KHẢO].
+   - NẾU tài liệu không có thông tin, bạn BẮT BUỘC phải trả lời: "Xin lỗi, các tài liệu y khoa hiện tại của tôi chưa có thông tin về vấn đề này..." và KHÔNG TỰ SUY DIỄN.""" if strict_mode else """1. TRẢ LỜI LINH HOẠT VỚI KIẾN THỨC CHUYÊN MÔN:
+   - Ưu tiên sử dụng thông tin trong phần [CÁC TÀI LIỆU THAM KHẢO] nếu có.
+   - NẾU tài liệu không có thông tin và bạn phải tự trả lời từ tri thức của mình, bạn BẮT BUỘC phải mở đầu câu trả lời bằng đúng khối blockquote Markdown nổi bật này (không thêm bớt):
+     > 🤖 **Tham khảo từ Trí tuệ Nhân tạo (AI):** Câu hỏi này chưa có tài liệu đối chiếu trực tiếp từ thư viện y khoa xác thực của hệ thống. AI đã tự động tổng hợp thông tin từ kiến thức chung để bạn tham khảo. Vui lòng hỏi ý kiến bác sĩ chuyên khoa trước khi áp dụng."""
+
+            system_prompt = f"""Bạn là một Trợ lý Y tế AI chuyên nghiệp và cẩn trọng.
 
 NHIỆM VỤ CỐT LÕI:
-1. TRẢ LỜI DỰA TRÊN TÀI LIỆU (ZERO-HALLUCINATION):
-   - Chỉ trả lời dựa CHÍNH XÁC vào các thông tin có trong phần [CÁC TÀI LIỆU THAM KHẢO].
-   - NẾU tài liệu không có thông tin, bạn BẮT BUỘC phải trả lời: "Xin lỗi, các tài liệu y khoa hiện tại của tôi chưa có thông tin về vấn đề này..." và KHÔNG TỰ SUY DIỄN.
+{rule_1}
 
 2. KIỂM TRA ĐỐI CHIẾU AN TOÀN (TỐI QUAN TRỌNG):
    - Trước khi đưa ra lời khuyên/thuốc, phải ĐỐI CHIẾU với [Hồ sơ sức khỏe] của bệnh nhân.
@@ -151,7 +194,11 @@ NHIỆM VỤ CỐT LÕI:
 
 3. QUY TẮC ĐỊNH DẠNG & TRÌNH BÀY (BẮT BUỘC TUÂN THỦ NGHIÊM NGẶT):
    - CẤM CHÀO HỎI: Tuyệt đối KHÔNG dùng các từ giao tiếp thừa như "Chào bạn", "Tôi hiểu rằng...", "Mong thông tin này hữu ích". Đi thẳng vào câu trả lời.
-   - TRÍCH DẪN ẨN: TUYỆT ĐỐI KHÔNG in ra các thẻ trích dẫn thô như [Tài liệu 1], [Tài liệu 2]. Hãy tự tổng hợp thông tin một cách tự nhiên.
+   - TRÍCH DẪN CUỐI ĐOẠN: Khi sử dụng thông tin từ tài liệu tham khảo, bạn BẮT BUỘC phải chèn ký hiệu trích dẫn dạng [1], [2], [3] (trong đó [1] tương ứng với [Tài liệu 1], [2] tương ứng với [Tài liệu 2],...) vào CUỐI ĐOẠN VĂN hoặc cuối mỗi ý chính chứa thông tin đó.
+     * Quy tắc: Số trong ngoặc vuông tương ứng với số thứ tự của tài liệu.
+     * Nếu một đoạn hoặc ý chính tổng hợp từ nhiều tài liệu, hãy chèn liền nhau, ví dụ: [1][3].
+     * TUYỆT ĐỐI KHÔNG viết dạng dài như "[Tài liệu 1]" hay "[Nguồn 2]". Chỉ dùng ký hiệu ngắn gọn dạng [1], [2].
+     * Nếu đoạn trả lời hoàn toàn do bạn tự tổng hợp từ kiến thức chung (không có tài liệu đối chiếu phù hợp nào), KHÔNG chèn bất kỳ ký hiệu trích dẫn nào cho đoạn đó.
    - XỬ LÝ KHI THIẾU HỒ SƠ: NẾU phần [HỒ SƠ SỨC KHỎE] là "Không có thông tin hồ sơ sức khỏe.", bạn PHẢI bắt đầu câu trả lời bằng đúng 1 dòng in nghiêng này: *(Lưu ý: Không có hồ sơ sức khỏe cá nhân, thông tin dưới đây chỉ mang tính tham khảo)*.
    - SỬ DỤNG MARKDOWN:
      * Dùng `###` cho các tiêu đề phụ (Ví dụ: ### Nguyên nhân, ### Lời khuyên).
@@ -163,8 +210,26 @@ NHIỆM VỤ CỐT LÕI:
    - KHÔNG đưa ra chẩn đoán bệnh chính thức.
    - KHÔNG kê đơn thuốc. Luôn khuyên bệnh nhân tham vấn bác sĩ trực tiếp.
 
+5. CÂU HỎI GỢI Ý (BẮT BUỘC):
+   - Sau khi trả lời XONG, bạn PHẢI chèn chuỗi [SUGGESTIONS] trên một dòng riêng biệt.
+   - Ngay sau [SUGGESTIONS], liệt kê đúng 3 câu hỏi gợi ý liên quan mà người dùng có thể muốn hỏi tiếp.
+   - Mỗi câu hỏi gợi ý trên một dòng riêng, KHÔNG đánh số, KHÔNG gạch đầu dòng.
+   - Câu hỏi phải ngắn gọn (dưới 15 từ), liên quan trực tiếp đến nội dung vừa trả lời.
+   - Ví dụ:
+     [SUGGESTIONS]
+     Triệu chứng nào cần đi khám bác sĩ ngay?
+     Có cách phòng ngừa nào hiệu quả không?
+     Chế độ ăn uống nên thay đổi như thế nào?
+
 VÍ DỤ CẢNH BÁO AN TOÀN:
-> **⚠️ CẢNH BÁO AN TOÀN:** Tôi thấy trong hồ sơ bạn có tiền sử dị ứng với Aspirin. Dù đây là phương pháp phổ biến, nhưng nó **CÓ THỂ GÂY NGUY HIỂM** cho bạn. Vui lòng không tự ý sử dụng và tham khảo ý kiến bác sĩ trực tiếp."""
+> **⚠️ CẢNH BÁO AN TOÀN:** Tôi thấy trong hồ sơ bạn có tiền sử dị ứng với Aspirin. Dù đây là phương pháp phổ biến, nhưng nó **CÓ THỂ GÂY NGUY HIỂM** cho bạn. Vui lòng không tự ý sử dụng và tham khảo ý kiến bác sĩ trực tiếp.
+
+VÍ DỤ TRÍCH DẪN CUỐI ĐOẠN:
+### Nguyên nhân gây đau
+* **Viêm loét dạ dày** là nguyên nhân phổ biến nhất gây đau thượng vị đột ngột, kèm theo cảm giác nóng rát dữ dội sau khi ăn đồ cay nóng. [1]
+* Bên cạnh đó, **hội chứng ruột kích thích (IBS)** cũng có thể dẫn tới những cơn đau co thắt dọc khung đại tràng khi gặp căng thẳng tâm lý kéo dài. [2][3]
+* Nếu bạn thấy các cơn đau đi kèm với sốt cao hoặc đại tiện ra phân đen, hãy nhanh chóng tới khám trực tiếp tại bệnh viện gần nhất để đảm bảo an toàn y khoa.
+"""
 
         history_text = ""
         if chat_history and len(chat_history) > 0:
@@ -173,8 +238,12 @@ VÍ DỤ CẢNH BÁO AN TOÀN:
                 role = "Bệnh nhân" if msg.get("role") == "user" else "Trợ lý AI"
                 history_text += f"{role}: {msg.get('content')}\n\n"
 
-        prompt = f"""{system_prompt}
+        addon_text = ""
+        if context_addon:
+            addon_text = f"\n{context_addon}\n"
 
+        prompt = f"""{system_prompt}
+{addon_text}
 ---
 [HỒ SƠ SỨC KHỎE CỦA BỆNH NHÂN]
 {profile_text}
@@ -191,70 +260,6 @@ VÍ DỤ CẢNH BÁO AN TOÀN:
 HÃY TRẢ LỜI:"""
         return prompt
 
-    def generate_response_stream(
-        self,
-        query: str,
-        documents: List[Dict],
-        health_profile: Optional[Dict] = None,
-        system_prompt: Optional[str] = None,
-        chat_history: Optional[List[Dict]] = None,
-    ):
-        """
-        Stream response chunks from Gemini API using stream=True.
-        Yields text chunks as they arrive from the model.
-
-        Args:
-            query: User's medical query
-            documents: Retrieved & reranked documents
-            health_profile: User health profile dict
-            system_prompt: Optional custom system prompt
-            chat_history: Recent conversation history
-
-        Yields:
-            str: Each text chunk from Gemini streaming response
-        """
-        import time
-        import re
-
-        if self.model is None:
-            raise RuntimeError("Gemini not configured. Call configure() first.")
-
-        context = self._build_context(documents)
-        profile_text = (
-            self._build_profile_text(health_profile)
-            if health_profile
-            else "Không có thông tin hồ sơ sức khỏe."
-        )
-        prompt = self._build_prompt(query, context, profile_text, system_prompt, chat_history)
-
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                response = self.model.generate_content(prompt, stream=True)
-                for chunk in response:
-                    try:
-                        if chunk.text:
-                            yield chunk.text
-                    except ValueError:
-                        # Chunk doesn't have a valid text part (usually the final metadata chunk)
-                        continue
-                return
-            except Exception as e:
-                error_msg = str(e)
-                if "429" in error_msg or "ResourceExhausted" in error_msg or "503" in error_msg or "ServiceUnavailable" in error_msg:
-                    if attempt < max_retries - 1:
-                        wait_match = re.search(r"retry in (\d+(\.\d+)?)s", error_msg)
-                        wait_t = float(wait_match.group(1)) + 1.0 if wait_match else 10.0
-                        logger.warning(f"⚠️ Gemini Streaming Quota/Overload (429/503). Waiting {wait_t}s (attempt {attempt + 1}/{max_retries})...")
-                        time.sleep(wait_t)
-                        continue
-                    else:
-                        logger.error("❌ Gemini streaming retries exhausted (429/503).")
-                        yield "Hệ thống AI đang quá tải tạm thời. Xin vui lòng chờ một lát rồi thử lại!"
-                        return
-                logger.error(f"Error in streaming response: {error_msg}")
-                raise
-
     def is_configured(self) -> bool:
-        """Check if Gemini is configured"""
-        return self.model is not None
+        """Check if LLM is configured"""
+        return self.client is not None

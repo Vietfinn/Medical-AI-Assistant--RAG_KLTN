@@ -72,6 +72,44 @@ class GroqService:
             logger.error(f"Error generating response from Groq: {str(e)}")
             raise
 
+    def generate_stream(
+        self,
+        prompt: str,
+        system_prompt: Optional[str] = None,
+        temperature: float = 0.3,
+        max_tokens: int = 1024,
+    ):
+        """
+        Generate streaming response using Groq (Llama 3)
+        Yields text chunks as they arrive.
+        """
+        if self.client is None:
+            raise RuntimeError("Groq not configured. Call configure() first.")
+
+        messages = []
+
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+
+        messages.append({"role": "user", "content": prompt})
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                stream=True,
+            )
+            for chunk in response:
+                content = chunk.choices[0].delta.content
+                if content:
+                    yield content
+        except Exception as e:
+            logger.error(f"Error in streaming response from Groq: {str(e)}")
+            raise
+
     def is_configured(self) -> bool:
         """Check if Groq is configured"""
         return self.client is not None
+

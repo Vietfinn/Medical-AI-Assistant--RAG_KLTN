@@ -27,7 +27,9 @@
 }
 
 .user-bubble {
-  max-width: 75%;
+  max-width: 100%;
+  width: fit-content;
+  box-sizing: border-box;
   padding: 12px 22px;
   background: var(--bg-tertiary);
   border-radius: 24px;
@@ -373,8 +375,12 @@
     padding: 0 16px;
   }
 
-  .user-bubble {
+  .user-message-container {
     max-width: 90%;
+  }
+
+  .user-bubble {
+    max-width: 100%;
     font-size: 14px;
   }
 
@@ -522,4 +528,452 @@
     transform: translateY(0);
   }
 }
+
+/* ============================================
+   ASSISTANT ACTION BAR — Like / Dislike / Copy / Source
+   ============================================ */
+
+.assistant-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 6px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-full, 50%);
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn.like.active {
+  color: var(--accent-blue, #526df8);
+  background: rgba(82, 109, 248, 0.1);
+}
+
+.action-btn.dislike.active {
+  color: var(--accent-red, #ff3b30);
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.action-btn.copy.active-copy {
+  color: var(--accent-teal, #2ec4b6);
+}
+
+.action-bar-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--bg-tertiary);
+  margin: 0 4px;
+}
+
+.action-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ============================================
+   USER MESSAGE — Edit Question & Action Bar
+   ============================================ */
+
+.user-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: relative;
+  max-width: 75%;
+  width: 100%;
+}
+
+.user-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 4px;
+  position: absolute;
+  bottom: -28px;
+  right: 0;
+}
+
+.user-action-btn,
+.user-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-full, 50%);
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-action-btn:hover,
+.user-edit-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.user-action-btn.active-copy {
+  color: var(--accent-teal, #2ec4b6);
+}
+
+/* ---- Edit Bubble ---- */
+
+.edit-bubble-container {
+  max-width: 75%;
+  width: 100%;
+  margin-left: auto;
+}
+
+.edit-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 18px;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--accent-blue, #526df8);
+  border-radius: 16px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.edit-textarea:focus {
+  border-color: var(--accent-purple, #8b5cf6);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.edit-cancel-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.edit-cancel-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-tertiary);
+}
+
+.edit-update-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--accent-blue, #526df8);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.edit-update-btn:hover:not(:disabled) {
+  background: #3d58e8;
+}
+
+.edit-update-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   FOLLOW-UP SUGGESTIONS — Gemini-style chips
+   ============================================ */
+
+.suggestions-followup {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bg-tertiary);
+}
+
+.suggestions-followup-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.suggestions-followup-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestion-followup-btn {
+  display: inline-flex;
+  align-items: center;
+  text-align: left;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 9999px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+
+.suggestion-followup-btn:hover {
+  background: rgba(82, 109, 248, 0.05);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  transform: translateY(-2px);
+}
+
+.suggestion-followup-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ============================================
+   FEEDBACK TOAST — Floating notification
+   ============================================ */
+
+.feedback-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  z-index: 999;
+  animation: toastSlideUp 0.3s ease-out;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.feedback-toast.success {
+  background: var(--accent-teal, #2ec4b6);
+}
+
+.feedback-toast.error {
+  background: var(--accent-red, #ff3b30);
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ---- Responsive additions ---- */
+
+@media (max-width: 768px) {
+  .suggestion-followup-btn {
+    font-size: 12.5px;
+    padding: 7px 14px;
+    border-radius: 20px;
+  }
+
+  .user-action-bar {
+    bottom: -24px;
+  }
+
+  .assistant-action-bar {
+    gap: 2px;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ============================================
+   INLINE CITATION BADGES & FLOATING TOOLTIPS
+   ============================================ */
+
+.citation-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-blue, #526df8);
+  background: rgba(82, 109, 248, 0.1);
+  border: 1px solid rgba(82, 109, 248, 0.22);
+  border-radius: 4px;
+  cursor: pointer;
+  vertical-align: super;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.citation-badge:hover {
+  background: rgba(82, 109, 248, 0.22);
+  border-color: var(--accent-blue, #526df8);
+  transform: scale(1.15) translateY(-1px);
+  box-shadow: 0 0 10px rgba(82, 109, 248, 0.35);
+}
+
+.citation-badge:active {
+  transform: scale(0.95);
+}
+
+/* Citation Tooltip */
+.citation-badge .citation-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px; /* Reduced width (3/5 of 300px is 180px, we use 200px for optimal readability) */
+  max-height: 125px; /* Compact height */
+  padding: 8px 10px;
+  background: var(--bg-secondary, #1e1f20); /* Match theme's secondary background */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bg-tertiary, rgba(255, 255, 255, 0.08)); /* Match theme's border tone */
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  z-index: 9999;
+  text-align: left;
+  cursor: default;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: tooltipFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .citation-badge .citation-tooltip {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.citation-tooltip .tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--bg-tertiary, rgba(255, 255, 255, 0.08));
+  padding-bottom: 4px;
+}
+
+.citation-tooltip .tooltip-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-blue, #526df8);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.citation-tooltip .tooltip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.citation-tooltip .tooltip-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.citation-tooltip .tooltip-label {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--text-tertiary, rgba(255, 255, 255, 0.45));
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.citation-tooltip .tooltip-text {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--text-primary, rgba(255, 255, 255, 0.88));
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  font-weight: 400 !important; /* CRITICAL: force standard weight, no bold! */
+}
+
+.citation-tooltip .tooltip-question {
+  -webkit-line-clamp: 1;
+  font-weight: 400 !important;
+}
+
+.citation-tooltip .tooltip-answer {
+  -webkit-line-clamp: 2; /* 2 lines clamp for 3/5 size */
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  font-weight: 400 !important;
+}
+
 

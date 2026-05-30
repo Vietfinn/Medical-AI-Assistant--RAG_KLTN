@@ -4,6 +4,7 @@ from typing import List, Optional
 from models.schemas import SafetyResult, Warning, HealthProfile
 from services.groq_llm import GroqService
 from agents.base import BaseAgent
+from utils.health_utils import calculate_bmi_status
 
 
 class SafetyGuardAgent(BaseAgent):
@@ -44,7 +45,8 @@ LƯU Ý QUAN TRỌNG:
 - Nếu KHÔNG có hồ sơ sức khỏe → trả is_safe=true, warnings=[], modified_response=null
 - Nếu AN TOÀN → trả is_safe=true, warnings=[], modified_response=null
 - Nếu NGUY HIỂM → thêm cảnh báo ⚠️ vào đầu modified_response, giữ nguyên nội dung gốc phía sau
-- CHỈ trả về JSON hợp lệ, không thêm markdown hay giải thích"""
+- CHỈ trả về JSON hợp lệ, không thêm markdown hay giải thích
+- BỎ QUA hoàn toàn phần nội dung sau chuỗi [SUGGESTIONS] (nếu có). Đó là câu hỏi gợi ý tự động, KHÔNG PHẢI nội dung y khoa cần kiểm duyệt."""
 
     def __init__(self, groq_service: GroqService):
         """
@@ -159,6 +161,15 @@ LƯU Ý QUAN TRỌNG:
 
         if profile.gender:
             parts.append(f"- Giới tính: {profile.gender}")
+            
+        # Thêm thông tin thể chất & BMI với logic phòng thủ
+        bmi_info = calculate_bmi_status(profile.height, profile.weight)
+        if profile.height:
+            parts.append(f"- Chiều cao: {profile.height} cm")
+        if profile.weight:
+            parts.append(f"- Cân nặng: {profile.weight} kg")
+        if "Không xác định" not in bmi_info:
+            parts.append(f"- Chỉ số BMI: {bmi_info}")
 
         return "\n".join(parts)
 

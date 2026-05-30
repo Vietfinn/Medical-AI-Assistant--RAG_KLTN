@@ -1,207 +1,282 @@
-/* ============================================
-   HEALTH PROFILE MODAL — Dark Theme
-   ============================================ */
+/* HealthProfile.css - Premium Scoped Frosted Glassmorphism Medical Theme */
 
-.modal-overlay {
+.hp-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  z-index: 200;
+  background-color: rgba(15, 23, 42, 0.55); /* Soft dark clinical backdrop overlay */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 20px;
-  animation: fadeIn 0.2s ease;
+  align-items: center;
+  z-index: 9500;
+  padding: 1.5rem;
+  animation: hpFadeIn 0.25s ease-out;
+
+  /* ========================================================
+     DESIGN SYSTEM VARIABLES - Adaptive Dark & Light Themes
+     ======================================================== */
+  /* Default: Dark Theme values */
+  --hp-bg-glass: rgba(26, 27, 28, 0.85);
+  --hp-border: rgba(120, 217, 236, 0.22); /* Neon Cyan dim border */
+  --hp-shadow: 0 30px 100px rgba(120, 217, 236, 0.14), 0 0 50px rgba(0, 0, 0, 0.5);
+  --hp-header-bg: rgba(30, 31, 32, 0.45);
+  --hp-footer-bg: rgba(30, 31, 32, 0.45);
+  --hp-input-bg: rgba(30, 31, 32, 0.6);
+  --hp-input-border: rgba(255, 255, 255, 0.1);
+  --hp-accent: var(--accent-teal, #78d9ec);
+  --hp-label: var(--text-secondary, #e3e3e3);
+  --hp-note-bg: rgba(120, 217, 236, 0.04);
+  --hp-note-border: rgba(120, 217, 236, 0.12);
+  --hp-suggest-bg: rgba(30, 31, 32, 0.98);
+  --hp-suggest-cat-bg: rgba(120, 217, 236, 0.12);
+  --hp-suggest-cat-text: #78d9ec;
+  
+  /* Tag chips colors - Dark Theme */
+  --hp-tag-disease-bg: rgba(138, 180, 248, 0.08);
+  --hp-tag-disease-border: rgba(138, 180, 248, 0.2);
+  --hp-tag-disease-text: #8ab4f8;
+  
+  --hp-tag-allergy-bg: rgba(242, 139, 130, 0.08);
+  --hp-tag-allergy-border: rgba(242, 139, 130, 0.25);
+  --hp-tag-allergy-text: #f28b82;
+  
+  --hp-tag-med-bg: rgba(120, 217, 236, 0.08);
+  --hp-tag-med-border: rgba(120, 217, 236, 0.25);
+  --hp-tag-med-text: #78d9ec;
+
+  /* BMI dynamic card styles - Dark Theme */
+  --hp-bmi-under-bg: rgba(138, 180, 248, 0.06);
+  --hp-bmi-under-border: rgba(138, 180, 248, 0.4);
+  --hp-bmi-under-text: #8ab4f8;
+  
+  --hp-bmi-normal-bg: rgba(129, 201, 149, 0.06);
+  --hp-bmi-normal-border: rgba(129, 201, 149, 0.4);
+  --hp-bmi-normal-text: #81c995;
+  
+  --hp-bmi-over-bg: rgba(252, 173, 112, 0.06);
+  --hp-bmi-over-border: rgba(252, 173, 112, 0.4);
+  --hp-bmi-over-text: #fcad70;
+  
+  --hp-bmi-obese-bg: rgba(242, 139, 130, 0.06);
+  --hp-bmi-obese-border: rgba(242, 139, 130, 0.4);
+  --hp-bmi-obese-text: #f28b82;
 }
 
-.modal-card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--bg-tertiary);
-  border-radius: var(--radius-md);
+/* Light Theme overrides using the data-theme attribute */
+[data-theme="light"] .hp-modal-overlay {
+  --hp-bg-glass: rgba(255, 255, 255, 0.88);
+  --hp-border: rgba(14, 165, 233, 0.28); /* Medical Cyan border */
+  --hp-shadow: 0 30px 100px rgba(14, 165, 233, 0.14), 0 0 50px rgba(0, 0, 0, 0.08);
+  --hp-header-bg: rgba(240, 244, 249, 0.45);
+  --hp-footer-bg: rgba(240, 244, 249, 0.45);
+  --hp-input-bg: #ffffff;
+  --hp-input-border: #dadce0;
+  --hp-accent: var(--accent-blue, #1a73e8);
+  --hp-label: var(--text-secondary, #444746);
+  --hp-note-bg: rgba(14, 165, 233, 0.04);
+  --hp-note-border: rgba(14, 165, 233, 0.12);
+  --hp-suggest-bg: rgba(255, 255, 255, 0.98);
+  --hp-suggest-cat-bg: rgba(14, 165, 233, 0.08);
+  --hp-suggest-cat-text: #0284c7;
+  
+  /* Tag chips colors - Light Theme */
+  --hp-tag-disease-bg: rgba(26, 115, 232, 0.06);
+  --hp-tag-disease-border: rgba(26, 115, 232, 0.15);
+  --hp-tag-disease-text: #1a73e8;
+  
+  --hp-tag-allergy-bg: rgba(217, 48, 37, 0.06);
+  --hp-tag-allergy-border: rgba(217, 48, 37, 0.15);
+  --hp-tag-allergy-text: #d93025;
+  
+  --hp-tag-med-bg: rgba(18, 181, 203, 0.06);
+  --hp-tag-med-border: rgba(18, 181, 203, 0.15);
+  --hp-tag-med-text: #12b5cb;
+
+  /* BMI dynamic card styles - Light Theme */
+  --hp-bmi-under-bg: rgba(26, 115, 232, 0.05);
+  --hp-bmi-under-border: rgba(26, 115, 232, 0.35);
+  --hp-bmi-under-text: #1a73e8;
+  
+  --hp-bmi-normal-bg: rgba(30, 142, 62, 0.05);
+  --hp-bmi-normal-border: rgba(30, 142, 62, 0.35);
+  --hp-bmi-normal-text: #1e8e3e;
+  
+  --hp-bmi-over-bg: rgba(242, 153, 0, 0.05);
+  --hp-bmi-over-border: rgba(242, 153, 0, 0.35);
+  --hp-bmi-over-text: #f29900;
+  
+  --hp-bmi-obese-bg: rgba(217, 48, 37, 0.05);
+  --hp-bmi-obese-border: rgba(217, 48, 37, 0.35);
+  --hp-bmi-obese-text: #d93025;
+}
+
+@keyframes hpFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========================================================
+   MODAL CARD - Frosted Crystal Shell
+   ======================================================== */
+.hp-modal-card {
+  background-color: var(--hp-bg-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  color: var(--text-primary);
+  border: 1px solid var(--hp-border);
+  border-radius: 24px;
   width: 100%;
-  max-width: 560px;
-  max-height: 85vh;
+  max-width: 620px;
+  max-height: 92vh;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--hp-shadow);
   overflow: hidden;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  position: relative;
+  animation: hpModalPopUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.modal-header {
+@keyframes hpModalPopUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.hp-modal-card.is-saving {
+  cursor: wait;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* ========================================================
+   MODAL HEADER - Polished Medical Row
+   ======================================================== */
+.hp-modal-header {
+  padding: 1.1rem 2rem; /* Giảm khoảng đệm dọc để thu nhỏ kích thước header */
+  border-bottom: 1px solid var(--hp-border);
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--bg-tertiary);
+  align-items: center;
+  background: var(--hp-header-bg);
 }
 
-.modal-title-row {
+.hp-modal-title-row {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.hp-title-icon {
+  color: var(--hp-accent);
+  filter: drop-shadow(0 0 6px rgba(120, 217, 236, 0.35));
+  animation: hpHeartPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes hpHeartPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+.hp-modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem; /* Giảm cỡ chữ tiêu đề Hồ sơ sức khỏe */
+  font-weight: 700;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
-.modal-title-row h2 {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.modal-close {
+.hp-modal-close {
   background: transparent;
   border: none;
   color: var(--text-tertiary);
   cursor: pointer;
-  padding: 8px;
-  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.modal-close:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+.hp-modal-close:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  color: var(--hp-accent);
+  transform: rotate(90deg);
 }
 
-.modal-body {
-  flex: 1;
+/* ========================================================
+   MODAL BODY - Scrollable Medical Canvas
+   ======================================================== */
+.hp-modal-body {
+  padding: 1.5rem 2rem 2rem 2rem;
   overflow-y: auto;
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.45rem; /* Thu hẹp khoảng cách để đẩy các phần dưới lên cao */
 }
 
-/* ---- Sections ---- */
+/* Custom premium scrollbar for modal body */
+.hp-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
 
+.hp-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hp-modal-body::-webkit-scrollbar-thumb {
+  background: var(--hp-border);
+  border-radius: 99px;
+}
+
+/* ========================================================
+   PROFILE SECTIONS - Accentuated Spacing
+   ======================================================== */
 .profile-section {
-  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative; /* Đảm bảo z-index hoạt động để quản lý xếp chồng */
 }
 
-.profile-section:last-of-type {
-  margin-bottom: 16px;
+/* Đảm bảo phần section có gợi ý đang mở được vẽ đè lên trên cùng của stacking context */
+.profile-section.active-sugg {
+  z-index: 99 !important;
 }
 
 .section-label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  border-left: 3.5px solid var(--hp-accent); /* Dynamic Medical Left Border */
+  padding-left: 11px;
 }
 
 .section-label h4 {
-  font-size: 14px;
-  font-weight: 600;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
-/* ---- Tags ---- */
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-  min-height: 8px;
-}
-
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--bg-active);
-  border-radius: var(--radius-full);
-  font-size: 13px;
-  color: var(--text-secondary);
-  transition: background var(--transition-fast);
-}
-
-.tag-warning {
-  background: var(--warning-bg);
-  border-color: rgba(252, 173, 112, 0.3);
-  color: var(--accent-orange);
-}
-
-.tag-info {
-  background: var(--info-bg);
-  border-color: rgba(138, 180, 248, 0.3);
-  color: var(--accent-blue);
-}
-
-.tag button {
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  opacity: 0.5;
-  transition: opacity var(--transition-fast);
-}
-
-.tag button:hover {
-  opacity: 1;
-}
-
-/* ---- Add input ---- */
-
-.add-input {
-  display: flex;
-  gap: 8px;
-}
-
-.add-input input {
-  flex: 1;
-  padding: 10px 14px;
-  background: var(--bg-primary);
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-family: inherit;
-  color: var(--text-primary);
-  outline: none;
-  transition: border-color var(--transition-fast);
-}
-
-.add-input input::placeholder {
-  color: var(--text-muted);
-}
-
-.add-input input:focus {
-  border-color: var(--accent-blue);
-}
-
-.add-input > button {
-  padding: 10px 14px;
-  background: var(--accent-blue-dim);
-  color: white;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity var(--transition-fast);
-}
-
-.add-input > button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.add-input > button:hover:not(:disabled) {
-  opacity: 0.85;
-}
-
-/* ---- Info grid ---- */
-
+/* ========================================================
+   BIOMETRICS GRID & FIELDS
+   ======================================================== */
 .info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr 1fr; /* Khôi phục về bố cục 2 hàng x 2 cột như cũ */
+  gap: 1.25rem 1.15rem;
+  background: var(--bg-secondary);
+  padding: 1.35rem;
+  border-radius: 16px;
+  border: 1px solid var(--hp-border);
 }
 
 .info-field {
@@ -211,70 +286,496 @@
 }
 
 .info-field label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--hp-label);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .info-field input,
 .info-field select {
-  padding: 10px 14px;
-  background: var(--bg-primary);
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-family: inherit;
+  background-color: var(--hp-input-bg);
+  border: 1.5px solid var(--hp-input-border);
   color: var(--text-primary);
+  border-radius: 12px; /* Smooth curved corner */
+  padding: 0.7rem 0.95rem;
+  font-size: 0.92rem;
   outline: none;
-  transition: border-color var(--transition-fast);
+  font-family: inherit;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
 }
 
 .info-field input:focus,
 .info-field select:focus {
-  border-color: var(--accent-blue);
+  border-color: var(--hp-accent);
+  background-color: var(--bg-primary);
+  box-shadow: 0 0 0 4px rgba(120, 217, 236, 0.12);
 }
 
-.info-field select option {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+/* Validation errors */
+.info-field .input-error {
+  border-color: var(--accent-red, #ef4444) !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
 }
 
-/* ---- Note ---- */
-
-.profile-note {
-  padding: 14px 16px;
-  background: var(--info-bg);
-  border-left: 3px solid var(--accent-blue);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+.error-text {
+  color: var(--accent-red, #ef4444);
+  font-size: 0.78rem;
+  margin-top: 2px;
+  font-weight: 500;
 }
 
-.profile-note p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--text-secondary);
+/* ========================================================
+   PREMIUM CLINICAL BMI SUMMARY BLOCK
+   ======================================================== */
+.hp-bmi-info {
+  grid-column: span 2;
+  font-size: 0.88rem;
+  padding: 14px 18px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 550;
+  transition: all 0.3s ease;
   line-height: 1.5;
 }
 
-.profile-note strong {
-  color: var(--accent-blue);
+/* Color States depending on physical constitution classification */
+.hp-bmi-under {
+  background-color: var(--hp-bmi-under-bg);
+  border: 1.5px solid var(--hp-bmi-under-border);
+  color: var(--hp-bmi-under-text);
 }
 
-/* ---- Mobile ---- */
+.hp-bmi-normal {
+  background-color: var(--hp-bmi-normal-bg);
+  border: 1.5px solid var(--hp-bmi-normal-border);
+  color: var(--hp-bmi-normal-text);
+}
 
+.hp-bmi-over {
+  background-color: var(--hp-bmi-over-bg);
+  border: 1.5px solid var(--hp-bmi-over-border);
+  color: var(--hp-bmi-over-text);
+}
+
+.hp-bmi-obese {
+  background-color: var(--hp-bmi-obese-bg);
+  border: 1.5px solid var(--hp-bmi-obese-border);
+  color: var(--hp-bmi-obese-text);
+}
+
+.hp-bmi-icon {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hp-bmi-text {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+}
+
+.hp-bmi-divider {
+  opacity: 0.5;
+  margin: 0 2px;
+}
+
+.hp-bmi-val {
+  font-size: 0.95rem;
+  font-weight: 750;
+}
+
+.hp-bmi-status {
+  font-size: 0.95rem;
+  font-weight: 750;
+}
+
+/* ========================================================
+   CLINICAL TAG PILLS (Diseases, Allergies, Medications)
+   ======================================================== */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--hp-tag-disease-bg);
+  color: var(--hp-tag-disease-text);
+  padding: 6px 14px;
+  border-radius: 99px; /* Seamless Pill */
+  font-size: 0.84rem;
+  font-weight: 600;
+  border: 1px solid var(--hp-tag-disease-border);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Allergies Tag */
+.tag-warning {
+  background-color: var(--hp-tag-allergy-bg);
+  color: var(--hp-tag-allergy-text);
+  border-color: var(--hp-tag-allergy-border);
+}
+
+/* Medications Tag */
+.tag-info {
+  background-color: var(--hp-tag-med-bg);
+  color: var(--hp-tag-med-text);
+  border-color: var(--hp-tag-med-border);
+}
+
+.tag button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.65;
+  transition: all 0.15s ease;
+  margin-right: -2px;
+}
+
+.tag button:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* ========================================================
+   INPUTS & AUTOCOMPLETE MENUS
+   ======================================================== */
+.add-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hp-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.hp-input-wrapper input {
+  width: 100%;
+  background-color: var(--hp-input-bg);
+  border: 1.5px solid var(--hp-input-border);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.92rem;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.hp-input-wrapper input:focus {
+  border-color: var(--hp-accent);
+  background-color: var(--bg-primary);
+  box-shadow: 0 0 0 4px rgba(120, 217, 236, 0.12);
+}
+
+.add-input > button {
+  background-color: var(--hp-accent);
+  color: var(--bg-primary, #ffffff);
+  border: none;
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(120, 217, 236, 0.22);
+}
+
+.add-input > button:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 14px rgba(120, 217, 236, 0.35);
+  opacity: 0.95;
+}
+
+.add-input > button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(120, 217, 236, 0.22);
+}
+
+.add-input > button:disabled {
+  background-color: var(--bg-hover);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Beautiful Floating Suggestion Menu */
+.suggestion-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  background-color: var(--hp-suggest-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--hp-border);
+  border-radius: 12px;
+  max-height: 280px; /* Tăng từ 220px lên 280px giúp hiển thị nhiều bệnh gợi ý hơn */
+  overflow-y: auto;
+  z-index: 10000;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 0 1px rgba(255, 255, 255, 0.1);
+  animation: hpFadeIn 0.15s ease-out;
+}
+
+.suggestion-item {
+  padding: 11px 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(120, 217, 236, 0.06);
+  transition: all 0.15s ease;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.suggestion-label {
+  font-size: 0.92rem;
+  font-weight: 550;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  margin-right: 12px;
+  line-height: 1.4;
+  word-break: break-word; /* Tự động xuống dòng khi tên bệnh quá dài */
+}
+
+.suggestion-category {
+  font-size: 0.76rem;
+  color: var(--hp-suggest-cat-text);
+  background-color: var(--hp-suggest-cat-bg);
+  padding: 2.5px 9px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: 1px solid rgba(120, 217, 236, 0.12);
+  transition: all 0.2s ease;
+  flex-shrink: 0; /* Ngăn chặn badge thể loại bệnh bị bóp méo/co lại */
+}
+
+[data-theme="light"] .suggestion-category {
+  border-color: rgba(14, 165, 233, 0.15);
+}
+
+/* ========================================================
+   SPARKLE NOTE CARD
+   ======================================================== */
+.profile-note {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background-color: var(--hp-note-bg);
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--hp-note-border);
+  line-height: 1.6;
+}
+
+/* ========================================================
+   MODAL FOOTER - Frosted Action Bar
+   ======================================================== */
+.hp-modal-footer {
+  padding: 1.25rem 2rem;
+  border-top: 1px solid var(--hp-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  background: var(--hp-footer-bg);
+}
+
+.saving-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hp-accent);
+  font-weight: 600;
+}
+
+.spinner {
+  animation: hpSpin 1s linear infinite;
+}
+
+@keyframes hpSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================================
+   RESPONSIVE DESIGN - Mobile Premium Card Style
+   ======================================================== */
 @media (max-width: 640px) {
-  .modal-card {
-    max-height: 90vh;
+  .hp-modal-overlay {
+    padding: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .hp-modal-card {
+    width: 96% !important;
+    max-width: 450px !important;
+    height: auto !important;
+    max-height: 92dvh !important;
+    border-radius: 20px !important;
+    border: 1px solid var(--hp-border) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  .hp-modal-header {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid var(--hp-border) !important;
   }
 
+  .hp-modal-header h2 {
+    font-size: 1.15rem !important;
+  }
+  
+  .hp-modal-close {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  
+  .hp-modal-body {
+    padding: 14px !important;
+    gap: 1.1rem !important;
+  }
+
+  .profile-section {
+    gap: 10px !important;
+  }
+
+  .section-label {
+    padding-left: 8px !important;
+  }
+
+  .section-label h4 {
+    font-size: 0.92rem !important;
+  }
+  
   .info-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    padding: 10px !important;
+    gap: 10px !important;
+    border-radius: 12px !important;
+  }
+  
+  .info-field {
+    gap: 4px !important;
+  }
+  
+  .info-field label {
+    font-size: 0.72rem !important;
+  }
+  
+  .info-field input,
+  .info-field select {
+    padding: 8px 12px !important;
+    font-size: 0.85rem !important;
+    border-radius: 10px !important;
   }
 
-  .modal-header {
-    padding: 16px 20px;
+  .hp-bmi-info {
+    font-size: 0.8rem !important;
+    padding: 10px 12px !important;
+    border-radius: 10px !important;
   }
 
-  .modal-body {
-    padding: 20px;
+  .hp-bmi-val,
+  .hp-bmi-status {
+    font-size: 0.85rem !important;
+  }
+  
+  .tags {
+    gap: 6px !important;
+  }
+
+  .tag {
+    padding: 4px 10px !important;
+    font-size: 0.78rem !important;
+  }
+  
+  .add-input {
+    gap: 8px !important;
+  }
+
+  .hp-input-wrapper input {
+    padding: 8px 12px !important;
+    font-size: 0.85rem !important;
+    border-radius: 10px !important;
+  }
+
+  .add-input > button {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+  }
+
+  .suggestion-dropdown {
+    max-height: 150px !important;
+    border-radius: 10px !important;
+  }
+
+  .suggestion-item {
+    padding: 8px 12px !important;
+  }
+
+  .suggestion-label {
+    font-size: 0.82rem !important;
+  }
+
+  .suggestion-category {
+    font-size: 0.7rem !important;
+    padding: 1.5px 6px !important;
+  }
+
+  .profile-note {
+    font-size: 0.78rem !important;
+    padding: 10px 12px !important;
+    border-radius: 10px !important;
+    margin-top: 0.4rem !important;
+  }
+  
+  .hp-modal-footer {
+    padding: 12px 16px !important;
+    font-size: 0.78rem !important;
   }
 }

@@ -43,15 +43,12 @@ const About = () => {
       {/* ========== 2. Vision ========== */}
       <section className="about-vision">
         <div className="about-vision-text">
-          <h2>Giải quyết "nỗi đau" thông tin y tế</h2>
+          <h2>Tối ưu hóa tra cứu sức khỏe</h2>
           <p>
-            Giữa kỷ nguyên số, người dùng dễ dàng bị choáng ngợp và bối rối trước hàng triệu
-            luồng thông tin y tế nhiễu loạn, dẫn đến việc tự chẩn đoán sai lệch.
+            Giữa ma trận thông tin y tế phức tạp, việc tiếp cận nguồn kiến thức chuẩn xác và đưa ra quyết định chăm sóc sức khỏe đúng đắn trở nên khó khăn hơn bao giờ hết.
           </p>
           <p>
-            Tầm nhìn của chúng tôi là biến <strong>A.I.M Care</strong> thành một trợ lý Y Khoa đáng tin cậy.
-            Không chỉ đơn thuần là tìm kiếm từ khóa, hệ thống thấu hiểu ngữ
-            cảnh, kiểm chứng chéo thông tin và đưa ra lời khuyên an toàn nhất cho từng cá nhân.
+            Tầm nhìn của chúng tôi là biến <strong>A.I.M Care</strong> thành trợ lý y khoa tin cậy, giúp đơn giản hóa việc tra cứu nhờ khả năng thấu hiểu ngữ cảnh và kiểm chứng chéo dữ liệu, mang đến những lời khuyên an toàn và cá nhân hóa nhất.
           </p>
         </div>
         <div className="about-vision-image">

@@ -4,6 +4,7 @@ import uuid
 import datetime
 from contextlib import asynccontextmanager
 from typing import Optional
+from unidecode import unidecode
 
 from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,11 +21,34 @@ from models import (
     RetrievedDocument,
     PipelineMetadata,
     HealthProfile,
+    SuggestionItem,
+    SuggestionResponse,
+    CornerCreate,
+    CornerUpdate,
+    CornerAssign,
+    AdminFeedbackUpdate,
+    BulkResolveRequest,
+    UnsafeQueryLog,
+    UnsafeLogsResponse,
+    UnsafeStatsResponse,
+    SystemSettings,
+    ChatFeedbackCreate,
 )
-from services import EmbeddingService, HybridRetriever, Reranker, GeminiService, GroqService
+from services import (
+    EmbeddingService,
+    HybridRetriever,
+    Reranker,
+    ClinicalLLMService,
+    GroqService,
+    load_data_to_ram,
+    search_conditions,
+    get_ingredients,
+    search_medications,
+    get_medication_categories,
+)
 from services.email_service import configure_gmail, send_welcome_email
 from agents import TriageAgent, ClinicalRAGAgent, SafetyGuardAgent
-from auth import get_current_user
+from auth import get_current_user, get_current_admin
 
 # Configure logging
 logging.basicConfig(
@@ -36,7 +60,7 @@ logger = logging.getLogger(__name__)
 embedding_service: Optional[EmbeddingService] = None
 retriever: Optional[HybridRetriever] = None
 reranker: Optional[Reranker] = None
-gemini_service: Optional[GeminiService] = None
+clinical_llm_service: Optional[ClinicalLLMService] = None
 groq_service: Optional[GroqService] = None
 qdrant_client: Optional[QdrantClient] = None
 
@@ -54,7 +78,7 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting Medical AI Assistant API (Multi-Agent RAG)...")
 
-    global embedding_service, retriever, reranker, gemini_service, groq_service
+    global embedding_service, retriever, reranker, clinical_llm_service, groq_service
     global qdrant_client, triage_agent, clinical_rag_agent, safety_guard_agent
 
     try:
@@ -80,7 +104,47 @@ async def lifespan(app: FastAPI):
             raise
 
         # ===== Initialize MongoDB =====
-        await MongoDB.connect(url=settings.MONGODB_URL, db_name="medical_ai")
+        db = await MongoDB.connect(url=settings.MONGODB_URL, db_name="medical_ai")
+        try:
+            mig_result = await db["sessions"].update_many(
+                {"is_pinned": {"$exists": False}}, 
+                {"$set": {"is_pinned": False}}
+            )
+            if mig_result.modified_count > 0:
+                logger.info(f"  ✅ MongoDB Migration: Updated {mig_result.modified_count} sessions with explicit is_pinned: False")
+        except Exception as mig_err:
+            logger.error(f"  ❌ MongoDB Migration Error: {mig_err}")
+
+        # ===== Create MongoDB Indexes for Production Performance =====
+        try:
+            logger.info("Creating MongoDB Indexes for Production Performance...")
+            
+            # Sessions compound index for sidebar listing (User ID + Pin status + Updated time)
+            await db["sessions"].create_index([
+                ("user_id", 1),
+                ("is_pinned", -1),
+                ("updated_at", -1)
+            ], name="sessions_user_pin_update_idx")
+            
+            # Feedbacks indexing (status and timestamp)
+            await db["chat_feedbacks"].create_index([
+                ("status", 1),
+                ("created_at", -1)
+            ], name="feedbacks_status_created_idx")
+            
+            # Unsafe logs indexing
+            await db["unsafe_logs"].create_index([
+                ("user_id", 1),
+                ("timestamp", -1)
+            ], name="unsafe_logs_user_timestamp_idx")
+            
+            logger.info("  ✅ MongoDB Indexes created successfully.")
+        except Exception as idx_err:
+            logger.error(f"  ❌ MongoDB Indexing Error: {idx_err}")
+
+        # ===== Initialize In-Memory Suggestion Engine cache =====
+        logger.info("Initializing Suggestion Engine cache...")
+        await load_data_to_ram(MongoDB.get_db())
 
         # ===== Initialize Gmail SMTP Email =====
         configure_gmail()
@@ -104,17 +168,17 @@ async def lifespan(app: FastAPI):
         reranker = Reranker(api_key=settings.COHERE_API_KEY, model_name=settings.RERANKER_MODEL)
         reranker.load_model()
 
-        # ===== Initialize Gemini Service (Clinical RAG Agent) =====
-        logger.info("Configuring Gemini API...")
-        gemini_service = GeminiService(
-            api_key=settings.GEMINI_API_KEY, model_name=settings.GEMINI_MODEL
+        # ===== Initialize Clinical LLM Service (Clinical RAG Agent) =====
+        logger.info("Configuring Clinical Groq LLM API...")
+        clinical_llm_service = ClinicalLLMService(
+            api_key=settings.GROQ_API_KEY2, model_name=settings.GROQ_MODEL
         )
-        gemini_service.configure()
+        clinical_llm_service.configure()
 
         # ===== Initialize Groq Service (Triage + Safety Agents) =====
         logger.info("Configuring Groq API (Llama 3)...")
         groq_service = GroqService(
-            api_key=settings.GROQ_API_KEY, model_name=settings.GROQ_MODEL
+            api_key=settings.GROQ_API_KEY1, model_name=settings.GROQ_MODEL
         )
         groq_service.configure()
 
@@ -124,8 +188,8 @@ async def lifespan(app: FastAPI):
         triage_agent = TriageAgent(groq_service=groq_service)
         logger.info("  ✅ Triage Agent (Llama 3 / Groq) initialized")
 
-        clinical_rag_agent = ClinicalRAGAgent(gemini_service=gemini_service)
-        logger.info("  ✅ Clinical RAG Agent (Gemini 2.5 Flash) initialized")
+        clinical_rag_agent = ClinicalRAGAgent(llm_service=clinical_llm_service)
+        logger.info("  ✅ Clinical RAG Agent (Llama 3.3 / Groq) initialized")
 
         safety_guard_agent = SafetyGuardAgent(groq_service=groq_service)
         logger.info("  ✅ Safety Guard Agent (Llama 3 / Groq) initialized")
@@ -138,7 +202,7 @@ async def lifespan(app: FastAPI):
         else:
             logger.info(f"🏠 Local: {settings.QDRANT_HOST}:{settings.QDRANT_PORT}")
         logger.info(f"🤖 Triage/Safety Agent: {settings.GROQ_MODEL}")
-        logger.info(f"🧠 Clinical RAG Agent: {settings.GEMINI_MODEL}")
+        logger.info(f"🧠 Clinical RAG Agent: {settings.GROQ_MODEL}")
         logger.info("⚕️  Medical AI Assistant API (Multi-Agent RAG) is ready!")
         logger.info("=" * 60)
 
@@ -168,6 +232,31 @@ app.add_middleware(
 )
 
 
+async def get_active_system_settings(db) -> dict:
+    """
+    Hàm helper lấy cấu hình hệ thống từ MongoDB hoặc trả về mặc định.
+    Gộp với cấu hình mặc định để đảm bảo tất cả các trường đều tồn tại đầy đủ.
+    """
+    default_settings = {
+        "top_k": 5,
+        "similarity_threshold": 0.75,
+        "strict_mode": False,
+        "fallback_message": "Xin lỗi, tôi là trợ lý AI Y tế. Tôi không thể cung cấp lời khuyên cho vấn đề này. Vui lòng tham khảo ý kiến bác sĩ chuyên khoa.",
+        "blacklist": ['tự tử', 'làm hại bản thân', 'chất kích thích']
+    }
+    try:
+        settings_doc = await db["system_settings"].find_one({})
+        if settings_doc:
+            # Gộp các trường để bảo vệ chống thiếu dữ liệu trong DB
+            for k, v in default_settings.items():
+                if k not in settings_doc:
+                    settings_doc[k] = v
+            return settings_doc
+    except Exception as e:
+        logger.error(f"Lỗi khi truy vấn cấu hình hệ thống từ MongoDB: {e}")
+    return default_settings
+
+
 @app.get("/")
 async def root():
     """Root endpoint"""
@@ -178,7 +267,7 @@ async def root():
         "architecture": "Heterogeneous Multi-Agent RAG",
         "agents": {
             "triage": settings.GROQ_MODEL,
-            "clinical_rag": settings.GEMINI_MODEL,
+            "clinical_rag": settings.GROQ_MODEL,
             "safety_guard": settings.GROQ_MODEL,
         },
         "qdrant_mode": settings.QDRANT_MODE,
@@ -195,7 +284,7 @@ async def health_check():
         embedding_model_loaded=embedding_service is not None
         and embedding_service.is_loaded(),
         reranker_loaded=reranker is not None and reranker.is_loaded(),
-        gemini_configured=gemini_service is not None and gemini_service.is_configured(),
+        gemini_configured=clinical_llm_service is not None and clinical_llm_service.is_configured(),
         groq_configured=groq_service is not None and groq_service.is_configured(),
     )
 
@@ -209,10 +298,20 @@ async def chat(
     Main chat endpoint for medical Q&A
     ... [Comments truncated for brevity] ...
     """
+    # Check if the user is banned from using the system
+    if current_user.get("is_banned", False):
+        raise HTTPException(
+            status_code=403,
+            detail="Tài khoản của bạn đã bị cấm khỏi hệ thống trợ lý y tế AI do vi phạm quy tắc an toàn."
+        )
+
     start_time = time.time()
     pipeline_meta = {}
 
     try:
+        db = get_db()
+        active_settings = await get_active_system_settings(db)
+        
         session_id = query.session_id
         is_new_session = False
         chat_history = []
@@ -221,19 +320,23 @@ async def chat(
         if not session_id:
             session_id = str(uuid.uuid4())
             is_new_session = True
-                
-            await get_db()["sessions"].insert_one({
+            
+            session_doc = {
                 "_id": session_id,
                 "user_id": current_user["user_id"],
                 "title": "Đoạn chat mới",
                 "created_at": time.time(),
                 "updated_at": time.time(),
                 "messages": []
-            })
+            }
+            if query.corner_id:
+                session_doc["corner_id"] = query.corner_id
+                
+            await db["sessions"].insert_one(session_doc)
             logger.info(f"Created new chat session: {session_id} for user: {current_user['user_id']}")
         else:
             # Check ownership and fetch messages
-            session_doc = await get_db()["sessions"].find_one(
+            session_doc = await db["sessions"].find_one(
                 {"_id": session_id, "user_id": current_user["user_id"]},
                 {"messages": {"$slice": -6}}
             )
@@ -246,6 +349,26 @@ async def chat(
                     })
             else:
                 logger.warning(f"Session {session_id} not found, starting fresh context.")
+
+        # Kiểm tra từ khóa cấm từ cấu hình hệ thống
+        query_lower = query.query.lower()
+        if any(word.lower() in query_lower for word in active_settings["blacklist"]):
+            logger.info(f"Query matches blacklist keyword. Early exit with fallback message.")
+            processing_time = time.time() - start_time
+            return ChatResponse(
+                answer=active_settings["fallback_message"],
+                citations=[],
+                warnings=[],
+                retrieved_docs=[],
+                processing_time=processing_time,
+                pipeline_metadata=PipelineMetadata(
+                    triage_time=0.0,
+                    triage_agent=settings.GROQ_MODEL,
+                    generation_agent=settings.GROQ_MODEL,
+                    safety_agent=settings.GROQ_MODEL,
+                ),
+                session_id=session_id
+            )
 
         logger.info(f"Processing query: {query.query[:100]}... (Context length: {len(chat_history)} msgs)")
 
@@ -264,9 +387,25 @@ async def chat(
                     {"$set": {"title": triage_result.suggested_title}}
                 )
 
+            # Log unsafe query to database if detected
+            if not triage_result.is_safe:
+                try:
+                    import datetime
+                    await get_db()["unsafe_logs"].insert_one({
+                        "query": query.query,
+                        "category": triage_result.unsafe_category or "OTHER",
+                        "reason": triage_result.unsafe_reason or "Nội dung vi phạm chính sách",
+                        "session_id": session_id,
+                        "timestamp": datetime.datetime.utcnow().isoformat(),
+                        "user_id": current_user["user_id"]
+                    })
+                    logger.info(f"Logged unsafe query: {triage_result.unsafe_category}")
+                except Exception as log_err:
+                    logger.error(f"Error logging unsafe query to MongoDB: {log_err}")
+
             if not triage_result.is_medical:
                 processing_time = time.time() - start_time
-                logger.info("Query classified as NON_MEDICAL → Early Exit")
+                logger.info("Query classified as NON_MEDICAL/UNSAFE → Early Exit")
                 return ChatResponse(
                     answer=triage_result.response,
                     citations=[],
@@ -276,7 +415,7 @@ async def chat(
                     pipeline_metadata=PipelineMetadata(
                         triage_time=triage_result.latency,
                         triage_agent=settings.GROQ_MODEL,
-                        generation_agent=settings.GEMINI_MODEL,
+                        generation_agent=settings.GROQ_MODEL,
                         safety_agent=settings.GROQ_MODEL,
                     ),
                 )
@@ -298,13 +437,13 @@ async def chat(
 
         rerank_start = time.time()
         reranked_docs = reranker.rerank(
-            query=query.query, documents=retrieved_docs, top_k=settings.TOP_K_RERANK
+            query=query.query, documents=retrieved_docs, top_k=active_settings["top_k"]
         )
         pipeline_meta["rerank_time"] = time.time() - rerank_start
         logger.info(f"Reranked to top {len(reranked_docs)} documents")
 
         # ============================================================
-        # GIAI ĐOẠN 3: Clinical RAG Agent (Gemini 2.5 Flash) - Generation
+        # GIAI ĐOẠN 3: Clinical RAG Agent (Llama 3.3 / Groq) - Generation
         # ============================================================
         logger.info("━━━ Giai đoạn 3: Clinical RAG Agent ━━━")
 
@@ -316,6 +455,7 @@ async def chat(
             documents=reranked_docs,
             health_profile=health_profile_dict,
             chat_history=chat_history,
+            strict_mode=active_settings["strict_mode"],
         )
         pipeline_meta["generation_time"] = generation_result.latency
         logger.info("Draft response generated successfully")
@@ -386,7 +526,7 @@ async def chat(
             generation_time=pipeline_meta.get("generation_time", 0.0),
             safety_time=pipeline_meta.get("safety_time", 0.0),
             triage_agent=settings.GROQ_MODEL,
-            generation_agent=settings.GEMINI_MODEL,
+            generation_agent=settings.GROQ_MODEL,
             safety_agent=settings.GROQ_MODEL,
         )
 
@@ -449,11 +589,32 @@ async def chat(
             }
         )
 
+        # Cập nhật last_accessed_at cho Góc sức khỏe nếu session thuộc về Góc đó khi có tương tác (hỏi)
+        await touch_corner_recency(get_db(), session_id, current_user["user_id"], query.corner_id)
+
         return response_obj
 
     except Exception as e:
         logger.error(f"Error processing chat request: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def touch_corner_recency(db, session_id: str, user_id: str, corner_id_opt: Optional[str] = None):
+    """Cập nhật thời gian truy cập gần nhất (last_accessed_at) cho Góc sức khỏe"""
+    corner_id = corner_id_opt
+    if not corner_id:
+        session_doc = await db["sessions"].find_one({"_id": session_id, "user_id": user_id}, {"corner_id": 1})
+        if session_doc:
+            corner_id = session_doc.get("corner_id")
+    if corner_id:
+        try:
+            await db["health_corners"].update_one(
+                {"_id": corner_id, "user_id": user_id},
+                {"$set": {"last_accessed_at": time.time()}}
+            )
+            logger.info(f"Touched corner recency {corner_id} on chat update")
+        except Exception as err:
+            logger.error(f"Error touching corner recency: {err}")
 
 
 @app.post("/api/chat/stream")
@@ -463,10 +624,17 @@ async def chat_stream(
 ):
     """
     Streaming chat endpoint using Server-Sent Events (SSE).
-    Streams Gemini generation token-by-token for real-time UX.
+    Streams Clinical RAG generation token-by-token for real-time UX.
     """
     import json as _json
     from fastapi.responses import StreamingResponse
+
+    # Check if the user is banned from using the system
+    if current_user.get("is_banned", False):
+        raise HTTPException(
+            status_code=403,
+            detail="Tài khoản của bạn đã bị cấm khỏi hệ thống trợ lý y tế AI do vi phạm quy tắc an toàn."
+        )
 
     def sse_event(event: str, data) -> str:
         """Format a single SSE event line"""
@@ -478,6 +646,9 @@ async def chat_stream(
         full_response_text = ""
 
         try:
+            db = get_db()
+            active_settings = await get_active_system_settings(db)
+            
             # ===== SESSION MANAGEMENT =====
             session_id = query.session_id
             is_new_session = False
@@ -487,17 +658,22 @@ async def chat_stream(
                 session_id = str(uuid.uuid4())
                 is_new_session = True
 
-                await get_db()["sessions"].insert_one({
+                session_doc = {
                     "_id": session_id,
                     "user_id": current_user["user_id"],
                     "title": "Đoạn chat mới",
                     "created_at": time.time(),
                     "updated_at": time.time(),
+                    "is_pinned": False,
                     "messages": []
-                })
+                }
+                if query.corner_id:
+                    session_doc["corner_id"] = query.corner_id
+
+                await db["sessions"].insert_one(session_doc)
                 logger.info(f"[Stream] Created new session: {session_id}")
             else:
-                session_doc = await get_db()["sessions"].find_one(
+                session_doc = await db["sessions"].find_one(
                     {"_id": session_id, "user_id": current_user["user_id"]},
                     {"messages": {"$slice": -6}}
                 )
@@ -507,6 +683,40 @@ async def chat_stream(
                             "role": msg["role"],
                             "content": msg["content"]
                         })
+
+            # Kiểm tra từ khóa cấm từ cấu hình hệ thống
+            query_lower = query.query.lower()
+            if any(word.lower() in query_lower for word in active_settings["blacklist"]):
+                logger.info(f"[Stream] Query matches blacklist keyword. Early exit with fallback message.")
+                processing_time = time.time() - start_time
+                assistant_msg_id = str(uuid.uuid4())
+                yield sse_event("token", {"content": active_settings["fallback_message"]})
+                yield sse_event("done", {
+                    "citations": [],
+                    "warnings": [],
+                    "session_id": session_id,
+                    "processing_time": round(processing_time, 2),
+                    "message_id": assistant_msg_id,
+                })
+                
+                # Lưu lịch sử chat
+                created_at = time.time()
+                await db["sessions"].update_one(
+                    {"_id": session_id, "user_id": current_user["user_id"]},
+                    {
+                        "$push": {
+                            "messages": {
+                                "$each": [
+                                    {"id": str(uuid.uuid4()), "role": "user", "content": query.query, "created_at": created_at - 0.001},
+                                    {"id": assistant_msg_id, "role": "assistant", "content": active_settings["fallback_message"], "citations": [], "warnings": [], "created_at": created_at},
+                                ]
+                            }
+                        },
+                        "$set": {"updated_at": created_at}
+                    }
+                )
+                await touch_corner_recency(db, session_id, current_user["user_id"], query.corner_id)
+                return
 
             # ===== GIAI ĐOẠN 1: TRIAGE AGENT =====
             yield sse_event("status", {"message": "Đang phân tích câu hỏi..."})
@@ -521,15 +731,33 @@ async def chat_stream(
                         {"$set": {"title": triage_result.suggested_title}}
                     )
 
+                # Log unsafe query to database if detected
+                if not triage_result.is_safe:
+                    try:
+                        import datetime
+                        await get_db()["unsafe_logs"].insert_one({
+                            "query": query.query,
+                            "category": triage_result.unsafe_category or "OTHER",
+                            "reason": triage_result.unsafe_reason or "Nội dung vi phạm chính sách",
+                            "session_id": session_id,
+                            "timestamp": datetime.datetime.utcnow().isoformat(),
+                            "user_id": current_user["user_id"]
+                        })
+                        logger.info(f"[Stream] Logged unsafe query: {triage_result.unsafe_category}")
+                    except Exception as log_err:
+                        logger.error(f"[Stream] Error logging unsafe query to MongoDB: {log_err}")
+
                 if not triage_result.is_medical:
                     processing_time = time.time() - start_time
-                    logger.info("[Stream] NON_MEDICAL → Early Exit")
+                    logger.info("[Stream] NON_MEDICAL/UNSAFE → Early Exit")
+                    assistant_msg_id = str(uuid.uuid4())
                     yield sse_event("token", {"content": triage_result.response})
                     yield sse_event("done", {
                         "citations": [],
                         "warnings": [],
                         "session_id": session_id,
                         "processing_time": round(processing_time, 2),
+                        "message_id": assistant_msg_id,
                     })
 
                     created_at = time.time()
@@ -540,13 +768,14 @@ async def chat_stream(
                                 "messages": {
                                     "$each": [
                                         {"id": str(uuid.uuid4()), "role": "user", "content": query.query, "created_at": created_at - 0.001},
-                                        {"id": str(uuid.uuid4()), "role": "assistant", "content": triage_result.response, "citations": [], "warnings": [], "created_at": created_at},
+                                        {"id": assistant_msg_id, "role": "assistant", "content": triage_result.response, "citations": [], "warnings": [], "created_at": created_at},
                                     ]
                                 }
                             },
                             "$set": {"updated_at": created_at}
                         }
                     )
+                    await touch_corner_recency(get_db(), session_id, current_user["user_id"], query.corner_id)
                     return
             else:
                 pipeline_meta["triage_time"] = 0.0
@@ -564,7 +793,7 @@ async def chat_stream(
 
             rerank_start = time.time()
             reranked_docs = reranker.rerank(
-                query=query.query, documents=retrieved_docs, top_k=settings.TOP_K_RERANK
+                query=query.query, documents=retrieved_docs, top_k=active_settings["top_k"]
             )
             pipeline_meta["rerank_time"] = time.time() - rerank_start
 
@@ -588,6 +817,7 @@ async def chat_stream(
                         documents=reranked_docs,
                         health_profile=health_profile_dict,
                         chat_history=chat_history,
+                        strict_mode=active_settings["strict_mode"],
                     ):
                         chunk_queue.put(chunk)
                 except Exception as exc:
@@ -658,15 +888,9 @@ async def chat_stream(
             processing_time = time.time() - start_time
             logger.info(f"[Stream] Total: {processing_time:.2f}s")
 
-            yield sse_event("done", {
-                "citations": citations,
-                "warnings": [w.model_dump() for w in warnings] if warnings else [],
-                "session_id": session_id,
-                "processing_time": round(processing_time, 2),
-            })
-
             # ===== SAVE TO MONGODB =====
             created_at = time.time()
+            assistant_msg_id = str(uuid.uuid4())
             user_msg_doc = {
                 "id": str(uuid.uuid4()),
                 "role": "user",
@@ -674,13 +898,22 @@ async def chat_stream(
                 "created_at": created_at - 0.001
             }
             assistant_msg_doc = {
-                "id": str(uuid.uuid4()),
+                "id": assistant_msg_id,
                 "role": "assistant",
                 "content": final_response,
                 "citations": citations,
                 "warnings": [w.model_dump() for w in warnings] if warnings else [],
                 "created_at": created_at
             }
+
+            yield sse_event("done", {
+                "citations": citations,
+                "warnings": [w.model_dump() for w in warnings] if warnings else [],
+                "session_id": session_id,
+                "processing_time": round(processing_time, 2),
+                "message_id": assistant_msg_id,
+            })
+
             await get_db()["sessions"].update_one(
                 {"_id": session_id, "user_id": current_user["user_id"]},
                 {
@@ -692,6 +925,9 @@ async def chat_stream(
                     "$set": {"updated_at": created_at}
                 }
             )
+
+            # Cập nhật last_accessed_at cho Góc sức khỏe nếu session thuộc về Góc đó khi có tương tác (hỏi) qua Stream
+            await touch_corner_recency(get_db(), session_id, current_user["user_id"], query.corner_id)
 
         except Exception as e:
             logger.error(f"[Stream] Error: {str(e)}", exc_info=True)
@@ -713,9 +949,9 @@ async def save_profile(
     profile: dict,
     current_user: dict = Depends(get_current_user),
 ):
-    """Save user health profile to MongoDB (linked to authenticated user)"""
+    """Save user health profile to MongoDB (linked to authenticated user) - overwrites entire profile"""
     user_id = current_user["user_id"]
-    logger.info(f"Profile save request from user: {user_id}")
+    logger.info(f"Profile POST request from user: {user_id}")
 
     db = get_db()
     await db["users"].update_one(
@@ -728,6 +964,30 @@ async def save_profile(
         },
     )
     return {"status": "success", "message": "Hồ sơ sức khỏe đã được lưu thành công"}
+
+
+@app.patch("/api/profile")
+async def patch_profile(
+    profile: dict,
+    current_user: dict = Depends(get_current_user),
+):
+    """Update user health profile fields in MongoDB (linked to authenticated user) - partial update"""
+    user_id = current_user["user_id"]
+    logger.info(f"Profile PATCH request from user: {user_id}")
+
+    db = get_db()
+    update_fields = {}
+    for key, value in profile.items():
+        update_fields[f"health_profile.{key}"] = value
+    update_fields["updated_at"] = time.time()
+
+    await db["users"].update_one(
+        {"_id": user_id},
+        {
+            "$set": update_fields
+        },
+    )
+    return {"status": "success", "message": "Hồ sơ sức khỏe đã được cập nhật thành công"}
 
 
 @app.get("/api/stats")
@@ -745,13 +1005,1271 @@ async def get_stats():
                 "embedding": settings.EMBEDDING_MODEL,
                 "reranker": settings.RERANKER_MODEL,
                 "triage_agent": settings.GROQ_MODEL,
-                "clinical_rag_agent": settings.GEMINI_MODEL,
+                "clinical_rag_agent": settings.GROQ_MODEL,
                 "safety_guard_agent": settings.GROQ_MODEL,
             },
         }
     except Exception as e:
         logger.error(f"Error getting stats: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ===== SUGGESTION REST API =====
+
+@app.get("/api/suggestions/conditions", response_model=SuggestionResponse)
+async def get_condition_suggestions(q: Optional[str] = ""):
+    """Autocomplete suggestions for chronic conditions"""
+    try:
+        results = search_conditions(q)
+        items = [
+            SuggestionItem(
+                label=f"{r.get('icd_code')} - {r.get('label')}",
+                value=r.get('label'),
+                category=r.get('category'),
+            )
+            for r in results
+        ]
+        return SuggestionResponse(items=items, total=len(items), query=q)
+    except Exception as e:
+        logger.error(f"Error fetching condition suggestions: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch condition suggestions")
+
+
+@app.get("/api/suggestions/ingredients", response_model=SuggestionResponse)
+async def get_ingredient_suggestions(q: Optional[str] = ""):
+    """Autocomplete suggestions for allergies (ingredients)"""
+    try:
+        results = get_ingredients(q)
+        items = [
+            SuggestionItem(
+                label=r.get('name', ''),
+                value=r.get('name', ''),
+                category=r.get('first_letter'),
+            )
+            for r in results
+        ]
+        return SuggestionResponse(items=items, total=len(items), query=q)
+    except Exception as e:
+        logger.error(f"Error fetching ingredient suggestions: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch ingredient suggestions")
+
+
+@app.get("/api/suggestions/medications", response_model=SuggestionResponse)
+async def get_medication_suggestions(q: Optional[str] = "", category: Optional[str] = None):
+    """Autocomplete suggestions for medications"""
+    try:
+        results = search_medications(q, category)
+        items = [
+            SuggestionItem(
+                label=r.get('drug_name', ''),
+                value=r.get('drug_name', ''),
+                category=r.get('category'),
+                meta={"ingredients": r.get('ingredients', [])}
+            )
+            for r in results
+        ]
+        return SuggestionResponse(items=items, total=len(items), query=q)
+    except Exception as e:
+        logger.error(f"Error fetching medication suggestions: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch medication suggestions")
+
+
+@app.get("/api/suggestions/categories")
+async def get_medications_categories():
+    """Get list of unique medication categories"""
+    try:
+        categories = get_medication_categories()
+        return categories
+    except Exception as e:
+        logger.error(f"Error fetching medication categories: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch medication categories")
+
+
+@app.post("/api/suggestions/refresh-cache")
+async def refresh_suggestion_cache():
+    """Refresh the in-memory suggestion engine cache from MongoDB"""
+    try:
+        await load_data_to_ram(MongoDB.get_db())
+        return {"status": "success", "message": "Suggestion cache refreshed successfully"}
+    except Exception as e:
+        logger.error(f"Error refreshing cache: {e}")
+        raise HTTPException(status_code=500, detail="Cannot refresh suggestion cache")
+
+
+# ===== PROFILE READ API =====
+
+@app.get("/api/profile")
+async def get_profile(current_user: dict = Depends(get_current_user)):
+    """Get current user's health profile from MongoDB"""
+    try:
+        user_id = current_user["user_id"]
+        user_doc = await get_db()["users"].find_one({"_id": user_id}, {"health_profile": 1})
+        if user_doc and "health_profile" in user_doc:
+            return user_doc["health_profile"]
+        return {
+            "chronic_diseases": [],
+            "allergies": [],
+            "current_medications": [],
+            "age": None,
+            "gender": "",
+            "height": None,
+            "weight": None,
+        }
+    except Exception as e:
+        logger.error(f"Error fetching profile: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch health profile")
+
+
+# ===== SESSION EXTENDED REST APIs =====
+
+@app.get("/api/sessions/search")
+async def search_sessions(q: str, current_user: dict = Depends(get_current_user)):
+    """Search user chat sessions by title"""
+    try:
+        user_id = current_user["user_id"]
+        cursor = get_db()["sessions"].find(
+            {
+                "user_id": user_id,
+                "title": {"$regex": q, "$options": "i"}
+            },
+            {"messages": 0}
+        ).sort([("is_pinned", -1), ("updated_at", -1)]).limit(50)
+        
+        sessions = await cursor.to_list(length=50)
+        return sessions
+    except Exception as e:
+        logger.error(f"Error searching sessions: {e}")
+        raise HTTPException(status_code=500, detail="Cannot search sessions")
+
+
+@app.delete("/api/sessions/{session_id}/last-qa")
+async def delete_last_qa(
+    session_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete the last Q&A turn (last 2 messages) from a chat session"""
+    try:
+        user_id = current_user["user_id"]
+        session = await get_db()["sessions"].find_one({"_id": session_id, "user_id": user_id})
+        if not session:
+            raise HTTPException(status_code=403, detail="Session not found or access denied")
+            
+        messages = session.get("messages", [])
+        if len(messages) >= 2:
+            updated_messages = messages[:-2]
+            await get_db()["sessions"].update_one(
+                {"_id": session_id, "user_id": user_id},
+                {"$set": {"messages": updated_messages, "updated_at": time.time()}}
+            )
+            return {"status": "success", "message": "Last Q&A turn deleted successfully"}
+        elif len(messages) == 1:
+            await get_db()["sessions"].update_one(
+                {"_id": session_id, "user_id": user_id},
+                {"$set": {"messages": [], "updated_at": time.time()}}
+            )
+            return {"status": "success", "message": "Last message deleted successfully"}
+        
+        return {"status": "success", "message": "No messages to delete"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting last Q&A for session {session_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot delete last Q&A")
+
+
+# ===== HEALTH CORNER REST APIs =====
+
+@app.get("/api/corners")
+async def get_corners(current_user: dict = Depends(get_current_user)):
+    """Fetch health corners for the current user"""
+    try:
+        user_id = current_user["user_id"]
+        cursor = get_db()["health_corners"].find({"user_id": user_id}).sort("last_accessed_at", -1)
+        corners = await cursor.to_list(length=100)
+        return corners
+    except Exception as e:
+        logger.error(f"Error fetching corners: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch health corners")
+
+
+@app.post("/api/corners")
+async def create_new_corner(
+    payload: CornerCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Create a new health corner"""
+    try:
+        user_id = current_user["user_id"]
+        corner_id = str(uuid.uuid4())
+        corner_doc = {
+            "_id": corner_id,
+            "user_id": user_id,
+            "name": payload.name,
+            "emoji": payload.emoji,
+            "created_at": time.time(),
+            "last_accessed_at": time.time(),
+        }
+        await get_db()["health_corners"].insert_one(corner_doc)
+        return corner_doc
+    except Exception as e:
+        logger.error(f"Error creating corner: {e}")
+        raise HTTPException(status_code=500, detail="Cannot create health corner")
+
+
+@app.put("/api/corners/{corner_id}")
+async def update_existing_corner(
+    corner_id: str,
+    payload: CornerUpdate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update corner name or emoji"""
+    try:
+        user_id = current_user["user_id"]
+        update_data = {"last_accessed_at": time.time()}
+        if payload.name is not None:
+            update_data["name"] = payload.name
+        if payload.emoji is not None:
+            update_data["emoji"] = payload.emoji
+            
+        result = await get_db()["health_corners"].update_one(
+            {"_id": corner_id, "user_id": user_id},
+            {"$set": update_data}
+        )
+        if result.matched_count == 0:
+            raise HTTPException(status_code=403, detail="Corner not found or unauthorized")
+        
+        # Return the updated corner document
+        updated = await get_db()["health_corners"].find_one({"_id": corner_id, "user_id": user_id})
+        return updated if updated else {"status": "success", "message": "Corner updated successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating corner {corner_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot update corner")
+
+
+@app.delete("/api/corners/{corner_id}")
+async def delete_existing_corner(
+    corner_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete a corner and unlink all sessions linked to it"""
+    try:
+        user_id = current_user["user_id"]
+        result = await get_db()["health_corners"].delete_one({"_id": corner_id, "user_id": user_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=403, detail="Corner not found or unauthorized")
+            
+        await get_db()["sessions"].update_many(
+            {"user_id": user_id, "corner_id": corner_id},
+            {"$unset": {"corner_id": ""}}
+        )
+        return {"status": "success", "message": "Corner deleted successfully and sessions unlinked"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting corner {corner_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot delete corner")
+
+
+@app.put("/api/sessions/{session_id}/corner")
+async def assign_session_to_health_corner(
+    session_id: str,
+    payload: CornerAssign,
+    current_user: dict = Depends(get_current_user)
+):
+    """Assign or unassign a chat session to/from a health corner"""
+    try:
+        user_id = current_user["user_id"]
+        if payload.corner_id:
+            corner = await get_db()["health_corners"].find_one({"_id": payload.corner_id, "user_id": user_id})
+            if not corner:
+                raise HTTPException(status_code=403, detail="Corner not found or unauthorized")
+                
+        if payload.corner_id:
+            result = await get_db()["sessions"].update_one(
+                {"_id": session_id, "user_id": user_id},
+                {"$set": {"corner_id": payload.corner_id, "updated_at": time.time()}}
+            )
+            # Update corner access recency
+            await get_db()["health_corners"].update_one(
+                {"_id": payload.corner_id, "user_id": user_id},
+                {"$set": {"last_accessed_at": time.time()}}
+            )
+        else:
+            result = await get_db()["sessions"].update_one(
+                {"_id": session_id, "user_id": user_id},
+                {"$unset": {"corner_id": ""}, "$set": {"updated_at": time.time()}}
+            )
+            
+        if result.matched_count == 0:
+            raise HTTPException(status_code=403, detail="Session not found or unauthorized")
+            
+        return {"status": "success", "message": "Session corner assignment updated successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error assigning session {session_id} to corner: {e}")
+        raise HTTPException(status_code=500, detail="Cannot assign session to corner")
+
+
+@app.get("/api/corners/{corner_id}/sessions")
+async def get_corner_sessions_list(
+    corner_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get sessions belonging to a specific health corner"""
+    try:
+        user_id = current_user["user_id"]
+        corner = await get_db()["health_corners"].find_one({"_id": corner_id, "user_id": user_id})
+        if not corner:
+            raise HTTPException(status_code=403, detail="Corner not found or unauthorized")
+            
+        cursor = get_db()["sessions"].find(
+            {"user_id": user_id, "corner_id": corner_id},
+            {"messages": 0}
+        ).sort([("is_pinned", -1), ("updated_at", -1)])
+        
+        sessions = await cursor.to_list(length=100)
+        return sessions
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching corner sessions: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch corner sessions")
+
+
+@app.post("/api/feedback", status_code=202)
+async def submit_user_feedback(
+    payload: ChatFeedbackCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Submit user feedback (Like/Dislike) for an AI message"""
+    try:
+        db = get_db()
+        user_id = current_user["user_id"]
+        
+        # Check if feedback already exists for this interaction_id and user
+        existing = await db["chat_feedbacks"].find_one({
+            "interaction_id": payload.interaction_id,
+            "user_id": user_id
+        })
+        
+        import datetime
+        now = datetime.datetime.utcnow()
+        
+        if existing:
+            # Update existing feedback
+            await db["chat_feedbacks"].update_one(
+                {"_id": existing["_id"]},
+                {
+                    "$set": {
+                        "rating": payload.rating,
+                        "reason_tags": payload.reason_tags,
+                        "text_feedback": payload.text_feedback,
+                        "updated_at": now
+                    }
+                }
+            )
+            return {"status": "success", "message": "Feedback updated successfully"}
+        else:
+            # Create new feedback
+            doc = {
+                "interaction_id": payload.interaction_id,
+                "session_id": payload.session_id,
+                "user_id": user_id,
+                "query": payload.query,
+                "ai_response": payload.ai_response,
+                "retrieved_sources": payload.retrieved_sources,
+                "rating": payload.rating,
+                "reason_tags": payload.reason_tags,
+                "text_feedback": payload.text_feedback,
+                "status": "pending",
+                "admin_notes": "",
+                "created_at": now,
+                "updated_at": now
+            }
+            await db["chat_feedbacks"].insert_one(doc)
+            return {"status": "success", "message": "Feedback submitted successfully"}
+    except Exception as e:
+        logger.error(f"Error submitting user feedback: {e}")
+        raise HTTPException(status_code=500, detail="Cannot submit feedback")
+
+
+# ===== ADMIN DASHBOARD SYSTEM STATS =====
+
+@app.get("/api/admin/stats")
+async def get_admin_dashboard_stats(current_admin: dict = Depends(get_current_admin)):
+    """Get overview statistics for Admin Dashboard"""
+    try:
+        db = get_db()
+        
+        # 1. Basic counts
+        total_feedbacks = await db["chat_feedbacks"].count_documents({})
+        total_like = await db["chat_feedbacks"].count_documents({"rating": 1})
+        total_dislike = await db["chat_feedbacks"].count_documents({"rating": -1})
+        total_pending = await db["chat_feedbacks"].count_documents({"rating": -1, "status": "pending"})
+        
+        # CSAT = percentage of Likes out of total rated (Likes + Dislikes)
+        total_rated = total_like + total_dislike
+        csat = int((total_like / total_rated) * 100) if total_rated > 0 else 100
+        
+        # 2. Tag distribution (for dislike reason_tags)
+        tag_distribution = []
+        pipeline = [
+            {"$match": {"rating": -1}},
+            {"$unwind": "$reason_tags"},
+            {"$group": {"_id": "$reason_tags", "count": {"$sum": 1}}},
+            {"$project": {"tag": "$_id", "count": 1, "_id": 0}},
+            {"$sort": {"count": -1}}
+        ]
+        cursor = db["chat_feedbacks"].aggregate(pipeline)
+        tag_distribution = await cursor.to_list(length=100)
+        
+        # 3. Trend 7 Days
+        import datetime
+        trend_7days = []
+        today = datetime.datetime.utcnow().date()
+        for i in range(6, -1, -1):
+            d = today - datetime.timedelta(days=i)
+            start_dt = datetime.datetime.combine(d, datetime.time.min)
+            end_dt = datetime.datetime.combine(d, datetime.time.max)
+            
+            # Match both ISO string formats and datetime objects
+            start_str = start_dt.isoformat()
+            end_str = end_dt.isoformat()
+            
+            like_count = await db["chat_feedbacks"].count_documents({
+                "rating": 1,
+                "$or": [
+                    {"created_at": {"$gte": start_dt, "$lte": end_dt}},
+                    {"created_at": {"$gte": start_str, "$lte": end_str}}
+                ]
+            })
+            dislike_count = await db["chat_feedbacks"].count_documents({
+                "rating": -1,
+                "$or": [
+                    {"created_at": {"$gte": start_dt, "$lte": end_dt}},
+                    {"created_at": {"$gte": start_str, "$lte": end_str}}
+                ]
+            })
+            trend_7days.append({
+                "date": d.isoformat(),
+                "like": like_count,
+                "dislike": dislike_count
+            })
+            
+        # 4. Hourly Usage
+        hourly_usage = []
+        try:
+            hourly_pipeline = [
+                {"$project": {
+                    "date": {
+                        "$cond": {
+                            "if": {"$eq": [{"$type": "$created_at"}, "string"]},
+                            "then": {"$dateFromString": {"dateString": "$created_at"}},
+                            "else": "$created_at"
+                        }
+                    }
+                }},
+                {"$group": {
+                    "_id": {"$hour": "$date"},
+                    "count": {"$sum": 1}
+                }},
+                {"$project": {"hour": "$_id", "count": 1, "_id": 0}},
+                {"$sort": {"hour": 1}}
+            ]
+            hourly_cursor = db["chat_feedbacks"].aggregate(hourly_pipeline)
+            hourly_results = await hourly_cursor.to_list(length=24)
+            hours_map = {item["hour"]: item["count"] for item in hourly_results if item["hour"] is not None}
+            for h in range(24):
+                hourly_usage.append({"hour": h, "count": hours_map.get(h, 0)})
+        except Exception:
+            for h in range(24):
+                hourly_usage.append({"hour": h, "count": 0})
+                
+        # Include dictionary sizes and settings in stats too
+        conditions_count = await db["clinical_conditions"].count_documents({})
+        medications_count = await db["medications"].count_documents({})
+        ingredients_count = await db["ingredients_master"].count_documents({})
+        
+        qdrant_count = 0
+        if qdrant_client:
+            try:
+                coll = qdrant_client.get_collection(settings.QDRANT_COLLECTION)
+                qdrant_count = coll.points_count
+            except Exception:
+                pass
+
+        return {
+            "total": total_feedbacks,
+            "csat": csat,
+            "total_like": total_like,
+            "total_dislike": total_dislike,
+            "total_pending": total_pending,
+            "tag_distribution": tag_distribution,
+            "trend_7days": trend_7days,
+            "hourly_usage": hourly_usage,
+            "dictionary_sizes": {
+                "conditions": conditions_count,
+                "medications": medications_count,
+                "ingredients": ingredients_count,
+            },
+            "qdrant_documents": qdrant_count,
+            "rag_config": {
+                "top_k": settings.TOP_K_RERANK,
+                "alpha": settings.HYBRID_ALPHA,
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error fetching admin stats: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch admin stats")
+
+
+# ===== ADMIN FEEDBACKS MANAGEMENT =====
+
+@app.get("/api/admin/feedbacks")
+async def get_admin_feedbacks_list(
+    page: int = 1,
+    limit: int = 15,
+    status: Optional[str] = None,
+    tag: Optional[str] = None,
+    rating: Optional[int] = None,
+    date_range: Optional[str] = None,
+    current_admin: dict = Depends(get_current_admin),
+):
+    """Fetch user feedbacks with optional pagination and filters"""
+    try:
+        db = get_db()
+        query = {}
+        if status:
+            query["status"] = status
+        if tag:
+            query["reason_tags"] = tag
+        if rating is not None:
+            query["rating"] = rating
+            
+        if date_range:
+            import datetime
+            now = datetime.datetime.utcnow()
+            start_date = None
+            if date_range == "today":
+                start_date = datetime.datetime.combine(now.date(), datetime.time.min)
+            elif date_range == "7days":
+                start_date = datetime.datetime.combine(now.date() - datetime.timedelta(days=6), datetime.time.min)
+            elif date_range == "this_month":
+                start_date = datetime.datetime(now.year, now.month, 1)
+                
+            if start_date:
+                query["$or"] = [
+                    {"created_at": {"$gte": start_date}},
+                    {"created_at": {"$gte": start_date.isoformat()}}
+                ]
+            
+        total = await db["chat_feedbacks"].count_documents(query)
+        
+        # Sử dụng Aggregation để thiết lập trọng số sắp xếp động:
+        # - Lỗi nghiêm trọng CHƯA XỬ LÝ (wrong_medical_info hoặc ignored_allergy) -> Trọng số 1 (Đầu danh sách)
+        # - Tất cả phản hồi khác -> Trọng số 0 (Sắp xếp theo ngày giảm dần)
+        pipeline = [
+            {"$match": query},
+            {
+                "$addFields": {
+                    "sort_weight": {
+                        "$cond": {
+                            "if": {
+                                "$and": [
+                                    {"$eq": ["$status", "pending"]},
+                                    {
+                                        "$or": [
+                                            {"$in": ["wrong_medical_info", {"$ifNull": ["$reason_tags", []]}]},
+                                            {"$in": ["ignored_allergy", {"$ifNull": ["$reason_tags", []]}]},
+                                            {"$in": ["dangerous_advice", {"$ifNull": ["$reason_tags", []]}]},
+                                            {"$in": ["hallucination", {"$ifNull": ["$reason_tags", []]}]}
+                                        ]
+                                    }
+                                ]
+                            },
+                            "then": 1,
+                            "else": 0
+                        }
+                    }
+                }
+            },
+            {"$sort": {"sort_weight": -1, "created_at": -1}},
+            {"$skip": (page - 1) * limit},
+            {"$limit": limit}
+        ]
+        
+        cursor = db["chat_feedbacks"].aggregate(pipeline)
+        feedbacks = await cursor.to_list(length=limit)
+        
+        for fb in feedbacks:
+            fb["id"] = str(fb["_id"])
+            del fb["_id"]
+            
+        import math
+        total_pages = math.ceil(total / limit) if limit > 0 else 1
+        
+        return {"items": feedbacks, "total": total, "total_pages": total_pages, "page": page, "limit": limit}
+    except Exception as e:
+        logger.error(f"Error fetching feedbacks: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch feedbacks")
+
+
+@app.delete("/api/admin/feedbacks/{feedback_id}")
+async def delete_user_feedback(feedback_id: str, current_admin: dict = Depends(get_current_admin)):
+    """Delete a feedback by its ID"""
+    try:
+        from bson import ObjectId
+        db = get_db()
+        result = await db["chat_feedbacks"].delete_one({"_id": ObjectId(feedback_id)})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Feedback not found")
+        return {"status": "success", "message": "Feedback deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting feedback {feedback_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot delete feedback")
+
+
+@app.patch("/api/admin/feedbacks/bulk-resolve")
+async def bulk_resolve_feedbacks_api(payload: BulkResolveRequest, current_admin: dict = Depends(get_current_admin)):
+    """Bulk resolve pending feedbacks with a specific tag"""
+    try:
+        db = get_db()
+        
+        # Chặn nếu Admin gửi yêu cầu đóng hàng loạt cho một trong các tag lỗi nghiêm trọng
+        if payload.tag in ["wrong_medical_info", "ignored_allergy", "dangerous_advice", "hallucination"]:
+            raise HTTPException(
+                status_code=400, 
+                detail="Không thể đóng hàng loạt lỗi an toàn lâm sàng nghiêm trọng. Yêu cầu rà soát thủ công."
+            )
+            
+        query = {
+            "status": "pending",
+            "reason_tags": {
+                "$nin": ["wrong_medical_info", "ignored_allergy", "dangerous_advice", "hallucination"]
+            }
+        }
+        if payload.tag:
+            query["reason_tags"] = payload.tag
+            
+        result = await db["chat_feedbacks"].update_many(
+            query,
+            {"$set": {"status": "resolved", "admin_notes": "Bulk resolved by Admin"}}
+        )
+        return {
+            "status": "success", 
+            "message": f"Successfully resolved {result.modified_count} feedbacks"
+        }
+    except Exception as e:
+        logger.error(f"Error in bulk resolve feedbacks: {e}")
+        raise HTTPException(status_code=500, detail="Cannot resolve feedbacks in bulk")
+
+
+@app.patch("/api/admin/feedbacks/{feedback_id}")
+async def update_feedback_status_notes(feedback_id: str, payload: AdminFeedbackUpdate, current_admin: dict = Depends(get_current_admin)):
+    """Update status or admin notes on a feedback"""
+    try:
+        from bson import ObjectId
+        db = get_db()
+        update_data = {}
+        if payload.status is not None:
+            update_data["status"] = payload.status
+        if payload.admin_notes is not None:
+            update_data["admin_notes"] = payload.admin_notes
+            
+        if not update_data:
+            return {"status": "success", "message": "No changes requested"}
+            
+        result = await db["chat_feedbacks"].update_one(
+            {"_id": ObjectId(feedback_id)},
+            {"$set": update_data}
+        )
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Feedback not found")
+            
+        return {"status": "success", "message": "Feedback updated successfully"}
+    except Exception as e:
+        logger.error(f"Error updating feedback {feedback_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot update feedback")
+
+
+def make_vietnamese_accent_insensitive_regex(q: str) -> str:
+    """
+    Builds a regex pattern for accent-insensitive (diacritic-insensitive)
+    Vietnamese search in MongoDB.
+    """
+    if not q:
+        return ""
+    char_map = {
+        'a': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'à': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'á': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ả': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ã': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ạ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ă': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ằ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ắ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ẳ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ẵ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ặ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'â': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ầ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ấ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ẩ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ẫ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'ậ': '[aàáảãạăằắẳẵặâầấẩẫậ]',
+        'e': '[eèéẻẽẹêềếểễệ]',
+        'è': '[eèéẻẽẹêềếểễệ]',
+        'é': '[eèéẻẽẹêềếểễệ]',
+        'ẻ': '[eèéẻẽẹêềếểễệ]',
+        'ẽ': '[eèéẻẽẹêềếểễệ]',
+        'ẹ': '[eèéẻẽẹêềếểễệ]',
+        'ê': '[eèéẻẽẹêềếểễệ]',
+        'ề': '[eèéẻẽẹêềếểễệ]',
+        'ế': '[eèéẻẽẹêềếểễệ]',
+        'ẻ': '[eèéẻẽẹêềếểễệ]',
+        'ể': '[eèéẻẽẹêềếểễệ]',
+        'ễ': '[eèéẻẽẹêềếểễệ]',
+        'ệ': '[eèéẻẽẹêềếểễệ]',
+        'i': '[iìíỉĩị]',
+        'ì': '[iìíỉĩị]',
+        'í': '[iìíỉĩị]',
+        'ỉ': '[iìíỉĩị]',
+        'ĩ': '[iìíỉĩị]',
+        'ị': '[iìíỉĩị]',
+        'o': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ò': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ó': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ỏ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'õ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ọ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ô': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ồ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ố': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ổ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ỗ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ộ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ơ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ờ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ớ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ở': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ỡ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'ợ': '[oòóỏõọôồốổỗộơờớởỡợ]',
+        'u': '[uùúủũụưừứửữự]',
+        'ù': '[uùúủũụưừứửữự]',
+        'ú': '[uùúủũụưừứửữự]',
+        'ủ': '[uùúủũụưừứửữự]',
+        'ũ': '[uùúủũụưừứửữự]',
+        'ụ': '[uùúủũụưừứửữự]',
+        'ư': '[uùúủũụưừứửữự]',
+        'ừ': '[uùúủũụưừứửữự]',
+        'ứ': '[uùúủũụưừứửữự]',
+        'ử': '[uùúủũụưừứửữự]',
+        'ữ': '[uùúủũụưừứửữự]',
+        'ự': '[uùúủũụưừứửữự]',
+        'y': '[yỳýỷỹỵ]',
+        'ỳ': '[yỳýỷỹỵ]',
+        'ý': '[yỳýỷỹỵ]',
+        'ỷ': '[yỳýỷỹỵ]',
+        'ỹ': '[yỳýỷỹỵ]',
+        'ỵ': '[yỳýỷỹỵ]',
+        'd': '[dđ]',
+        'đ': '[dđ]',
+    }
+    
+    escaped_chars = []
+    for char in q:
+        lower_char = char.lower()
+        if lower_char in char_map:
+            escaped_chars.append(char_map[lower_char])
+        else:
+            if char in '.^$*+?()[]{}|\\':
+                escaped_chars.append('\\' + char)
+            else:
+                escaped_chars.append(char)
+                
+    return "".join(escaped_chars)
+
+
+# ===== ADMIN DICTIONARY (CRUD) APIs =====
+
+@app.get("/api/admin/dictionary/{dict_type}")
+async def get_admin_dictionary_items(
+    dict_type: str,
+    q: Optional[str] = "",
+    field: Optional[str] = "all",
+    letter: Optional[str] = "",
+    page: int = 1,
+    limit: int = 20,
+    current_admin: dict = Depends(get_current_admin),
+):
+    """Fetch clinical conditions, medications, or ingredients with optional filters"""
+    try:
+        db = get_db()
+        query = {}
+        
+        if dict_type == "conditions":
+            coll = "clinical_conditions"
+            if q:
+                regex_pattern = make_vietnamese_accent_insensitive_regex(q)
+                if field == "label":
+                    query["label"] = {"$regex": regex_pattern, "$options": "i"}
+                elif field == "icd_code":
+                    query["icd_code"] = {"$regex": regex_pattern, "$options": "i"}
+                elif field == "category":
+                    query["category"] = {"$regex": regex_pattern, "$options": "i"}
+                else:
+                    query["$or"] = [
+                        {"label": {"$regex": regex_pattern, "$options": "i"}},
+                        {"icd_code": {"$regex": regex_pattern, "$options": "i"}},
+                        {"category": {"$regex": regex_pattern, "$options": "i"}},
+                    ]
+        elif dict_type == "medications":
+            coll = "medications"
+            if q:
+                regex_pattern = make_vietnamese_accent_insensitive_regex(q)
+                if field == "drug_name":
+                    query["drug_name"] = {"$regex": regex_pattern, "$options": "i"}
+                elif field == "category":
+                    query["category"] = {"$regex": regex_pattern, "$options": "i"}
+                elif field == "ingredients":
+                    query["ingredients"] = {"$regex": regex_pattern, "$options": "i"}
+                else:
+                    query["$or"] = [
+                        {"drug_name": {"$regex": regex_pattern, "$options": "i"}},
+                        {"category": {"$regex": regex_pattern, "$options": "i"}},
+                        {"ingredients": {"$regex": regex_pattern, "$options": "i"}},
+                    ]
+        elif dict_type == "ingredients":
+            coll = "ingredients_master"
+            if q:
+                regex_pattern = make_vietnamese_accent_insensitive_regex(q)
+                query["name"] = {"$regex": regex_pattern, "$options": "i"}
+            if letter:
+                query["first_letter"] = letter.upper()
+        else:
+            raise HTTPException(status_code=400, detail="Invalid dictionary type")
+            
+        total = await db[coll].count_documents(query)
+        cursor = db[coll].find(query).skip((page - 1) * limit).limit(limit)
+        items = await cursor.to_list(length=limit)
+        
+        for item in items:
+            if "_id" in item:
+                item["id"] = str(item["_id"])
+                del item["_id"]
+                
+        return {"items": items, "total": total, "page": page, "limit": limit}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching dictionary {dict_type}: {e}")
+        raise HTTPException(status_code=500, detail=f"Cannot fetch dictionary {dict_type}")
+
+
+@app.post("/api/admin/dictionary/{dict_type}")
+async def create_admin_dictionary_item(dict_type: str, payload: dict, current_admin: dict = Depends(get_current_admin)):
+    """Add a new item to clinical conditions, medications, or ingredients"""
+    try:
+        db = get_db()
+        if dict_type == "conditions":
+            coll = "clinical_conditions"
+            if "icd_code" not in payload or "label" not in payload:
+                raise HTTPException(status_code=400, detail="Missing required fields icd_code/label")
+            payload["_id"] = payload["icd_code"].strip()
+            if "search_key" not in payload:
+                payload["search_key"] = unidecode(payload["label"]).lower()
+        elif dict_type == "medications":
+            coll = "medications"
+            if "drug_name" not in payload:
+                raise HTTPException(status_code=400, detail="Missing required drug_name")
+            if "search_key" not in payload:
+                payload["search_key"] = unidecode(payload["drug_name"]).lower()
+            if "ingredients" in payload:
+                if isinstance(payload["ingredients"], str):
+                    payload["ingredients"] = [i.strip() for i in payload["ingredients"].split(",") if i.strip()]
+                elif not isinstance(payload["ingredients"], list):
+                    payload["ingredients"] = []
+        elif dict_type == "ingredients":
+            coll = "ingredients_master"
+            if "name" not in payload:
+                raise HTTPException(status_code=400, detail="Missing required name")
+            payload["first_letter"] = unidecode(payload["name"][0]).upper() if payload["name"] else "A"
+        else:
+            raise HTTPException(status_code=400, detail="Invalid dictionary type")
+            
+        result = await db[coll].insert_one(payload)
+        payload["id"] = str(result.inserted_id)
+        if "_id" in payload:
+            del payload["_id"]
+            
+        await load_data_to_ram(db)
+        return payload
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating dictionary item in {dict_type}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot create dictionary item")
+
+
+@app.put("/api/admin/dictionary/{dict_type}/{item_id}")
+async def update_admin_dictionary_item(dict_type: str, item_id: str, payload: dict, current_admin: dict = Depends(get_current_admin)):
+    """Update a dictionary item by ID"""
+    try:
+        from bson import ObjectId
+        db = get_db()
+        if dict_type == "conditions":
+            coll = "clinical_conditions"
+        elif dict_type == "medications":
+            coll = "medications"
+        elif dict_type == "ingredients":
+            coll = "ingredients_master"
+        else:
+            raise HTTPException(status_code=400, detail="Invalid dictionary type")
+            
+        if "id" in payload:
+            del payload["id"]
+        if "_id" in payload:
+            del payload["_id"]
+            
+        if dict_type == "conditions":
+            if "label" in payload:
+                payload["search_key"] = unidecode(payload["label"]).lower()
+            try:
+                query_id = ObjectId(item_id)
+            except Exception:
+                query_id = item_id
+        elif dict_type == "medications":
+            if "drug_name" in payload:
+                payload["search_key"] = unidecode(payload["drug_name"]).lower()
+            if "ingredients" in payload:
+                if isinstance(payload["ingredients"], str):
+                    payload["ingredients"] = [i.strip() for i in payload["ingredients"].split(",") if i.strip()]
+                elif not isinstance(payload["ingredients"], list):
+                    payload["ingredients"] = []
+            query_id = ObjectId(item_id)
+        elif dict_type == "ingredients":
+            if "name" in payload:
+                payload["first_letter"] = unidecode(payload["name"][0]).upper() if payload["name"] else "A"
+            query_id = ObjectId(item_id)
+        else:
+            query_id = ObjectId(item_id)
+
+        result = await db[coll].update_one(
+            {"_id": query_id},
+            {"$set": payload}
+        )
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Item not found")
+            
+        await load_data_to_ram(db)
+        return {"status": "success", "message": "Dictionary item updated successfully"}
+    except Exception as e:
+        logger.error(f"Error updating dictionary item {item_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot update dictionary item")
+
+
+@app.delete("/api/admin/dictionary/{dict_type}/{item_id}")
+async def delete_admin_dictionary_item(dict_type: str, item_id: str, current_admin: dict = Depends(get_current_admin)):
+    """Delete a dictionary item by ID"""
+    try:
+        from bson import ObjectId
+        db = get_db()
+        if dict_type == "conditions":
+            coll = "clinical_conditions"
+        elif dict_type == "medications":
+            coll = "medications"
+        elif dict_type == "ingredients":
+            coll = "ingredients_master"
+        else:
+            raise HTTPException(status_code=400, detail="Invalid dictionary type")
+            
+        if dict_type == "conditions":
+            try:
+                query_id = ObjectId(item_id)
+            except Exception:
+                query_id = item_id
+        else:
+            query_id = ObjectId(item_id)
+
+        result = await db[coll].delete_one({"_id": query_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Item not found")
+            
+        await load_data_to_ram(db)
+        return {"status": "success", "message": "Dictionary item deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting dictionary item {item_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot delete dictionary item")
+
+
+# ===== ADMIN SYSTEM SETTINGS =====
+
+@app.get("/api/admin/system-settings", response_model=SystemSettings)
+async def get_admin_system_settings(current_admin: dict = Depends(get_current_admin)):
+    """Fetch current system configurations from MongoDB"""
+    try:
+        db = get_db()
+        settings_doc = await db["system_settings"].find_one({})
+        if not settings_doc:
+            settings_doc = SystemSettings().model_dump()
+            
+        # Nạp dữ liệu system_info động đồng bộ với Frontend React
+        from services.suggestion_service import _conditions_cache, _ingredients_cache, _medications_cache
+        settings_doc["system_info"] = {
+            "clinical_rag_model": settings.GROQ_MODEL,
+            "triage_safety_model": settings.GROQ_MODEL,
+            "temperature": 0.3,
+            "embedding_model": settings.EMBEDDING_MODEL,
+            "reranker_model": settings.RERANKER_MODEL,
+            "suggestion_cache": {
+                "conditions_count": len(_conditions_cache),
+                "medications_count": len(_medications_cache),
+                "ingredients_count": len(_ingredients_cache),
+            }
+        }
+        
+        if "_id" in settings_doc:
+            del settings_doc["_id"]
+        return settings_doc
+    except Exception as e:
+        logger.error(f"Error fetching system settings: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch system settings")
+
+
+@app.put("/api/admin/system-settings", response_model=SystemSettings)
+async def update_admin_system_settings(payload: SystemSettings, current_admin: dict = Depends(get_current_admin)):
+    """Update system configurations in MongoDB"""
+    try:
+        db = get_db()
+        settings_dict = payload.model_dump()
+        # Loại bỏ system_info khi lưu xuống database vì đó là tham số chỉ đọc/tĩnh
+        if "system_info" in settings_dict:
+            del settings_dict["system_info"]
+        await db["system_settings"].update_one(
+            {},
+            {"$set": settings_dict},
+            upsert=True
+        )
+        return payload
+    except Exception as e:
+        logger.error(f"Error updating system settings: {e}")
+        raise HTTPException(status_code=500, detail="Cannot update system settings")
+
+
+# ===== ADMIN UNSAFE QUERY LOGS & STATS =====
+
+@app.get("/api/admin/unsafe-logs", response_model=UnsafeLogsResponse)
+async def get_admin_unsafe_logs_list(
+    page: int = 1,
+    limit: int = 20,
+    category: Optional[str] = None,
+    search: Optional[str] = None,
+    current_admin: dict = Depends(get_current_admin),
+):
+    """Fetch locked unsafe queries logs with filtering and pagination"""
+    try:
+        db = get_db()
+        query = {}
+        if category:
+            query["category"] = category
+        if search:
+            query["query"] = {"$regex": search, "$options": "i"}
+            
+        total = await db["unsafe_logs"].count_documents(query)
+        cursor = db["unsafe_logs"].find(query).sort("timestamp", -1).skip((page - 1) * limit).limit(limit)
+        logs = await cursor.to_list(length=limit)
+        
+        unsafe_logs = []
+        for l in logs:
+            unsafe_logs.append(
+                UnsafeQueryLog(
+                    id=str(l["_id"]),
+                    query=l.get("query", ""),
+                    category=l.get("category", ""),
+                    reason=l.get("reason", ""),
+                    session_id=l.get("session_id"),
+                    timestamp=l.get("timestamp"),
+                    user_id=l.get("user_id"),
+                )
+            )
+            
+        return UnsafeLogsResponse(total=total, page=page, limit=limit, logs=unsafe_logs)
+    except Exception as e:
+        logger.error(f"Error fetching unsafe logs: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch unsafe logs")
+
+
+@app.delete("/api/admin/unsafe-logs/clear")
+async def clear_all_unsafe_logs(current_admin: dict = Depends(get_current_admin)):
+    """Clear all unsafe query logs from database"""
+    try:
+        db = get_db()
+        await db["unsafe_logs"].delete_many({})
+        return {"status": "success", "message": "All unsafe logs cleared successfully"}
+    except Exception as e:
+        logger.error(f"Error clearing unsafe logs: {e}")
+        raise HTTPException(status_code=500, detail="Cannot clear unsafe logs")
+
+
+@app.delete("/api/admin/unsafe-logs/{log_id}")
+async def delete_admin_unsafe_log(log_id: str, current_admin: dict = Depends(get_current_admin)):
+    """Delete a specific unsafe query log from database"""
+    try:
+        from bson import ObjectId
+        db = get_db()
+        result = await db["unsafe_logs"].delete_one({"_id": ObjectId(log_id)})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Log not found")
+        return {"status": "success", "message": "Unsafe log deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting unsafe log {log_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot delete unsafe log")
+
+
+@app.get("/api/admin/unsafe-stats", response_model=UnsafeStatsResponse)
+async def get_admin_unsafe_logs_stats(current_admin: dict = Depends(get_current_admin)):
+    """Get aggregated statistics about unsafe query attempts"""
+    try:
+        db = get_db()
+        total = await db["unsafe_logs"].count_documents({})
+        
+        categories = ["SELF_HARM", "ILLEGAL_DRUGS", "ILLEGAL_PRACTICE", "HATE_SPEECH", "OTHER"]
+        by_category = {}
+        for cat in categories:
+            by_category[cat] = await db["unsafe_logs"].count_documents({"category": cat})
+            
+        # Xu hướng 7 ngày gần đây cho unsafe logs
+        import datetime
+        recent_trend = []
+        today = datetime.datetime.utcnow().date()
+        for i in range(6, -1, -1):
+            d = today - datetime.timedelta(days=i)
+            start_dt = datetime.datetime.combine(d, datetime.time.min)
+            end_dt = datetime.datetime.combine(d, datetime.time.max)
+            
+            start_str = start_dt.isoformat()
+            end_str = end_dt.isoformat()
+            
+            count = await db["unsafe_logs"].count_documents({
+                "$or": [
+                    {"timestamp": {"$gte": start_str, "$lte": end_str}},
+                    {"timestamp": {"$gte": start_dt, "$lte": end_dt}}
+                ]
+            })
+            recent_trend.append({
+                "date": d.isoformat(),
+                "count": count
+            })
+            
+        return UnsafeStatsResponse(total_unsafe=total, by_category=by_category, recent_trend=recent_trend)
+    except Exception as e:
+        logger.error(f"Error fetching unsafe stats: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch unsafe stats")
+
+
+@app.get("/api/admin/unsafe-users")
+async def get_admin_unsafe_users_list(current_admin: dict = Depends(get_current_admin)):
+    """Get users with unsafe query violations and all currently banned users, enriched with user details"""
+    try:
+        db = get_db()
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$user_id",
+                    "count": {"$sum": 1},
+                    "categories": {"$addToSet": "$category"},
+                    "last_violation": {"$max": "$timestamp"}
+                }
+            },
+            {"$sort": {"count": -1}},
+            {"$limit": 20}
+        ]
+        cursor = db["unsafe_logs"].aggregate(pipeline)
+        unsafe_aggregated = await cursor.to_list(length=20)
+        
+        users_dict = {}
+        for u in unsafe_aggregated:
+            user_id = u["_id"]
+            if not user_id:
+                continue
+                
+            user_doc = await db["users"].find_one({"_id": user_id})
+            email = "N/A"
+            is_banned = False
+            if user_doc:
+                email = user_doc.get("email", user_doc.get("primary_email", "N/A"))
+                is_banned = user_doc.get("is_banned", False)
+                
+            users_dict[user_id] = {
+                "user_id": user_id,
+                "email": email,
+                "count": u["count"],
+                "categories": list(u["categories"]),
+                "is_banned": is_banned,
+                "last_violation": u["last_violation"]
+            }
+            
+        # Gộp thêm các user đang bị cấm (is_banned = True) nhưng không có log vi phạm hiện tại
+        banned_cursor = db["users"].find({"is_banned": True})
+        banned_users = await banned_cursor.to_list(length=None)
+        
+        for bu in banned_users:
+            bu_id = bu["_id"]
+            email = bu.get("email", bu.get("primary_email", "N/A"))
+            
+            if bu_id not in users_dict:
+                users_dict[bu_id] = {
+                    "user_id": bu_id,
+                    "email": email,
+                    "count": 0,
+                    "categories": [],
+                    "is_banned": True,
+                    "last_violation": None
+                }
+            else:
+                users_dict[bu_id]["is_banned"] = True
+                
+        sorted_users = sorted(
+            users_dict.values(),
+            key=lambda x: (x["is_banned"], x["count"]),
+            reverse=True
+        )
+        
+        return {"users": sorted_users}
+    except Exception as e:
+        logger.error(f"Error fetching unsafe users: {e}")
+        raise HTTPException(status_code=500, detail="Cannot fetch unsafe users")
+
+
+@app.post("/api/admin/users/{user_id}/ban")
+async def toggle_ban_user_api(user_id: str, current_admin: dict = Depends(get_current_admin)):
+    """Ban or unban a user from using the AI Assistant"""
+    try:
+        db = get_db()
+        user = await db["users"].find_one({"_id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        is_banned = user.get("is_banned", False)
+        new_ban_status = not is_banned
+        
+        await db["users"].update_one(
+            {"_id": user_id},
+            {"$set": {"is_banned": new_ban_status, "updated_at": time.time()}}
+        )
+        return {
+            "status": "success", 
+            "message": f"User successfully {'banned' if new_ban_status else 'unbanned'}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error toggling ban for user {user_id}: {e}")
+        raise HTTPException(status_code=500, detail="Cannot toggle ban status")
 
 
 # ===== CHAT HISTORY REST API =====
@@ -764,6 +2282,9 @@ async def get_sessions(current_user: dict = Depends(get_current_user)):
         # Sort by is_pinned descending first, then updated_at descending
         cursor = get_db()["sessions"].find({"user_id": user_id}, {"messages": 0}).sort([("is_pinned", -1), ("updated_at", -1)]).limit(50)
         sessions = await cursor.to_list(length=50)
+        
+        # Sort in memory as a safeguard against any BSON type sorting quirks (unpinned False vs never-pinned None)
+        sessions.sort(key=lambda s: (s.get("is_pinned") is True, s.get("updated_at") or 0), reverse=True)
         return sessions
     except Exception as e:
         logger.error(f"Error getting sessions: {e}")

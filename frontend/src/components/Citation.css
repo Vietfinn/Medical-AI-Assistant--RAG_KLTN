@@ -1,134 +1,154 @@
 /* ============================================
-   CITATION CARD — Dark theme
+   RETRIEVED DATA SOURCES — Premium Tabs & Detail Form
    ============================================ */
 
-.citation {
-  background: var(--bg-secondary);
-  border: 1px solid var(--bg-tertiary);
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-  overflow: hidden;
-  transition: border-color var(--transition-fast);
-}
-
-.citation:last-child {
-  margin-bottom: 0;
-}
-
-.citation:hover {
-  border-color: var(--bg-active);
-}
-
-.citation-header {
+.citations-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  cursor: pointer;
-  user-select: none;
-  transition: background var(--transition-fast);
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
-.citation-header:hover {
-  background: var(--bg-hover);
-}
-
-.citation-title {
+/* Hàng các ô nguồn dạng flex-wrap (như ảnh 2) */
+.citations-tabs {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
-  font-size: 13px;
-  color: var(--text-secondary);
+  padding-bottom: 8px;
 }
 
-.citation-index {
+/* Các ô nút bấm nguồn */
+.citation-tab-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-full);
-  background: var(--accent-blue-dim);
-  color: white;
-  font-size: 10px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--bg-tertiary, #eaeaea);
+  background: var(--bg-secondary, #fcfcfc);
+  color: var(--accent-blue, #0284c7);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  user-select: none;
+}
+
+.citation-tab-chip:hover {
+  background: var(--bg-hover, #f3f4f6);
+  border-color: var(--accent-blue, #0284c7);
+}
+
+/* Ô nguồn ở trạng thái active (nền xanh chữ trắng) */
+.citation-tab-chip.active {
+  background: var(--accent-blue, #0284c7);
+  color: #ffffff;
+  border-color: var(--accent-blue, #0284c7);
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+}
+
+/* Tỉ lệ phần trăm trùng khớp của nguồn */
+.citation-score-pct {
+  color: var(--accent-green, #10b981);
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+.citation-tab-chip.active .citation-score-pct {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Khung form thông tin chi tiết thiết kế thông báo nổi cao cấp, có viền accent bên trái */
+.citation-detail-form {
+  background: var(--bg-secondary, #fcfcfc);
+  border: 1px solid var(--bg-tertiary, #eaeaea);
+  border-left: 5px solid var(--accent-blue, #0284c7); /* Đường viền nhấn giống thông báo nổi */
+  border-radius: 16px; /* Bo góc cân đối */
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 10px rgba(0, 0, 0, 0.03); /* Đổ bóng nhẹ dạng thông báo nổi */
+  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.25s ease;
+}
+
+.citation-detail-form:hover {
+  transform: translateY(-2px); /* Bay nhẹ lên khi rê chuột */
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08), 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+/* Phần tiêu đề của thông báo nổi */
+.citation-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
   font-weight: 700;
+  color: var(--text-tertiary, #80868b);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1px dashed var(--bg-tertiary, #eaeaea);
+  padding-bottom: 8px;
+  margin-bottom: 2px;
+}
+
+.citation-info-icon {
+  color: var(--accent-blue, #0284c7);
   flex-shrink: 0;
 }
 
-.citation-id {
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.citation-score {
-  font-size: 11px;
-  color: var(--accent-green);
-  font-weight: 600;
-  padding: 2px 6px;
-  background: var(--success-bg);
-  border-radius: var(--radius-full);
-}
-
-.citation-toggle-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  transition: color var(--transition-fast);
-}
-
-.citation-toggle-btn:hover {
-  color: var(--text-primary);
-}
-
-.citation-content {
-  padding: 14px;
-  border-top: 1px solid var(--bg-tertiary);
-  background: var(--bg-primary);
-}
-
-.citation-section {
-  margin-bottom: 14px;
-}
-
-.citation-section:last-child {
-  margin-bottom: 0;
-}
-
-.citation-section strong {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.citation-section p {
-  margin: 0;
-  font-size: 13px;
+/* Phần thông tin */
+.citation-detail-section {
+  font-size: 14px;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: var(--text-secondary, #4b5563);
 }
 
+/* Tiêu đề Câu hỏi & Trích xuất (in đậm màu xanh dương, hiển thị inline) */
+.citation-detail-label {
+  color: var(--accent-blue, #0284c7);
+  font-weight: 700;
+  margin-right: 6px;
+  display: inline;
+}
+
+/* Văn bản nội dung (hiển thị inline theo sau nhãn) */
+.citation-detail-text {
+  color: var(--text-primary, #1f2937);
+  display: inline;
+}
+
+/* Hiệu ứng mượt mà khi đổi tab */
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Phản hồi trên màn hình di động */
 @media (max-width: 768px) {
-  .citation-header {
-    padding: 8px 12px;
-  }
-
-  .citation-title {
+  .citation-tab-chip {
+    padding: 6px 12px;
     font-size: 12px;
   }
 
-  .citation-content {
-    padding: 12px;
+  .citation-detail-form {
+    padding: 14px 16px;
+    border-radius: 16px; /* Bo tròn góc cân đối trên mobile */
+    gap: 10px;
   }
 
-  .citation-section p {
-    font-size: 12px;
+  .citation-detail-section {
+    font-size: 13px;
   }
 }

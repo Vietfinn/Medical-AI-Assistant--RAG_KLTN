@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { SignedIn, SignedOut, useUser, UserButton } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, useUser } from '@clerk/clerk-react';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import HealthProfile from './components/HealthProfile';
 import Homepage from './components/Homepage';
 import About from './components/About';
+import SearchCanvas from './components/SearchCanvas';
+import HealthCornerCreate from './components/HealthCornerCreate';
+import HealthCornerView from './components/HealthCornerView';
+import AdminDashboard from './components/AdminDashboard';
 import {
   sendChatMessageStream,
   checkHealth,
@@ -12,13 +16,20 @@ import {
   getSessionMessages,
   deleteSession,
   saveHealthProfile,
+  getHealthProfile,
+  getCorners,
+  createCorner,
+  updateCorner,
+  deleteCorner,
+  assignSessionToCorner,
 } from './services/api';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 
 function AuthenticatedApp() {
   const { user } = useUser();
-
+  const isAdmin = user?.publicMetadata?.role === 'admin';
+  const [showAdmin, setShowAdmin] = useState(false);
 
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +46,7 @@ function AuthenticatedApp() {
     return localStorage.getItem('currentSessionId') || null;
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [profileCompleted, setProfileCompleted] = useState(false);
@@ -42,11 +54,19 @@ function AuthenticatedApp() {
   const [statusMessage, setStatusMessage] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [safetyReviewing, setSafetyReviewing] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
   const streamingRef = useRef('');
   const abortControllerRef = useRef(null);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('appTheme') || 'dark';
   });
+  const [currentView, setCurrentView] = useState('chat'); // 'chat', 'search', 'corner', 'corner-create'
+
+  // Health Corner state
+  const [healthCorners, setHealthCorners] = useState([]);
+  const [activeCorner, setActiveCorner] = useState(null);
+  const [refreshCornerSessionsTrigger, setRefreshCornerSessionsTrigger] = useState(0);
+
   const currentSession = chatSessions.find((session) => session._id === currentSessionId);
   const conversationTitle = currentSession?.title || 'Cuộc trò chuyện mới';
 
@@ -58,15 +78,36 @@ function AuthenticatedApp() {
   useEffect(() => {
     checkApiHealth();
     fetchSessions();
+    fetchCorners();
+
+    // Tải thông tin hồ sơ từ máy chủ để đồng bộ hóa
+    const loadProfileFromServer = async () => {
+      try {
+        const profileData = await getHealthProfile();
+        if (profileData) {
+          setHealthProfile(profileData);
+          const hasData =
+            (profileData.chronic_diseases && profileData.chronic_diseases.length > 0) ||
+            (profileData.allergies && profileData.allergies.length > 0) ||
+            (profileData.current_medications && profileData.current_medications.length > 0) ||
+            profileData.age ||
+            profileData.gender;
+          setProfileCompleted(!!hasData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch health profile from server:', error);
+      }
+    };
+    loadProfileFromServer();
+
     const savedSessionId = localStorage.getItem('currentSessionId');
     if (savedSessionId) {
-      // Create a local async function to load the session without depending on handleSelectSession 
-      // closure before it's defined, or just use the same logic here.
       const loadInitialSession = async () => {
         setIsLoading(true);
         try {
           const sessionMessages = await getSessionMessages(savedSessionId);
           const formattedMessages = sessionMessages.map((msg) => ({
+            id: msg.id,
             role: msg.role,
             content: msg.content,
             citations: msg.citations || [],
@@ -140,20 +181,44 @@ function AuthenticatedApp() {
     }
   };
 
+  const fetchCorners = async () => {
+    try {
+      const data = await getCorners();
+      setHealthCorners(data);
+    } catch (error) {
+      console.error('Failed to load health corners:', error);
+    }
+  };
+
   const handleNewChat = () => {
     setCurrentSessionId(null);
     localStorage.removeItem('currentSessionId');
     setMessages([]);
+    setActiveCorner(null);
+    setIsProfileOpen(false);
+    setCurrentView('chat');
   };
 
   const handleSelectSession = async (sessionId) => {
     setCurrentSessionId(sessionId);
     localStorage.setItem('currentSessionId', sessionId);
+
+    // Sync activeCorner based on session's corner_id
+    const session = chatSessions.find(s => s._id === sessionId);
+    if (session?.corner_id) {
+      const corner = healthCorners.find(c => c._id === session.corner_id);
+      setActiveCorner(corner || null);
+    } else {
+      setActiveCorner(null);
+    }
+
     setIsLoading(true);
     setMessages([]);
+    setCurrentView('chat');
     try {
       const sessionMessages = await getSessionMessages(sessionId);
       const formattedMessages = sessionMessages.map((msg) => ({
+        id: msg.id,
         role: msg.role,
         content: msg.content,
         citations: msg.citations || [],
@@ -186,7 +251,7 @@ function AuthenticatedApp() {
     }
   };
 
-  const handleSendMessage = async (query) => {
+  const handleSendMessage = async (query, cornerId = null) => {
     const userMessage = { role: 'user', content: query };
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
@@ -194,6 +259,7 @@ function AuthenticatedApp() {
     setStreamingContent('');
     setStatusMessage('');
     setSafetyReviewing(false);
+    setSuggestions([]);
     streamingRef.current = '';
 
     abortControllerRef.current = new AbortController();
@@ -232,7 +298,22 @@ function AuthenticatedApp() {
 
         onDone: (data) => {
           const finalContent = streamingRef.current;
+
+          // Extract suggestions from [SUGGESTIONS] tag
+          const sugDelimiter = '[SUGGESTIONS]';
+          let extractedSuggestions = [];
+          const sugIdx = finalContent.indexOf(sugDelimiter);
+          if (sugIdx !== -1) {
+            const sugBlock = finalContent.substring(sugIdx + sugDelimiter.length).trim();
+            extractedSuggestions = sugBlock
+              .split('\n')
+              .map(s => s.replace(/^\d+\.\s*/, '').replace(/^[-*]\s*/, '').trim())
+              .filter(s => s.length > 0);
+          }
+          setSuggestions(extractedSuggestions);
+
           const assistantMessage = {
+            id: data.message_id,
             role: 'assistant',
             content: finalContent,
             citations: data.citations || [],
@@ -245,10 +326,13 @@ function AuthenticatedApp() {
           setIsStreaming(false);
           streamingRef.current = '';
 
-          if (data.session_id && currentSessionId !== data.session_id) {
-            setCurrentSessionId(data.session_id);
-            localStorage.setItem('currentSessionId', data.session_id);
+          if (data.session_id) {
+            if (currentSessionId !== data.session_id) {
+              setCurrentSessionId(data.session_id);
+              localStorage.setItem('currentSessionId', data.session_id);
+            }
             fetchSessions();
+            fetchCorners();
           }
         },
 
@@ -300,7 +384,7 @@ function AuthenticatedApp() {
           streamingRef.current = '';
           setIsLoading(false);
         },
-      }, abortControllerRef.current.signal);
+      }, abortControllerRef.current.signal, cornerId);
     } catch (error) {
       console.error('Streaming connection failed:', error);
       const errorMessage = {
@@ -328,6 +412,23 @@ function AuthenticatedApp() {
     }
   };
 
+  const handleEditMessage = (newText) => {
+    // Replace the last user message with edited text, remove subsequent messages, and re-send
+    setMessages((prev) => {
+      const updated = [...prev];
+      // Find and remove from last user message onwards
+      for (let i = updated.length - 1; i >= 0; i--) {
+        if (updated[i].role === 'user') {
+          return updated.slice(0, i);
+        }
+      }
+      return updated;
+    });
+    setSuggestions([]);
+    // Re-send the edited message after a tick
+    setTimeout(() => handleSendMessage(newText), 50);
+  };
+
   const handleProfileChange = useCallback(async (newProfile) => {
     setHealthProfile(newProfile);
 
@@ -339,11 +440,7 @@ function AuthenticatedApp() {
       newProfile.gender;
     setProfileCompleted(!!hasData);
 
-    try {
-      await saveHealthProfile(newProfile);
-    } catch (error) {
-      console.error('Failed to sync profile to server:', error);
-    }
+    // Không cần gọi saveHealthProfile ở đây nữa vì HealthProfile component đã gọi patchHealthProfile trực tiếp và ghi nhận thành công
   }, []);
 
   const handleOnboardingClose = () => {
@@ -355,51 +452,200 @@ function AuthenticatedApp() {
     setIsProfileOpen(true);
   };
 
+  const handleOpenCorner = async (corner) => {
+    setActiveCorner(corner);
+    setCurrentSessionId(null);
+    setMessages([]);
+    setCurrentView('corner');
+  };
+
+  const handleAssignSession = async (sessionId, cornerId) => {
+    try {
+      await assignSessionToCorner(sessionId, cornerId);
+      await fetchCorners();
+      await fetchSessions();
+      setRefreshCornerSessionsTrigger((prev) => prev + 1);
+      // If this is the active session, sync activeCorner
+      if (currentSessionId === sessionId) {
+        const corner = healthCorners.find((c) => c._id === cornerId);
+        setActiveCorner(corner || null);
+      }
+    } catch (error) {
+      console.error('Error assigning session:', error);
+    }
+  };
+
+  const handleUpdateCorner = async (cornerId, name, emoji) => {
+    try {
+      await updateCorner(cornerId, { name, emoji });
+      await fetchCorners();
+      if (activeCorner?._id === cornerId) {
+        setActiveCorner((prev) => ({ ...prev, name, emoji }));
+      }
+    } catch (error) {
+      console.error('Error updating corner:', error);
+    }
+  };
+
+  const handleDeleteCorner = async (cornerId) => {
+    try {
+      await deleteCorner(cornerId);
+      await fetchCorners();
+      if (activeCorner?._id === cornerId) {
+        setActiveCorner(null);
+        setCurrentView('chat');
+      }
+    } catch (error) {
+      console.error('Error deleting corner:', error);
+    }
+  };
+
+  const handleSelectCornerSession = async (session) => {
+    setCurrentSessionId(session._id);
+    localStorage.setItem('currentSessionId', session._id);
+    setIsLoading(true);
+    setMessages([]);
+    try {
+      const sessionMessages = await getSessionMessages(session._id);
+      const formattedMessages = sessionMessages.map((msg) => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        citations: msg.citations || [],
+        warnings: msg.warnings || [],
+      }));
+      setMessages(formattedMessages);
+      setCurrentView('chat');
+    } catch (error) {
+      console.error('Error loading session messages:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNewChatInCorner = async (query) => {
+    setCurrentSessionId(null);
+    localStorage.removeItem('currentSessionId');
+    setMessages([]);
+    setCurrentView('chat');
+    await handleSendMessage(query, activeCorner?._id);
+  };
+
   return (
     <div className="app-layout">
-      <Sidebar
-        sessions={chatSessions}
-        currentSessionId={currentSessionId}
-        onNewChat={handleNewChat}
-        onSelectSession={handleSelectSession}
-        onDeleteSession={handleDeleteSession}
-        onRefreshSessions={fetchSessions}
-        theme={theme}
-        onToggleTheme={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
-        isOpen={isSidebarOpen}
-        onToggle={() => setIsSidebarOpen((prev) => !prev)}
-        profileCompleted={profileCompleted}
-        onOpenProfile={() => setIsProfileOpen(true)}
-      />
+      {!showAdmin && (
+        <Sidebar
+          sessions={chatSessions}
+          currentSessionId={currentSessionId}
+          onNewChat={handleNewChat}
+          onSelectSession={handleSelectSession}
+          onDeleteSession={handleDeleteSession}
+          onRefreshSessions={fetchSessions}
+          theme={theme}
+          onToggleTheme={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+          isOpen={isSidebarOpen}
+          onToggle={() => setIsSidebarOpen((prev) => !prev)}
+          profileCompleted={profileCompleted}
+          onOpenProfile={() => setIsProfileOpen(true)}
+          isProfileOpen={isProfileOpen}
+          currentView={currentView}
+          isAdmin={isAdmin}
+          onOpenAdmin={() => {
+            setShowAdmin(true);
+            setCurrentView('chat');
+          }}
+          onOpenSearch={() => setCurrentView('search')}
+          healthCorners={healthCorners}
+          activeCorner={activeCorner}
+          currentSession={currentSession}
+          onCreateCornerView={() => setCurrentView('corner-create')}
+          onOpenCorner={handleOpenCorner}
+          onAssignSession={handleAssignSession}
+          onUpdateCorner={handleUpdateCorner}
+          onDeleteCorner={handleDeleteCorner}
+          isMobileSidebarOpen={isMobileSidebarOpen}
+          onCloseMobileSidebar={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
 
-      <main className={`main-canvas ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="top-right-actions">
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: { width: '36px', height: '36px' },
-              },
-            }}
-          />
-        </div>
-
+      <main className={`main-canvas ${isSidebarOpen && !showAdmin ? 'sidebar-open' : ''} ${showAdmin ? 'admin-open' : ''}`}>
         {apiStatus && apiStatus.status !== 'healthy' && (
           <div className="api-banner">
             <span className="banner-dot" />
             API không khả dụng — kiểm tra backend
           </div>
         )}
-        <ChatInterface
-          onSendMessage={handleSendMessage}
-          onStopGeneration={handleStopGeneration}
-          messages={messages}
-          isLoading={isLoading}
-          streamingContent={streamingContent}
-          statusMessage={statusMessage}
-          isStreaming={isStreaming}
-          safetyReviewing={safetyReviewing}
-          conversationTitle={conversationTitle}
-        />
+
+        {showAdmin && isAdmin ? (
+          <AdminDashboard 
+            onBack={() => setShowAdmin(false)} 
+            onClose={() => setShowAdmin(false)} 
+          />
+        ) : currentView === 'search' ? (
+          <SearchCanvas
+            recentSessions={chatSessions}
+            onClose={() => setCurrentView('chat')}
+            onSelectSession={handleSelectSession}
+          />
+        ) : currentView === 'corner-create' ? (
+          <HealthCornerCreate
+            onConfirm={async (name, emoji) => {
+              try {
+                await createCorner(name, emoji);
+                await fetchCorners();
+                setCurrentView('chat');
+              } catch (err) {
+                console.error('Error creating corner:', err);
+              }
+            }}
+            onCancel={() => setCurrentView('chat')}
+          />
+        ) : currentView === 'corner' && activeCorner ? (
+          <HealthCornerView
+            corner={activeCorner}
+            healthCorners={healthCorners}
+            refreshTrigger={refreshCornerSessionsTrigger}
+            onClose={() => {
+              setActiveCorner(null);
+              setCurrentView('chat');
+            }}
+            onSelectSession={handleSelectCornerSession}
+            onAssignSession={handleAssignSession}
+            onDeleteCorner={handleDeleteCorner}
+            onUpdateCorner={handleUpdateCorner}
+            onRefreshCorners={fetchCorners}
+            onNewChatInCorner={handleNewChatInCorner}
+            onDeleteSession={handleDeleteSession}
+            onToggleMobileSidebar={() => setIsMobileSidebarOpen(true)}
+          />
+        ) : (
+          <ChatInterface
+            onSendMessage={handleSendMessage}
+            onStopGeneration={handleStopGeneration}
+            messages={messages}
+            isLoading={isLoading}
+            streamingContent={streamingContent}
+            statusMessage={statusMessage}
+            isStreaming={isStreaming}
+            safetyReviewing={safetyReviewing}
+            conversationTitle={conversationTitle}
+            suggestions={suggestions}
+            currentSessionId={currentSessionId}
+            onEditMessage={handleEditMessage}
+            activeCorner={activeCorner}
+            onOpenCorner={handleOpenCorner}
+            onToggleMobileSidebar={() => setIsMobileSidebarOpen(true)}
+            sessions={chatSessions}
+            healthCorners={healthCorners}
+            onRefreshSessions={fetchSessions}
+            onDeleteSession={handleDeleteSession}
+            onAssignSession={handleAssignSession}
+            onUpdateCorner={handleUpdateCorner}
+            onDeleteCorner={handleDeleteCorner}
+          />
+        )}
+
+
       </main>
 
       <HealthProfile

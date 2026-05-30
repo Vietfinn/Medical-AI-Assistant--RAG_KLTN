@@ -14,12 +14,10 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
 
-    # Gemini API
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    GEMINI_MODEL: str = "gemini-2.5-flash"
-
     # Groq API (Llama 3)
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    GROQ_API_KEY1: str = os.getenv("GROQ_API_KEY1", "")
+    GROQ_API_KEY2: str = os.getenv("GROQ_API_KEY2", "")
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
 
     # Cohere API (Reranker)

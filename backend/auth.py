@@ -111,6 +111,8 @@ async def get_current_user(
                 "current_medications": [],
                 "age": None,
                 "gender": "",
+                "height": None,
+                "weight": None,
             },
             "created_at": now,
             "updated_at": now,
@@ -126,6 +128,31 @@ async def get_current_user(
 
     else:
         health_profile = existing_user.get("health_profile")
+        # ── BAN CHECK: Chặn user bị cấm từ vòng ngoài ──
+        if existing_user.get("is_banned", False):
+            raise HTTPException(
+                status_code=403,
+                detail="Tài khoản của bạn đã bị khóa do vi phạm tiêu chuẩn cộng đồng. "
+                       "Vui lòng liên hệ quản trị viên nếu bạn cho rằng đây là nhầm lẫn.",
+            )
+
+        # ── CLERK USER NAME DESYNC SYNC: Đồng bộ first_name và email từ Clerk ──
+        db_email = existing_user.get("email", "")
+        db_first_name = existing_user.get("first_name", "")
+        
+        update_fields = {}
+        if email and email != db_email:
+            update_fields["email"] = email
+        if first_name and first_name != db_first_name:
+            update_fields["first_name"] = first_name
+
+        if update_fields:
+            update_fields["updated_at"] = time.time()
+            await db["users"].update_one(
+                {"_id": user_id},
+                {"$set": update_fields}
+            )
+            logger.info(f"🔄 Synced updated Clerk profile info for user_id={user_id}: {update_fields}")
 
     return {
         "user_id": user_id,
@@ -134,3 +161,37 @@ async def get_current_user(
         "is_new_user": is_new_user,
         "health_profile": health_profile,
     }
+
+
+async def get_current_admin(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+) -> dict:
+    """
+    FastAPI dependency: chỉ cho phép tài khoản có role=admin từ Clerk publicMetadata.
+
+    Clerk publicMetadata cần được set thủ công qua Clerk Dashboard:
+        { "role": "admin" }
+
+    Raise 403 nếu không phải admin, 401 nếu thiếu/hết hạn token.
+    """
+    if credentials is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Yêu cầu đăng nhập để truy cập trang quản trị.",
+        )
+
+    payload = decode_clerk_jwt(credentials.credentials)
+
+    public_metadata = payload.get("public_metadata") or payload.get("publicMetadata") or {}
+    role = public_metadata.get("role", "")
+
+    user_id = payload.get("sub", "")
+
+    # Only check Clerk JWT metadata as requested
+    if role == "admin":
+        return {"user_id": user_id, "role": "admin"}
+
+    raise HTTPException(
+        status_code=403,
+        detail="Truy cập bị từ chối. Token không có thông tin role='admin' từ Clerk.",
+    )

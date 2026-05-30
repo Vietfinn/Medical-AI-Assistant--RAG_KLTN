@@ -4,7 +4,8 @@
 
 .app-layout {
   display: flex;
-  height: 100vh;
+  height: 100vh; /* fallback for older browsers */
+  height: 100dvh;
   overflow: hidden;
   background: var(--bg-primary);
 }
@@ -27,7 +28,13 @@
   .main-canvas:not(.sidebar-open) {
     padding-left: 76px;
   }
+
+  .main-canvas.admin-open {
+    padding-left: 0 !important;
+  }
 }
+
+/* Sidebar remains visible when search is active */
 
 /* ---- API Error Banner ---- */
 
@@ -57,6 +64,21 @@
 @media (max-width: 768px) {
   .main-canvas {
     margin-left: 0 !important;
+  }
+}
+
+/* Mobile Sidebar Overlay */
+.sidebar-overlay.mobile-only {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 99; /* Below sidebar (100) */
+  animation: fadeIn 0.2s ease;
+}
+@media (min-width: 769px) {
+  .sidebar-overlay.mobile-only {
+    display: none;
   }
 }
 
@@ -117,52 +139,146 @@
   position: fixed;
   inset: 0;
   z-index: 9000;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.6); /* Darker backdrop for higher glow contrast */
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
+  perspective: 1200px; /* Crucial for 3D letter fold effect */
 }
 
 .onboarding-modal {
-  background: var(--bg-surface);
-  border: 1px solid var(--bg-tertiary);
-  border-radius: 20px;
-  padding: 40px 36px;
-  max-width: 440px;
+  background: rgba(255, 255, 255, 0.92); /* Frosted Crystal White Glass */
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(14, 165, 233, 0.28); /* Medical Cyan border */
+  border-radius: 24px;
+  padding: 44px 48px;
+  max-width: 620px; /* Rectangular shape */
   width: 100%;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  animation: 
+    letterOpenEntrance 0.9s cubic-bezier(0.25, 1, 0.5, 1.1) forwards, /* 3D Letter opening flap effect */
+    onboardingGlowPulse 9s infinite ease-in-out 0.9s; /* Delayed breathing glow */
 }
 
-.onboarding-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
+/* 3D Letter Opening Entrance animation */
+@keyframes letterOpenEntrance {
+  0% {
+    opacity: 0;
+    transform: rotateX(-75deg) translateY(-30px) scale(0.95);
+    transform-origin: top;
+    box-shadow: 0 0 0 rgba(14, 165, 233, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg) translateY(0) scale(1);
+    transform-origin: top;
+    box-shadow: 0 30px 100px rgba(14, 165, 233, 0.35), 0 0 50px 5px rgba(14, 165, 233, 0.15);
+  }
+}
+
+/* Shine Sweep effect sweeping across the glass modal */
+.onboarding-modal::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 10%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.1) 90%,
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: shineSweep 1.5s ease-out 0.35s forwards;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes shineSweep {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Pure Clinical/Medical Breathing Glow Pulse (Teal, Blue, Cyan) */
+@keyframes onboardingGlowPulse {
+  0%, 100% {
+    box-shadow: 0 30px 100px rgba(14, 165, 233, 0.32), 0 0 50px 5px rgba(14, 165, 233, 0.15);
+    border-color: rgba(14, 165, 233, 0.35);
+  }
+  33% {
+    box-shadow: 0 30px 100px rgba(59, 130, 246, 0.35), 0 0 50px 5px rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+  66% {
+    box-shadow: 0 30px 100px rgba(20, 184, 166, 0.32), 0 0 50px 5px rgba(20, 184, 166, 0.15);
+    border-color: rgba(20, 184, 166, 0.35);
+  }
+}
+
+.onboarding-logo {
+  width: 68px;
+  height: 68px;
+  margin-bottom: 20px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.25));
+  animation: onboardingLogoBreath 3.5s infinite ease-in-out;
+}
+
+@keyframes onboardingLogoBreath {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.25));
+  }
+  50% {
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 16px rgba(14, 165, 233, 0.5));
+  }
 }
 
 .onboarding-modal h2 {
   font-family: var(--font-heading);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #0f172a; /* Deep professional navy for light contrast */
   margin-bottom: 12px;
+  white-space: nowrap; /* Single line */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .onboarding-modal p {
   font-size: 14px;
-  color: var(--text-tertiary);
+  color: #475569; /* Slate gray text for premium clinical tone */
   line-height: 1.7;
   margin-bottom: 28px;
 }
 
 .onboarding-actions {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row; /* Horizontal layout */
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 .onboarding-btn {
+  flex: 1;
   padding: 12px 24px;
   border-radius: 12px;
   font-size: 14px;
@@ -171,26 +287,47 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
+  white-space: nowrap;
 }
 
 .onboarding-btn.primary {
-  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  background: #0ea5e9; /* Bright Medical Cyan */
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
 }
 
 .onboarding-btn.primary:hover {
+  background: #0284c7;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.45);
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
 }
 
 .onboarding-btn.secondary {
   background: transparent;
-  color: var(--text-tertiary);
-  border: 1px solid var(--bg-tertiary);
+  color: #475569;
+  border: 1px solid #cbd5e1; /* Soft clinical gray border */
 }
 
 .onboarding-btn.secondary:hover {
-  background: var(--bg-hover);
-  color: var(--text-secondary);
+  background: rgba(14, 165, 233, 0.06); /* Very soft blue tint */
+  color: #0f172a;
+  border-color: #0ea5e9;
+}
+
+/* Mobile responsive fallback */
+@media (max-width: 640px) {
+  .onboarding-modal {
+    padding: 32px 24px;
+    max-width: 90%;
+  }
+
+  .onboarding-modal h2 {
+    font-size: 20px;
+    white-space: normal; /* Wrap title on mobile */
+  }
+
+  .onboarding-actions {
+    flex-direction: column; /* Stack buttons vertically on mobile */
+    gap: 10px;
+  }
 }

@@ -1,0 +1,4734 @@
+{
+  "props": {
+    "pageProps": {
+      "viewType": "category",
+      "viewData": {
+        "cate": {
+          "id": 10,
+          "name": "Thuốc dị ứng",
+          "fullPathSlug": "thuoc/thuoc-di-ung",
+          "level": 2,
+          "metaTitle": "TOP 15+ Thuốc dị ứng ngứa, mề đay phổ biến 2026",
+          "metaDescription": "Mua thuốc dị ứng, thuốc chống dị ứng được dùng nhiều nhất: Cetirizin, Clorpheniramin, Telfast 60mg, Loratadin, A.T Desloratadin,... tại Long Châu",
+          "metaSocialTitle": "TOP 15+ Thuốc dị ứng ngứa, mề đay phổ biến 2026",
+          "metaSocialDescription": "Mua thuốc dị ứng, thuốc chống dị ứng được dùng nhiều nhất: Cetirizin, Clorpheniramin, Telfast 60mg, Loratadin, A.T Desloratadin,... tại Long Châu",
+          "numberOfArticles": 0,
+          "parent": {
+            "id": 1,
+            "name": "Thuốc",
+            "fullPathSlug": "thuoc",
+            "level": 1,
+            "numberOfArticles": 0
+          },
+          "desktopImage": {
+            "id": 242752,
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_di_ung_level_2_f56f6551c4.png",
+            "alternativeText": null,
+            "width": 676,
+            "height": 676
+          },
+          "mobileImage": {
+            "id": 225336,
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_di_ung_level_2_8e4530d58d.png",
+            "alternativeText": null,
+            "width": 676,
+            "height": 676
+          },
+          "metaImage": null,
+          "metaSocialImage": null,
+          "children": [
+            {
+              "id": 750,
+              "name": "Thuốc chống dị ứng",
+              "fullPathSlug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+              "level": 3,
+              "numberOfArticles": 0,
+              "desktopImage": {
+                "id": 242899,
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_khang_histamin_khang_di_ung_level_3_da7d489753.png",
+                "alternativeText": null,
+                "width": 676,
+                "height": 676
+              },
+              "mobileImage": {
+                "id": 242899,
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_khang_histamin_khang_di_ung_level_3_da7d489753.png",
+                "alternativeText": null,
+                "width": 676,
+                "height": 676
+              },
+              "children": []
+            },
+            {
+              "id": 751,
+              "name": "Thuốc say tàu xe",
+              "fullPathSlug": "thuoc/thuoc-di-ung/thuoc-say-tau-xe",
+              "level": 3,
+              "numberOfArticles": 0,
+              "desktopImage": {
+                "id": 286199,
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/IMG_7312_4749e5da70.jpg",
+                "alternativeText": null,
+                "width": 1000,
+                "height": 1000
+              },
+              "mobileImage": {
+                "id": 286199,
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/IMG_7312_4749e5da70.jpg",
+                "alternativeText": null,
+                "width": 1000,
+                "height": 1000
+              },
+              "children": []
+            }
+          ],
+          "root": null
+        },
+        "subCatesProductCountMap": {
+          "thuoc/thuoc-di-ung/thuoc-chong-di-ung": 141
+        },
+        "filterAttributes": [
+          {
+            "id": 27,
+            "name": "Giá bán",
+            "code": "priceSystem",
+            "rank": 3,
+            "values": []
+          },
+          {
+            "id": 9,
+            "name": "Loại thuốc",
+            "code": "prescription",
+            "rank": 4,
+            "values": [
+              "true",
+              "false"
+            ]
+          },
+          {
+            "id": 15,
+            "name": "Đối tượng sử dụng",
+            "code": "objectUse",
+            "rank": 4,
+            "values": [
+              "Trẻ em",
+              "Người lớn",
+              "Người cao tuổi",
+              "Thanh thiếu niên"
+            ]
+          },
+          {
+            "id": 12,
+            "name": "Nước sản xuất",
+            "code": "manufactor",
+            "rank": 7,
+            "values": [
+              "Việt Nam",
+              "Ấn Độ",
+              "Tây Ban Nha",
+              "Ý",
+              "Bangladesh",
+              "Bỉ",
+              "Thái Lan",
+              "Thụy Sĩ",
+              "Ba Lan",
+              "Bồ Đào Nha",
+              "Hungary",
+              "Hàn Quốc",
+              "Indonesia",
+              "Pháp",
+              "Slovenia",
+              "Đài Loan"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Chỉ định",
+            "code": "indications",
+            "rank": 8,
+            "values": [
+              "Viêm mũi dị ứng",
+              "Ngứa",
+              "Mề đay",
+              "Viêm mũi",
+              "Nghẹt mũi",
+              "Viêm da do tiếp xúc",
+              "Viêm da cơ địa",
+              "Chàm",
+              "Viêm kết mạc dị ứng",
+              "Hắt hơi",
+              "Nổi mẩn ngứa",
+              "Nổi mề đay",
+              "Viêm đường hô hấp trên",
+              "Nôn/Buồn nôn",
+              "Say tàu xe",
+              "Ngứa da",
+              "Viêm da dị ứng",
+              "Viêm xoang",
+              "Vảy nến",
+              "Chóng mặt",
+              "Dị ứng thực phẩm",
+              "Rối loạn tiền đình"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Thương hiệu",
+            "code": "brand",
+            "rank": 9,
+            "values": [
+              "An Thiên",
+              "Dhg",
+              "Khapharco",
+              "Stella Pharm",
+              "Usp",
+              "Agimexpharm",
+              "Sanofi",
+              "Vidipha",
+              "Boston",
+              "Davipharm",
+              "Hasan",
+              "Hà Nam",
+              "Imexpharm",
+              "MEYER-BPC",
+              "Medisun",
+              "Mekophar",
+              "Menarini",
+              "Pharmedic",
+              "Pymepharco",
+              "Traphaco",
+              "Abbott",
+              "Apimed",
+              "Dược 3-2",
+              "Gracure",
+              "Gsk",
+              "Mebiphar",
+              "Organon",
+              "Thành Nam",
+              "Trường Thọ Pharma",
+              "Tw3",
+              "ARISTOPHARMA",
+              "Ampharco",
+              "Aurochem pharma",
+              "Axon",
+              "BIOFARM",
+              "Baroque Pharmaceuticals",
+              "Bayer",
+              "CPC1HN",
+              "Danapha",
+              "Deltapharm",
+              "Domesco",
+              "Dr. Reddy",
+              "Egis Pharma",
+              "Fourdiphar",
+              "Fresenius Kabi",
+              "GENUONE",
+              "Hyphens",
+              "Janssen",
+              "Khahopharma",
+              "Krka",
+              "Lesvi",
+              "MEGA We care",
+              "Medipharco",
+              "Nadyphar",
+              "Normon",
+              "Novartis",
+              "Opv",
+              "S.P.M",
+              "Shinpoong Daewoo",
+              "Stada",
+              "Standard Chem & Pharm",
+              "Tv.Pharm",
+              "VIDIPHA",
+              "Zim Laboratories",
+              "Đồng Nai"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Xuất xứ thương hiệu",
+            "code": "brandOrigin",
+            "rank": 10,
+            "values": [
+              "Việt Nam",
+              "Ấn Độ",
+              "Pháp",
+              "Hoa Kỳ",
+              "Anh",
+              "Bangladesh",
+              "Hàn Quốc",
+              "Tây Ban Nha",
+              "Ba Lan",
+              "Hungary",
+              "Singapore",
+              "Slovenia",
+              "Thái Lan",
+              "Thụy Sĩ",
+              "Ý",
+              "Đài Loan",
+              "Đức"
+            ]
+          },
+          {
+            "id": 25,
+            "name": "Thành phần",
+            "code": "ingredient",
+            "rank": 13,
+            "values": [
+              "Desloratadine",
+              "Loratadine",
+              "Cetirizin",
+              "Ebastine",
+              "Fexofenadine",
+              "Betamethasone",
+              "Levocetirizine",
+              "Bilastine",
+              "Cetirizine",
+              "Fexofenadina",
+              "Acrivastine",
+              "Chlorpheniramine",
+              "Cinnarizine",
+              "Desloratadin",
+              "Dexclorpheniramin",
+              "Dimenhydrinat",
+              "Promethazine",
+              "Rupatadine",
+              "Alimemazine",
+              "Ciclosporin",
+              "Desloratadina",
+              "Dimenhydrinate",
+              "Ebastin",
+              "Rupatadina"
+            ]
+          }
+        ],
+        "priceAttribute": {
+          "name": "Giá bán",
+          "code": "priceSystem",
+          "values": [
+            {
+              "code": "from-0-to-100000",
+              "label": "Dưới 100.000đ",
+              "value": {
+                "priceFrom": 0,
+                "priceTo": 100000
+              }
+            },
+            {
+              "code": "from-100000-to-300000",
+              "label": "100.000đ đến 300.000đ",
+              "value": {
+                "priceFrom": 100000,
+                "priceTo": 300000
+              }
+            },
+            {
+              "code": "from-300000-to-500000",
+              "label": "300.000đ đến 500.000đ",
+              "value": {
+                "priceFrom": 300000,
+                "priceTo": 500000
+              }
+            },
+            {
+              "code": "from-500000-to-0",
+              "label": "Trên 500.000đ",
+              "value": {
+                "priceFrom": 500000,
+                "priceTo": 0
+              }
+            }
+          ]
+        },
+        "products": [
+          {
+            "sku": "A042300000187",
+            "name": "EXOPADIN 60MG TRƯỜNG THỌ 3X10",
+            "webName": "Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên) ",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/IMG_0238_fc19904162.jpg",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 55714,
+              "measureUnitCode": 1,
+              "measureUnitName": "Hộp",
+              "isSellDefault": true,
+              "price": 60000,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 60000,
+                "itemCode": "A042300000187",
+                "unitCode": 1,
+                "maxValue": 0,
+                "price": 60000,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/exopadin-60-mg-truong-tho-3-x10.html",
+            "ingredients": "Fexofenadin Hydroclorid 60mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Trường Thọ Pharma",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 110,
+            "productRanking": 0,
+            "specification": "Hộp 3 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 55714,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": true,
+                "price": 60000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 60000,
+                  "itemCode": "A042300000187",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 60000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 55715,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 20000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 20000,
+                  "itemCode": "A042300000187",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 20000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 55716,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": false,
+                "price": 2000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 2000,
+                  "itemCode": "A042300000187",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 2000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00033571",
+            "name": "CETIRIZIN 10MG TRƯỜNG THỌ 10X10",
+            "webName": "Thuốc Cetirizin 10mg Trường Thọ trị ngứa ngoài da do dị ứng (10 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/00033571_cetirizin_10mg_truong_tho_10x10_7980_622e_large_7b5a214e24.jpg",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 46931,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 400,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 400,
+                "itemCode": "00033571",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 400,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/cetirizin-10mg-truong-tho-10x10-33669.html",
+            "ingredients": "Cetirizin 10mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Trường Thọ Pharma",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 110,
+            "productRanking": 0,
+            "specification": "Hộp 10 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 46932,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 4000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 4000,
+                  "itemCode": "00033571",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 4000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 46933,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 40000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 40000,
+                  "itemCode": "00033571",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 40000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 46931,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 400,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 400,
+                  "itemCode": "00033571",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 400,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00033509",
+            "name": "CLORPHENIRAMIN 4MG KHÁNH HÒA 10X20",
+            "webName": "Thuốc Clorpheniramin 4mg Khapharco điều trị triệu chứng viêm mũi dị ứng theo mùa, quanh năm và mày đay (10 vỉ x 20 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/00033509_clorpheniramin_4mg_khanh_hoa_10x20_7916_621e_large_ab09a106d1.jpg",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 46721,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 100,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 100,
+                "itemCode": "00033509",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 100,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/clorpheniramin-4mg-khanh-hoa-10x20-33614.html",
+            "ingredients": "Clorpheniramin maleat 4mg",
+            "dosageForm": "Viên nén",
+            "brand": "Khapharco",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 110,
+            "productRanking": 0,
+            "specification": "Hộp 10 Vỉ x 20 Viên",
+            "prices": [
+              {
+                "id": 46721,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 100,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 100,
+                  "itemCode": "00033509",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 100,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 46723,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 20000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 20000,
+                  "itemCode": "00033509",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 20000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 46722,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 2000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 2000,
+                  "itemCode": "00033509",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 2000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00000614",
+            "name": "ALLERPHAST 180MG MEBIPHAR 1X10",
+            "webName": "Thuốc Allerphast 180mg Mebiphar điều trị viêm mũi dị ứng theo mùa, mày đay mạn tính vô căn (1 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/allerphast_180mg_1x10_mebiphar_00000614_4_81de4d41d1.png",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 284,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 2500,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 2500,
+                "itemCode": "00000614",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 2500,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/allerphast-180mg-4805.html",
+            "ingredients": "Fexofenadin Hydroclorid 180mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Mebiphar",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 110,
+            "productRanking": 0,
+            "specification": "Hộp 1 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 284,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 2500,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 2500,
+                  "itemCode": "00000614",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 2500,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 286,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 25000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 25000,
+                  "itemCode": "00000614",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 25000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00030191",
+            "name": "HISTALONG - L 5MG DR.REDDY 2X10",
+            "webName": "Thuốc Histalong - L 5mg Dr. Reddy điều trị triệu chứng viêm mũi dị ứng (2 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/histalong_l_5mg_2x10_dr_reddy_00030191_d8c835437f.png",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 39489,
+              "measureUnitCode": 1,
+              "measureUnitName": "Hộp",
+              "isSellDefault": true,
+              "price": 38000,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 38000,
+                "itemCode": "00030191",
+                "unitCode": 1,
+                "maxValue": 0,
+                "price": 38000,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/histalong-l-5mg-drreddy-2x10-30344.html",
+            "ingredients": "Levocetirizine 5mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Dr. Reddy",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 110,
+            "productRanking": 0,
+            "specification": "Hộp 2 vỉ x 10 viên",
+            "prices": [
+              {
+                "id": 39487,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": false,
+                "price": 1900,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 1900,
+                  "itemCode": "00030191",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 1900,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 39489,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": true,
+                "price": 38000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 38000,
+                  "itemCode": "00030191",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 38000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 39488,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 19000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 19000,
+                  "itemCode": "00030191",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 19000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 249,
+              "attributeName": "Ấn Độ",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/in_India_090039de61.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00033097",
+            "name": "CETIRIZINE STADA 10MG 10X10",
+            "webName": "Thuốc Cetirizine Stada 10mg điều trị viêm mũi dị ứng, mày đay (10 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/00033097_cetirizin_stada_10mg_10x10_6872_61c9_large_81d9335efe.jpg",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 46784,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 480,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 480,
+                "itemCode": "00033097",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 480,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/cetirizin-stada-10mg-10x10-33218.html",
+            "ingredients": "Cetirizin 10mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Stada",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 100,
+            "productRanking": 0,
+            "specification": "Hộp 10 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 46784,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 480,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 480,
+                  "itemCode": "00033097",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 480,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 46786,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 48000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 48000,
+                  "itemCode": "00033097",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 48000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 46785,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 4800,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 4800,
+                  "itemCode": "00033097",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 4800,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00048141",
+            "name": "FEXOFENADINE HYDROCHLORIDE 180MG AN THIÊN 3X10",
+            "webName": "Thuốc Fexofenadine Hydrochloride 180mg An Thiên điều trị viêm mũi dị ứng theo mùa (3 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_fexofenadine_hydrochloride_180mg_an_thien_3x10_00048141_323b790d16.png",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 75558,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 2500,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 2500,
+                "itemCode": "00048141",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 2500,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/fexofenadine-hydrochloride-180-mg-an-thien-3-x10.html",
+            "ingredients": "Fexofenadin Hydroclorid 180mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "An Thiên",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 90,
+            "productRanking": 0,
+            "specification": "Hộp 3 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 75556,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 75000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 75000,
+                  "itemCode": "00048141",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 75000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 75557,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 25000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 25000,
+                  "itemCode": "00048141",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 25000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 75558,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 2500,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 2500,
+                  "itemCode": "00048141",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 2500,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00500832",
+            "name": "VOMINA PLUS 50MG MEDIPHARCO 25X4",
+            "webName": "Thuốc Vomina Plus 50mg Medipharco phòng và điều trị triệu chứng buồn nôn, chóng mặt khi say tàu xe (25 vỉ x 4 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/DSC_09465_05d161a1c1.jpg",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 49272,
+              "measureUnitCode": 1,
+              "measureUnitName": "Hộp",
+              "isSellDefault": true,
+              "price": 100000,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 100000,
+                "itemCode": "00500832",
+                "unitCode": 1,
+                "maxValue": 0,
+                "price": 100000,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/vomina-plus-dimenhydrinate-50mg-medipharco-25x4-34965.html",
+            "ingredients": "Dimenhydrinate 50mg",
+            "dosageForm": "Viên nén",
+            "brand": "Medipharco",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 90,
+            "productRanking": 0,
+            "specification": "Hộp 25 Vỉ x 4 Viên",
+            "prices": [
+              {
+                "id": 49270,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": false,
+                "price": 1000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 1000,
+                  "itemCode": "00500832",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 1000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 49272,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": true,
+                "price": 100000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 100000,
+                  "itemCode": "00500832",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 100000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 49271,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 4000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 4000,
+                  "itemCode": "00500832",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 4000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00028530",
+            "name": "FEFASDIN 60 KHAPHARCO 10X10",
+            "webName": "Thuốc Fefasdin 60 Khapharco điều trị viêm mũi dị ứng, mày đay mạn tính vô căn (10 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/fefasdin_60_10x10_khapharco_00028530_8565357872.png",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 36174,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 850,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 850,
+                "itemCode": "00028530",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 850,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/fefasdin-60-khapharco-10x10-28831.html",
+            "ingredients": "Fexofenadin Hydroclorid 60mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Khapharco",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 90,
+            "productRanking": 0,
+            "specification": "Hộp 10 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 36175,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 8500,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 8500,
+                  "itemCode": "00028530",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 8500,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 36174,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 850,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 850,
+                  "itemCode": "00028530",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 850,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 36176,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 85000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 85000,
+                  "itemCode": "00028530",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 85000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 268,
+              "attributeName": "Việt Nam",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/vn_Vietnam_02c595ff0c.png"
+            },
+            "badges": [
+              {
+                "isShowBadge": false,
+                "scoreBadge": 10,
+                "imgBadge": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/45_van_de_doi_tuong_9977_6346_large_9bde73707e.png"
+              }
+            ]
+          },
+          {
+            "sku": "00043642",
+            "name": "AERIUS ORGANON 60ML",
+            "webName": "Siro Aerius 60ml Organon giảm viêm mũi dị ứng, hắt hơi, sổ mũi, ngứa mũi, sung huyết",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/aerius_de0cb21233.jpg",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 66788,
+              "measureUnitCode": 1,
+              "measureUnitName": "Hộp",
+              "isSellDefault": true,
+              "price": 87000,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 87000,
+                "itemCode": "00043642",
+                "unitCode": 1,
+                "maxValue": 0,
+                "price": 87000,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/aerius-organon-60-ml.html",
+            "ingredients": "Desloratadine 0.5mg",
+            "dosageForm": "Siro",
+            "brand": "Organon",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 70,
+            "productRanking": 0,
+            "specification": "Hộp X 60ml",
+            "prices": [
+              {
+                "id": 66788,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": true,
+                "price": 87000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 87000,
+                  "itemCode": "00043642",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 87000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 248,
+              "attributeName": "Hoa Kỳ",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/us_United_States_of_America_usa_59e1ad3af3.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00043625",
+            "name": "AERIUS 5MG ORGANON 1X10",
+            "webName": "Thuốc Aerius 5mg Organon giảm viêm mũi dị ứng, mày đay (1 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/DSC_03470_38e258c51c.jpg",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 66754,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 10000,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 10000,
+                "itemCode": "00043625",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 10000,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/aerius-5-mg-organon-1-x10.html",
+            "ingredients": "Desloratadine 5mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Organon",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 70,
+            "productRanking": 0,
+            "specification": "Hộp 1 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 66752,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 100000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 100000,
+                  "itemCode": "00043625",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 100000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 66754,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 10000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 10000,
+                  "itemCode": "00043625",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 10000,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 248,
+              "attributeName": "Hoa Kỳ",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/us_United_States_of_America_usa_59e1ad3af3.png"
+            },
+            "badges": []
+          },
+          {
+            "sku": "00042410",
+            "name": "TELFAST 180MG SANOFI 3X10",
+            "webName": "Thuốc chống dị ứng Telfast HD 180mg Sanofi giảm triệu chứng viêm mũi dị ứng, mày đay vô căn mạn tính (3 vỉ x 10 viên)",
+            "image": "https://cdn.nhathuoclongchau.com.vn/v1/static/1_467af3daf4.png",
+            "category": [
+              {
+                "id": 1,
+                "name": "Thuốc",
+                "parentName": null,
+                "slug": "thuoc",
+                "level": 1,
+                "isActive": true
+              },
+              {
+                "id": 10,
+                "name": "Thuốc dị ứng",
+                "parentName": "Thuốc",
+                "slug": "thuoc/thuoc-di-ung",
+                "level": 2,
+                "isActive": true
+              },
+              {
+                "id": 750,
+                "name": "Thuốc chống dị ứng",
+                "parentName": "Thuốc dị ứng",
+                "slug": "thuoc/thuoc-di-ung/thuoc-chong-di-ung",
+                "level": 3,
+                "isActive": true
+              }
+            ],
+            "price": {
+              "id": 64542,
+              "measureUnitCode": 8,
+              "measureUnitName": "Viên",
+              "isSellDefault": true,
+              "price": 8933,
+              "currencySymbol": "đ",
+              "isDefault": true,
+              "isInventory": true,
+              "discount": {
+                "discountPrice": 0,
+                "finalPrice": 8933,
+                "itemCode": "00042410",
+                "unitCode": 8,
+                "maxValue": 0,
+                "price": 8933,
+                "promotionTags": []
+              }
+            },
+            "slug": "thuoc/telfast-180-mg-sanofi-3-x10.html",
+            "ingredients": "Fexofenadine 180mg",
+            "dosageForm": "Viên nén bao phim",
+            "brand": "Sanofi",
+            "displayCode": 1,
+            "isActive": true,
+            "isPublish": true,
+            "searchScoring": 70,
+            "productRanking": 0,
+            "specification": "Hộp 3 Vỉ x 10 Viên",
+            "prices": [
+              {
+                "id": 64540,
+                "measureUnitCode": 1,
+                "measureUnitName": "Hộp",
+                "isSellDefault": false,
+                "price": 268000,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 1,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 268000,
+                  "itemCode": "00042410",
+                  "unitCode": 1,
+                  "maxValue": 0,
+                  "price": 268000,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 64541,
+                "measureUnitCode": 13,
+                "measureUnitName": "Vỉ",
+                "isSellDefault": false,
+                "price": 89333,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 2,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 89333,
+                  "itemCode": "00042410",
+                  "unitCode": 13,
+                  "maxValue": 0,
+                  "price": 89333,
+                  "promotionTags": []
+                }
+              },
+              {
+                "id": 64542,
+                "measureUnitCode": 8,
+                "measureUnitName": "Viên",
+                "isSellDefault": true,
+                "price": 8933,
+                "currencySymbol": "đ",
+                "isDefault": true,
+                "isInventory": true,
+                "level": 3,
+                "productSpecs": null,
+                "discount": {
+                  "discountPrice": 0,
+                  "finalPrice": 8933,
+                  "itemCode": "00042410",
+                  "unitCode": 8,
+                  "maxValue": 0,
+                  "price": 8933,
+                  "promotionTags": []
+                }
+              }
+            ],
+            "brandOriginBadges": {
+              "id": 261,
+              "attributeName": "Pháp",
+              "attributeImage": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/fr_France_27cf408db7.png"
+            },
+            "badges": [
+              {
+                "isShowBadge": false,
+                "scoreBadge": 10,
+                "imgBadge": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/45_van_de_doi_tuong_9977_6346_large_9bde73707e.png"
+              }
+            ]
+          }
+        ],
+        "initTotalProducts": 158,
+        "initSortType": 4,
+        "sortingAttributeCodes": [
+          "productTypes",
+          "priceRanges",
+          "prescription",
+          "objectUse",
+          "skin",
+          "flavor",
+          "manufactor",
+          "indications",
+          "brand",
+          "brandOrigin",
+          "producer",
+          "specification",
+          "ingredient"
+        ]
+      },
+      "url": "thuoc/thuoc-di-ung",
+      "categoryPageDataBySlug": null
+    },
+    "masterLayoutDataProps": {
+      "expiryTime": "2026-05-11T16:11:36.507Z",
+      "header": {
+        "logo": {
+          "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/logo_default_web_78584a5cc6.png",
+          "alt": "",
+          "name": ""
+        },
+        "topSearch": {
+          "icon": null,
+          "keywords": [
+            {
+              "id": 238,
+              "keyword": "Canxi",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=canxi"
+            },
+            {
+              "id": 237,
+              "keyword": "Omega 3",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=omega%203"
+            },
+            {
+              "id": 235,
+              "keyword": "Kẽm",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=k%E1%BA%BDm"
+            },
+            {
+              "id": 233,
+              "keyword": "Kem chống nắng",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=kem%20ch%E1%BB%91ng%20n%E1%BA%AFng"
+            },
+            {
+              "id": 232,
+              "keyword": "Thuốc nhỏ mắt",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=thu%E1%BB%91c%20nh%E1%BB%8F%20m%E1%BA%AFt"
+            },
+            {
+              "id": 231,
+              "keyword": "Sắt",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=s%E1%BA%AFt"
+            },
+            {
+              "id": 227,
+              "keyword": "Sữa rửa mặt",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=s%E1%BB%AFa%20r%E1%BB%ADa%20m%E1%BA%B7t"
+            },
+            {
+              "id": 226,
+              "keyword": "Men vi sinh",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=men%20vi%20sinh"
+            },
+            {
+              "id": 225,
+              "keyword": "Dung dịch vệ sinh",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=dung%20d%E1%BB%8Bch%20v%E1%BB%87%20sinh"
+            },
+            {
+              "id": 224,
+              "keyword": "Vitamin C",
+              "url": "https://nhathuoclongchau.com.vn/tim-kiem?s=vitamin%20c"
+            }
+          ],
+          "background": {
+            "web": null,
+            "mobile": null
+          }
+        },
+        "background": {
+          "web": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/Option_1_1_2a84e0cd00.png",
+            "alt": "",
+            "name": ""
+          },
+          "mobile": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/Option_1_2_2d9677e5fd.png",
+            "alt": "",
+            "name": ""
+          }
+        },
+        "loginMethod": "",
+        "leftDesktopBanner": null,
+        "rightDesktopBanner": null,
+        "leftResponsiveBanner": null,
+        "rightResponsiveBanner": null
+      },
+      "footer": {
+        "background": {
+          "web": null,
+          "mobile": null
+        },
+        "copyRight": "<p>© 2007 - 2026 Công ty Cổ Phần Dược Phẩm FPT Long Châu Số ĐKKD 0315275368 cấp ngày 17/09/2018 tại Sở Kế hoạch Đầu tư TPHCM</p><p>GP thiết lập TTTĐTTH số 538/GP-TTĐT do Sở TTTT Hồ Chí Minh cấp ngày 27 tháng 03 năm 2025&nbsp;</p><ul><li>Địa chỉ: 379-381 Hai Bà Trưng, P. Xuân Hoà, TP. Hồ Chí Minh</li><li>Số điện thoại: <a target=\"_blank\" rel=\"nofollow\" href=\"tel:02873023456\">(028)73023456</a></li><li>Email: <a target=\"_blank\" rel=\"nofollow\" href=\"mailto:sale@nhathuoclongchau.com.vn\">sale@nhathuoclongchau.com.vn</a></li><li>Người chịu trách nhiệm nội dung: Nguyễn Bạch Điệp</li></ul>",
+        "items": [
+          {
+            "title": "VỀ CHÚNG TÔI",
+            "items": [
+              {
+                "text": "Giới thiệu",
+                "redirectUrl": "/chinh-sach/gioi-thieu"
+              },
+              {
+                "text": "Hệ thống cửa hàng",
+                "redirectUrl": "/he-thong-cua-hang"
+              },
+              {
+                "text": "Giấy phép kinh doanh",
+                "redirectUrl": "/chinh-sach/giay-phep-kinh-doanh"
+              },
+              {
+                "text": "Quy chế hoạt động",
+                "redirectUrl": "/chinh-sach/tos"
+              },
+              {
+                "text": "Chính sách đặt cọc",
+                "redirectUrl": "/chinh-sach/chinh-sach-dat-coc"
+              },
+              {
+                "text": "Chính sách nội dung",
+                "redirectUrl": "/chinh-sach/chinh-sach-noi-dung"
+              },
+              {
+                "text": "Chính sách đổi trả thuốc",
+                "redirectUrl": "/chinh-sach/chinh-sach-doi-tra"
+              },
+              {
+                "text": "Chính sách giao hàng",
+                "redirectUrl": "/chinh-sach/chinh-sach-giao-hang"
+              },
+              {
+                "text": "Chính sách bảo mật",
+                "redirectUrl": "/chinh-sach/chinh-sach-bao-mat"
+              },
+              {
+                "text": "Chính sách thanh toán",
+                "redirectUrl": "/chinh-sach/chinh-sach-thanh-toan"
+              },
+              {
+                "text": "Kiểm tra hóa đơn điện tử",
+                "redirectUrl": "https://hddt.nhathuoclongchau.com.vn/"
+              },
+              {
+                "text": "Chính sách bảo mật dữ liệu cá nhân",
+                "redirectUrl": "/chinh-sach/chinh-sach-thu-thap-va-xu-ly-du-lieu-ca-nhan"
+              },
+              {
+                "text": "Chính sách hoàn hủy đổi trả Vắc xin",
+                "redirectUrl": "/chinh-sach/chinh-sach-hoan-huy-doi-tra-vaccine"
+              },
+              {
+                "text": "Thông tin trung tâm bảo hành máy thiết bị y tế từng hãng",
+                "redirectUrl": "/chinh-sach/thong-tin-trung-tam-bao-hanh-may-thiet-bi-y-te-tung-hang"
+              },
+              {
+                "text": "Thể lệ chương trình “Tích điểm nhận đặc quyền”",
+                "redirectUrl": "/chinh-sach/the-le-chuong-trinh-tich-diem-nhan-dac-quyen-tai-he-thong-fpt-long-chau"
+              },
+              {
+                "text": "Điều khoản sử dụng Long Châu 247",
+                "redirectUrl": "/chinh-sach/dieu-khoan-su-dung-long-chau-247"
+              }
+            ]
+          },
+          {
+            "title": "DANH MỤC",
+            "items": [
+              {
+                "text": "Thực phẩm chức năng",
+                "redirectUrl": "/thuc-pham-chuc-nang"
+              },
+              {
+                "text": "Dược mỹ phẩm",
+                "redirectUrl": "/duoc-my-pham"
+              },
+              {
+                "text": "Thuốc",
+                "redirectUrl": "/thuoc"
+              },
+              {
+                "text": "Chăm sóc cá nhân",
+                "redirectUrl": "/cham-soc-ca-nhan"
+              },
+              {
+                "text": "Trang thiết bị y tế",
+                "redirectUrl": "/trang-thiet-bi-y-te"
+              },
+              {
+                "text": "Đặt thuốc online",
+                "redirectUrl": "/don-thuoc"
+              },
+              {
+                "text": "Tiêm chủng Long Châu",
+                "redirectUrl": "https://tiemchunglongchau.com.vn/"
+              }
+            ]
+          },
+          {
+            "title": "TÌM HIỂU THÊM",
+            "items": [
+              {
+                "text": "Góc sức khoẻ",
+                "redirectUrl": "/bai-viet"
+              },
+              {
+                "text": "Tra cứu thuốc",
+                "redirectUrl": "/thuoc"
+              },
+              {
+                "text": "Tra cứu dược chất",
+                "redirectUrl": "/duoc-chat"
+              },
+              {
+                "text": "Tra cứu dược liệu",
+                "redirectUrl": "/duoc-lieu"
+              },
+              {
+                "text": "Bệnh thường gặp",
+                "redirectUrl": "/benh"
+              },
+              {
+                "text": "Bệnh viện",
+                "redirectUrl": "/bai-viet/tin-tuc-suc-khoe/benh-vien"
+              },
+              {
+                "text": "Đội ngũ chuyên môn",
+                "redirectUrl": "/doi-ngu-chuyen-mon"
+              },
+              {
+                "text": "Tin tức tuyển dụng",
+                "redirectUrl": "https://tuyendung.frt.vn/tin-tuyen-dung/longchau"
+              },
+              {
+                "text": "Tin tức sự kiện",
+                "redirectUrl": "/bai-viet/truyen-thong/tin-tuc-and-su-kien"
+              }
+            ]
+          }
+        ],
+        "callCenter": {
+          "title": "TỔNG ĐÀI (8:00-22:00)",
+          "items": [
+            {
+              "title": "Tư vấn mua hàng",
+              "phone": "18006928",
+              "note": "Nhánh 1",
+              "redirectUrl": null
+            },
+            {
+              "title": "Trung tâm Vắc xin",
+              "phone": "18006928",
+              "note": "Nhánh 2",
+              "redirectUrl": null
+            },
+            {
+              "title": "Góp ý, khiếu nại và tiếp nhận cảnh báo thông tin vi phạm",
+              "phone": "18006928",
+              "note": "Nhánh 3",
+              "redirectUrl": null
+            }
+          ]
+        },
+        "certificated": {
+          "title": "CHỨNG NHẬN BỞI",
+          "items": [
+            {
+              "title": "Bộ công thương",
+              "redirectUrl": "http://online.gov.vn/(X(1)S(k3yc0ysr0jtxpy32mp52zd3n))/Home/WebDetails/94973?AspxAutoDetectCookieSupport=1",
+              "icon": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bo_cong_thuong_a8e5750f57.svg",
+                "alt": "",
+                "name": ""
+              }
+            },
+            {
+              "title": "DMCA",
+              "redirectUrl": "https://www.dmca.com/Protection/Status.aspx?ID=98d66f66-5a62-47e9-b45c-edaebfb0c9b3&refurl=https://nhathuoclongchau.com.vn/",
+              "icon": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/DMCA_1_1f84305343.svg",
+                "alt": "",
+                "name": ""
+              }
+            },
+            {
+              "title": "LegitScript",
+              "redirectUrl": "https://www.legitscript.com/websites/?checker_keywords=nhathuoclongchau.com.vn",
+              "icon": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/legit_2_18f407eac4.svg",
+                "alt": "",
+                "name": ""
+              }
+            }
+          ]
+        },
+        "connect": {
+          "title": "KẾT NỐI VỚI CHÚNG TÔI",
+          "items": [
+            {
+              "title": "Facebook",
+              "redirectUrl": "https://www.facebook.com/Nhathuocfptlongchau",
+              "icon": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/facebook_logo_3152b9bb16.svg",
+                "alt": "",
+                "name": ""
+              }
+            },
+            {
+              "title": "Zalo",
+              "redirectUrl": "https://zalo.me/3822805105108870889",
+              "icon": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Logo_Zalo_979d41d52b.svg",
+                "alt": "",
+                "name": ""
+              }
+            }
+          ]
+        },
+        "app": {
+          "title": "TẢI ỨNG DỤNG LONG CHÂU",
+          "qr": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/deep_link_footer_949429da11.png",
+            "alt": "",
+            "name": ""
+          },
+          "items": [
+            {
+              "redirectUrl": "https://onelink.to/website-footer",
+              "icon": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Download_131x42_4x_2a86acef28.svg",
+                "alt": "",
+                "name": ""
+              }
+            }
+          ]
+        },
+        "payment": {
+          "title": "Hỗ trợ thanh toán",
+          "isVisible": true,
+          "items": [
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/VISA_45820883ff.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Master_Card_41d4570101.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/JCB_1d7687d212.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/AMEX_132a3ebdda.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/NAPAS_e36fadab7c.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Mo_Mo_fa21263637.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Zalo_Pay_113a5dcf96.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/VN_Pay_63fc2a27c5.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            },
+            {
+              "isVisible": true,
+              "icon": {
+                "alt": "",
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Apple_Pay_087317d60f.png",
+                "slug": "/chinh-sach/chinh-sach-thanh-toan"
+              }
+            }
+          ]
+        },
+        "totalShops": 2502,
+        "isShowTotalShop": true
+      },
+      "menu": [
+        {
+          "__component": "menu.menu-auto-cate",
+          "fullPathSlug": "/thuc-pham-chuc-nang",
+          "name": "Thực phẩm chức năng",
+          "image": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/thuc_pham_chuc_nang_level_1_2b9a44a9dd.png",
+            "alt": "",
+            "name": ""
+          },
+          "children": [
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/vitamin-khoang-chat",
+              "name": "Vitamin & Khoáng chất",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Vitamin_and_Khoang_chat_a92b3b1672.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/dau-ca-omega-3-dha",
+                  "name": "Dầu cá - Omega 3",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dau_ca_omega_3_dha_level_3_814328177f.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/kem-magie",
+                  "name": "Kẽm - Magie",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bo_sung_kem_magie_level_3_cc1682a7aa.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/vitamin-tong-hop",
+                  "name": "Vitamin tổng hợp",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tpcn_vitamin_tong_hop_level_3_6254452b91.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/canxi-vitamin-D",
+                  "name": "Canxi & Vitamin D",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bo_sung_canxi_vitamin_d_level_3_1cac767906.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/vitamin-c",
+                  "name": "Vitamin C",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tpcn_vitamin_c_cac_loai_level_3_92215a0f32.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/vitamin-e",
+                  "name": "Vitamin E",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tpcn_vitamin_e_cac_loai_level_3_c1e33728e3.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/sat-axit-folic",
+                  "name": "Sắt - Axit Folic",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bo_sung_sat_axit_folic_level_3_46a5bbf1c4.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/ho-tro-mien-dich-tang-suc-de-khang",
+              "name": "Miễn dịch - Đề kháng",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Tang_suc_de_khang_mien_dich_9926e39ba8.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/sinh-ly-noi-tiet-to",
+              "name": "Sinh lý - Nội tiết tố",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Sinh_li_Noi_tiet_to_f9d4faa138.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/sinh-ly-nam",
+                  "name": "Sinh lý nam",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/sinh_ly_nam_level_3_f76dc0b6c6.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/can-bang-noi-tiet-to",
+                  "name": "Cân bằng nội tiết tố",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/can_bang_noi_tiet_to_level_3_7fad40d671.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/sinh-ly-nu",
+                  "name": "Sinh lý nữ",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/sinh_ly_nu_level_3_a1988dcde7.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/tien-man-kinh-man-kinh",
+                  "name": "Tiền mãn kinh - mãn kinh",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/ho_tro_man_kinh_level_3_273d1706e6.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/bao-ve-mat",
+              "name": "Mắt - Thị lực",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Mat_Thi_luc_cdc7ac45ea.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/ho-tro-tieu-hoa",
+              "name": "Tiêu hóa",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Ho_tro_tieu_hoa_ed4a57d578.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/vi-sinh-probiotic",
+                  "name": "Men vi sinh",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/vi_sinh_probiotic_level_3_b7bc79d9ac.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/da-day-ta-trang",
+                  "name": "Dạ dày, tá tràng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/da_day_ta_trang_level_3_15bf0448a2.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/dai-trang",
+                  "name": "Đại tràng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dai_trang_level_3_f096a0e215.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/tao-bon",
+                  "name": "Nhuận tràng, táo bón",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tao_bon_level_3_d5c6858ee6.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/kho-tieu",
+                  "name": "Khó tiêu",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/kho_tieu_level_3_e962281443.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/ho-tro-an-ngon",
+                  "name": "Hỗ trợ ăn ngon",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/DSC_09992_a12a334ad7.jpg",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/than-kinh-nao",
+              "name": "Thần kinh não",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Than_kinh_nao_ae09cbf6e8.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/bo-nao-cai-thien-tri-nho",
+                  "name": "Bổ não - cải thiện trí nhớ",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bo_mat_bao_ve_mat_level_3_9f9c1cdb68.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/ho-tro-giac-ngu-ngon",
+                  "name": "Hỗ trợ giấc ngủ",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/ho_tro_giac_ngu_ngon_level_3_1a522b6739.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/hoat-huyet",
+                  "name": "Hoạt huyết",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/hoat_huyet_level_3_c7497e7c74.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/lam-dep",
+              "name": "Hỗ trợ làm đẹp",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Ho_tro_lam_dep_dff6e2c13d.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/toc",
+                  "name": "Chăm sóc tóc",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/toc_level_3_7ae28c8308.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/da",
+                  "name": "Chăm sóc da",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/da_level_3_59b0cc4d72.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/tieu-duong",
+              "name": "Đường huyết - Tiểu đường",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Duong_huyet_Tieu_duong_494ebfb036.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/tim-mach-huyet-ap",
+              "name": "Tim mạch - Huyết áp",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Suc_khoe_tim_mach_e413362a48.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/huyet-ap",
+                  "name": "Huyết áp",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/huyet_ap_level_3_f1d79c5311.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/cholesterol",
+                  "name": "Mỡ máu - Cholesterol",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/giam_cholesterol_level_3_f5f15760fa.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/tinh-mach",
+                  "name": "Suy giãn tĩnh mạch",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/suy_gian_tinh_mach_level_3_41129d7b67.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/suc-khoe-duong-ho-hap-ho-xoang",
+              "name": "Hô hấp - Tai mũi họng",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Ho_hap_Tai_mui_hong_ce362a5f00.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/co-xuong-khop",
+              "name": "Cơ xương khớp",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Co_xuong_khop_5f236f5c54.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/xuong-khop",
+                  "name": "Hỗ trợ xương khớp",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/co_xuong_khop_level_3_95a7a803b7.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/gout",
+                  "name": "Hỗ trợ gout",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/ho_tro_dieu_tri_gout_level_3_65d9072f00.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/gan-mat",
+              "name": "Gan - Mật",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Gan_Mat_333226d9d3.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/giai-ruou",
+                  "name": "Giải rượu bia",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/giai_ruou_cai_ruou_level_3_95c038b70b.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/bo-gan",
+                  "name": "Bổ gan",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/chuc_nang_gan_level_3_aeb34d62e2.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/than-tiet-nieu",
+              "name": "Thận - Tiết niệu",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Than_Tiet_nieu_609db7b91e.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/thuc-pham-chuc-nang/sua",
+              "name": "Sữa",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Sua_d4a041e21d.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/sua-bot",
+                  "name": "Sữa bột",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/sua_level_3_42d58ad9e3.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuc-pham-chuc-nang/sua-pha-san",
+                  "name": "Sữa pha sẵn",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/DSC_02727_0f957dbeee.jpg",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            }
+          ]
+        },
+        {
+          "__component": "menu.menu-auto-cate",
+          "fullPathSlug": "/duoc-my-pham",
+          "name": "Dược mỹ phẩm",
+          "image": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/duoc_my_pham_level_1_894171f85d.png",
+            "alt": "",
+            "name": ""
+          },
+          "children": [
+            {
+              "fullPathSlug": "/duoc-my-pham/cham-soc-da-mat",
+              "name": "Chăm sóc da mặt",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Cham_soc_da_mat_cd83b6f191.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/duoc-my-pham/sua-rua-mat-kem-gel-sua",
+                  "name": "Sữa rửa mặt (Kem, gel, sữa)",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/sua_rua_mat_kem_gel_sua_level_3_b58238bc61.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/chong-nang-da-mat",
+                  "name": "Kem chống nắng da mặt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/chong_nang_da_mat_level_3_cf98e4420a.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/duong-da-mat",
+                  "name": "Dưỡng da mặt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/duong_da_mat_level_3_831593bde3.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/mat-na",
+                  "name": "Mặt nạ",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/mat_na_level_3_c01279ed63.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/serum-essence-hoac-ampoule",
+                  "name": "Serum, Essence hoặc Ampoule",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/serum_essence_hoac_ampoule_level_3_83a3609f46.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/toner-nuoc-hoa-hong-lotion",
+                  "name": "Toner (nước hoa hồng) / Lotion",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/toner_nuoc_hoa_hong_lotion_level_3_56a3880051.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/tay-te-bao-chet",
+                  "name": "Tẩy tế bào chết",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tay_te_bao_chet_level_3_47bb7db741.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/xit-khoang",
+                  "name": "Xịt khoáng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/xit_khoang_level_3_10f9e7133e.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/nuoc-tay-trang",
+                  "name": "Nước tẩy trang, dầu tẩy trang",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tay_trang_level_3_0ad60c8039.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/duoc-my-pham/cham-soc-co-the",
+              "name": "Chăm sóc cơ thể",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Cham_soc_co_the_30b1da9c1a.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/duoc-my-pham/sua-tam-xa-bong",
+                  "name": "Sữa tắm, xà bông",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/sua_tam_xa_bong_level_3_02e1f2f5a8.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/chong-nang-toan-than",
+                  "name": "Chống nắng toàn thân",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/chong_nang_toan_than_level_3_636d52d165.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/khu-mui",
+                  "name": "Lăn khử mùi, xịt khử mùi",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/khu_mui_level_3_52900e3ee5.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/duong-the",
+                  "name": "Sữa dưỡng thể, kem dưỡng thể",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/duong_the_level_3_bcdb90f6b9.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/tri-nut-da",
+                  "name": "Chăm sóc da nứt nẻ",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tri_nut_da_level_3_c7b2c21531.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/duong-tay-chan",
+                  "name": "Kem dưỡng da tay, chân",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/duong_tay_chan_level_3_e8bbaf4556.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/cham-soc-nguc",
+                  "name": "Chăm sóc ngực",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/cham_soc_nguc_level_3_edf67328fe.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/massage",
+                  "name": "Massage",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/massage_level_3_993d7970c6.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/dung-dich-ve-sinh-phu-nu",
+                  "name": "Dung dịch vệ sinh phụ nữ",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dung_dich_ve_sinh_phu_nu_level_3_19824d8b5c.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/duoc-my-pham/giai-phap-lan-da",
+              "name": "Giải pháp làn da",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Icon_cat_lvl2_Giai_phap_lan_da_db544098c9.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/duoc-my-pham/tri-seo-mo-tham",
+                  "name": "Hỗ trợ mờ sẹo, mờ vết thâm",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/viem_da_co_dia_level_3_08332b59dd.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/da-mun",
+                  "name": "Kem hỗ trợ giảm mụn, gel hỗ trợ giảm mụn",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/da_bi_mun_level_3_7ba8d236fe.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/da-bi-kho-thieu-am",
+                  "name": "Dưỡng da bị khô, thiếu ẩm",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/da_bi_kho_thieu_am_level_3_6651a18c3f.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/nam-tan-nhang-dom-nau",
+                  "name": "Kem hỗ trợ mờ nám, tàn nhang, đốm nâu",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/nam_tan_nhang_dom_nau_level_3_1b8266d569.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/viem-da-co-dia",
+                  "name": "Da mẫn cảm, dễ kích ứng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/viem_da_co_dia_level_3_08332b59dd.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/da-bi-kich-ung",
+                  "name": "Da nhạy cảm",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/da_bi_kich_ung_level_3_4145471ab3.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/tai-tao-chong-lao-hoa",
+                  "name": "Hỗ trợ tái tạo, cải thiện da lão hoá",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tai_tao_chong_lao_hoa_da_level_3_d76f993d3d.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/da-sam-xin-mau",
+                  "name": "Da sạm, xỉn màu",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/da_sam_xin_mau_level_3_c77347eb1b.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/duoc-my-pham/cham-soc-toc-da-dau",
+              "name": "Chăm sóc tóc - da đầu",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Cham_soc_toc_da_dau_6b8c4e516d.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/duoc-my-pham/dau-goi-dau-xa",
+                  "name": "Dầu gội dầu xả",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dau_goi_dau_xa_level_3_40dc655332.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/dau-goi-tri-nam",
+                  "name": "Dầu gội giúp giảm nấm và ngứa da đầu",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dau_goi_tri_nam_level_3_e978aefc9e.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/duong-toc-u-toc",
+                  "name": "Dưỡng tóc, ủ tóc",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/duong_toc_u_toc_level_3_e47c8afe1f.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/dac-tri",
+                  "name": "Chăm sóc chuyên sâu cho tóc",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dac_tri_cho_toc_level_3_1d1be90b53.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/duoc-my-pham/my-pham-trang-diem",
+              "name": "Mỹ phẩm trang điểm",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/My_pham_trang_diem_8589bc7b93.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/duoc-my-pham/son-moi",
+                  "name": "Son môi",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/son_moi_level_3_3afe8fcc55.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/trang-diem-mat",
+                  "name": "Trang điểm mặt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/trang_diem_mat_level_3_10391db989.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/duoc-my-pham/cham-soc-da-vung-mat",
+              "name": "Chăm sóc da vùng mắt",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Cham_soc_da_vung_mat_2d70f0a5e3.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/duoc-my-pham/ngan-ngua-tri-tham-quang-bong-mat",
+                  "name": "Hỗ trợ cải thiện quầng thâm, bọng mắt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tri_quang_tham_bong_mat_level_3_ee87bb96de.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/xoa-nep-nhan-vung-mat",
+                  "name": "Hỗ trợ cải thiện nếp nhăn vùng mắt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/xoa_nep_nhan_vung_mat_level_3_136c5d4838.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/duong-da-ngan-ngua-lao-hoa-vung-mat",
+                  "name": "Dưỡng da mắt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/duong_da_vung_mat_level_3_ab63bfce95.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/duoc-my-pham/san-pham-tu-thien-nhien",
+              "name": "Sản phẩm từ thiên nhiên",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/San_pham_tu_thien_nhien_4435bda613.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/duoc-my-pham/tinh-dau",
+                  "name": "Tinh dầu",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tinh_dau_level_3_0b6f321fb7.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/duoc-my-pham/dau-dua",
+                  "name": "Dầu dừa",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dau_dua_level_3_8b64ed450d.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            }
+          ]
+        },
+        {
+          "__component": "menu.menu-manual-cate",
+          "fullPathSlug": "/thuoc",
+          "name": "Thuốc",
+          "image": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/thuoc_level_1_09fc1c0471.png",
+            "alt": "",
+            "name": ""
+          },
+          "children": [
+            {
+              "name": "Tra cứu thuốc ",
+              "fullPathSlug": "/thuoc/tra-cuu-thuoc-a-z",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Tra_cuu_thuoc_3c3dcc9179.png",
+                "alt": "",
+                "name": ""
+              },
+              "listSku": [
+                "00004206",
+                "00009723",
+                "00002990",
+                "00008350",
+                "00001954",
+                "00002814",
+                "00006780",
+                "00007223",
+                "00004244",
+                "00010253",
+                "00028069",
+                "00002441"
+              ],
+              "ingredients": {
+                "data": []
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/thuoc/thuoc-khang-sinh-khang-nam",
+                  "name": "Thuốc kháng sinh, kháng nấm",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_khang_sinh_duong_toan_than_level_2_b033595f14.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuoc/thuoc-dieu-tri-ung-thu/thuoc-dieu-tri-ung-thu",
+                  "name": "Thuốc điều trị ung thư",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_chong_ung_thu_khac_level_3_8116899b78.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuoc/thuoc-tim-mach-and-mau",
+                  "name": "Thuốc tim mạch & máu",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/he_tim_mach_tao_mau_level_2_c85b42b397.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuoc/thuoc-than-kinh/thuoc-than-kinh",
+                  "name": "Thuốc thần kinh",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thuoc_tri_dau_do_benh_ly_than_kinh_level_3_ade71a7d5a.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/thuoc/thuoc-tieu-hoa-and-gan-mat",
+                  "name": "Thuốc tiêu hoá & gan mật",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/he_tieu_hoa_gan_mat_level_2_fbbb4ffa80.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "name": "Tra cứu dược chất",
+              "fullPathSlug": "/duoc-chat",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Tra_cuu_duoc_chat_3d726d05f6.png",
+                "alt": "",
+                "name": ""
+              },
+              "listSku": [],
+              "ingredients": {
+                "data": [
+                  {
+                    "id": 7729,
+                    "attributes": {
+                      "slug": "thanh-phan/acetaminophen",
+                      "compoundName": "Acetaminophen"
+                    }
+                  },
+                  {
+                    "id": 20044,
+                    "attributes": {
+                      "slug": "thanh-phan/fexofenadine",
+                      "compoundName": "Fexofenadine"
+                    }
+                  },
+                  {
+                    "id": 7851,
+                    "attributes": {
+                      "slug": "thanh-phan/acetylsalicylic-acid",
+                      "compoundName": "Acetylsalicylic acid"
+                    }
+                  },
+                  {
+                    "id": 22955,
+                    "attributes": {
+                      "slug": "thanh-phan/ibuprofen",
+                      "compoundName": "Ibuprofen"
+                    }
+                  },
+                  {
+                    "id": 13717,
+                    "attributes": {
+                      "slug": "thanh-phan/cetirizine",
+                      "compoundName": "Cetirizine"
+                    }
+                  },
+                  {
+                    "id": 8923,
+                    "attributes": {
+                      "slug": "thanh-phan/aluminum-hydroxide",
+                      "compoundName": "Aluminum hydroxide"
+                    }
+                  },
+                  {
+                    "id": 12228,
+                    "attributes": {
+                      "slug": "thanh-phan/calcium",
+                      "compoundName": "Calcium"
+                    }
+                  },
+                  {
+                    "id": 11751,
+                    "attributes": {
+                      "slug": "thanh-phan/bromhexine",
+                      "compoundName": "Bromhexine"
+                    }
+                  }
+                ]
+              },
+              "children": [],
+              "products": []
+            },
+            {
+              "name": "Tra cứu dược liệu",
+              "fullPathSlug": "/duoc-lieu",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Tra_cuu_duoc_lieu_ed08035f86.png",
+                "alt": "",
+                "name": ""
+              },
+              "listSku": [],
+              "ingredients": {
+                "data": [
+                  {
+                    "id": 12373,
+                    "attributes": {
+                      "slug": "thanh-phan/cam-thao",
+                      "compoundName": "Cam thảo"
+                    }
+                  },
+                  {
+                    "id": 6681,
+                    "attributes": {
+                      "slug": "thanh-phan/binh-bat",
+                      "compoundName": "Bình bát"
+                    }
+                  },
+                  {
+                    "id": 11324,
+                    "attributes": {
+                      "slug": "thanh-phan/bo-ket",
+                      "compoundName": "Bồ kết (Gai)"
+                    }
+                  },
+                  {
+                    "id": 11343,
+                    "attributes": {
+                      "slug": "thanh-phan/boi-mau",
+                      "compoundName": "Bối mẫu (Thân hành)"
+                    }
+                  },
+                  {
+                    "id": 10243,
+                    "attributes": {
+                      "slug": "thanh-phan/bach-mao-can",
+                      "compoundName": "Bạch mao căn"
+                    }
+                  },
+                  {
+                    "id": 13126,
+                    "attributes": {
+                      "slug": "thanh-phan/cau-dang",
+                      "compoundName": "Câu đằng"
+                    }
+                  },
+                  {
+                    "id": 10394,
+                    "attributes": {
+                      "slug": "thanh-phan/ban-bien-lien",
+                      "compoundName": "Bán biên liên"
+                    }
+                  },
+                  {
+                    "id": 12075,
+                    "attributes": {
+                      "slug": "thanh-phan/ca-cao",
+                      "compoundName": "Ca cao"
+                    }
+                  },
+                  {
+                    "id": 11876,
+                    "attributes": {
+                      "slug": "thanh-phan/bup-giam",
+                      "compoundName": "Bụp giấm"
+                    }
+                  },
+                  {
+                    "id": 10317,
+                    "attributes": {
+                      "slug": "thanh-phan/bai-tuong-thao",
+                      "compoundName": "Bại tương thảo"
+                    }
+                  },
+                  {
+                    "id": 10255,
+                    "attributes": {
+                      "slug": "thanh-phan/bach-tat-le",
+                      "compoundName": "Bạch tật lê"
+                    }
+                  }
+                ]
+              },
+              "children": [],
+              "products": []
+            }
+          ]
+        },
+        {
+          "__component": "menu.menu-auto-cate",
+          "fullPathSlug": "/cham-soc-ca-nhan",
+          "name": "Chăm sóc cá nhân",
+          "image": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/cham_soc_ca_nhan_level_1_6a809195c7.png",
+            "alt": "",
+            "name": ""
+          },
+          "children": [
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/ho-tro-tinh-duc",
+              "name": "Hỗ trợ tình dục",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Ho_tro_tinh_duc_2497bbf972.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/bao-cao-su",
+                  "name": "Bao cao su",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bao_cao_su_level_3_4302b9399f.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/gel-boi-tron",
+                  "name": "Gel bôi trơn",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/gel_boi_tron_level_3_de17fbd4fe.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/thuc-pham-do-uong",
+              "name": "Thực phẩm - Đồ uống",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Thuc_pham_Do_uong_94aa81d34a.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/nuoc-yen",
+                  "name": "Nước Yến",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/nuoc_yen_5e1045e778.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/keo-cung",
+                  "name": "Kẹo cứng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/keo_cung_level_3_e6047983d4.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/nuoc-uong-khong-gas",
+                  "name": "Nước uống không gas",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/nuoc_uong_khong_gas_level_3_75bed986fd.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/duong-an-kieng",
+                  "name": "Đường ăn kiêng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/duong_an_kieng_level_3_5c79fab385.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/tra",
+                  "name": "Trà thảo dược",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tra_level_3_5691019dab.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/keo-deo",
+                  "name": "Kẹo dẻo",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/keo_deo_level_3_84794ed1cd.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/to-yen",
+                  "name": "Tổ Yến",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/DSC_09937_efe108b7f6_5c7031fd5c.jpg",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/ve-sinh-ca-nhan",
+              "name": "Vệ sinh cá nhân",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Ve_sinh_ca_nhan_a482678d44.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/ve-sinh-tai",
+                  "name": "Vệ sinh tai",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/ve_sinh_tai_level_3_a01c8c8cb4.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/bang-ve-sinh",
+                  "name": "Băng vệ sinh",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bang_ve_sinh_level_3_dec044f9b3.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/cham-soc-rang-mieng",
+              "name": "Chăm sóc răng miệng",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Cham_soc_rang_mieng_c2dd82ea25.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/kem-danh-rang",
+                  "name": "Kem đánh răng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/kem_danh_rang_level_3_e8e7416b01.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/ban-chai-dien",
+                  "name": "Bàn chải điện",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/ban_chai_danh_rang_level_3_1d073ac3fb.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/chi-nha-khoa",
+                  "name": "Chỉ nha khoa",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/chi_nha_khoa_level_3_fb8eaa117c.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/cham-soc-rang",
+                  "name": "Chăm sóc răng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/cham_soc_rang_level_3_8928fad010.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/nuoc-suc-mieng",
+                  "name": "Nước súc miệng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/nuoc_suc_mieng_level_3_5b2eb4b90e.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/do-dung-gia-dinh",
+              "name": "Đồ dùng gia đình",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Do_dung_gia_dinh_3ec1ea2bf6.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/chong-muoi-con-trung",
+                  "name": "Chống muỗi & côn trùng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/chong_muoi_and_con_trung_level_3_191857e832.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/do-dung-cho-be",
+                  "name": "Đồ dùng cho bé",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/do_dung_cho_be_level_3_089c059414.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/do-dung-cho-me",
+                  "name": "Đồ dùng cho mẹ",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/do_dung_cho_me_level_3_a1b2edcf00.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/hang-tong-hop",
+              "name": "Hàng tổng hợp",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Hang_tong_hop_485e01c11d.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/khan-giay-khan-uot",
+                  "name": "Khăn giấy, khăn ướt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/khan_giay_khan_uot_level_3_6e37e96a27.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/tinh-dau-cac-loai",
+              "name": "Tinh dầu các loại",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Tinh_dau_cac_loai_5145170099.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/tinh-dau-massage",
+                  "name": "Tinh dầu massage",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tinh_dau_massage_level_3_bcd88a201a.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/tinh-dau-tri-cam",
+                  "name": "Tinh dầu trị cảm",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tinh_dau_tri_cam_level_3_277d3f76db.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/tinh-dau-xong",
+                  "name": "Tinh dầu xông",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tinh_dau_xong_level_3_544b69611b.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/cham-soc-ca-nhan/thiet-bi-lam-dep",
+              "name": "Thiết bị làm đẹp",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Thiet_bi_lam_dep_570678dfac.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/dung-cu-tay-long",
+                  "name": "Dụng cụ tẩy lông",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dung_cu_tay_long_level_3_4ea65aa0ab.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/cham-soc-ca-nhan/dung-cu-cao-rau",
+                  "name": "Dụng cụ cạo râu",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dung_cu_cao_rau_level_3_39e74bd544.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            }
+          ]
+        },
+        {
+          "__component": "menu.menu-auto-cate",
+          "fullPathSlug": "/trang-thiet-bi-y-te",
+          "name": "Thiết bị y tế",
+          "image": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/thiet_bi_y_te_level_1_31ce60bc67.png",
+            "alt": "",
+            "name": ""
+          },
+          "children": [
+            {
+              "fullPathSlug": "/trang-thiet-bi-y-te/dung-cu-y-te",
+              "name": "Dụng cụ y tế",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Dung_cu_y_te_8ae0da0bb4.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/dung-cu-ve-sinh-mui",
+                  "name": "Dụng cụ vệ sinh mũi",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dung_cu_ve_sinh_mui_level_3_b9c09af6cf.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/kim-cac-loai",
+                  "name": "Kim các loại",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/kim_cac_loai_level_3_a5f2b837b1.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/may-massage",
+                  "name": "Máy massage",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/may_massage_level_3_4bf6a7b467.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/tui-chuom",
+                  "name": "Túi chườm",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/tui_chuom_level_3_869011b667.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/vo-ngan-tinh-mach",
+                  "name": "Vớ ngăn tĩnh mạch",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/vo_ngan_tinh_mach_level_3_4977786e8d.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/gang-tay",
+                  "name": "Găng tay",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/gang_tay_level_3_397fdd05f4.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/dai-lung",
+                  "name": "Đai lưng",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dai_lung_level_3_e6d8b7018b.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/dung-cu-ve-sinh-tai",
+                  "name": "Dụng cụ vệ sinh tai",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dung_cu_ve_sinh_tai_level_3_3fac8745c8.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/dai-nep",
+                  "name": "Đai nẹp",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dai_nep_level_3_73e05bede7.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/may-xong-khi-dung",
+                  "name": "Máy xông khí dung",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/may_xong_khi_dung_fa8810f6bf.jpg",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/dung-cu-khac",
+                  "name": "Các dụng cụ và sản phẩm khác",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/dung_cu_khac_level_3_44ee75a43d.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/trang-thiet-bi-y-te/dung-cu-theo-doi",
+              "name": "Dụng cụ theo dõi",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Dung_cu_theo_doi_db6cafb0fa.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/may-do-huyet-ap",
+                  "name": "Máy đo huyết áp",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/may_do_huyet_ap_level_3_d1cc8315d5.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/may-que-thu-duong-huyet",
+                  "name": "Máy, que thử đường huyết",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/may_que_thu_duong_huyet_level_3_5dd4c1b707.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/thu-thai",
+                  "name": "Thử thai",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/thu_thai_level_3_d43b6243ac.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/nhiet-ke",
+                  "name": "Nhiệt kế",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/nhiet_ke_level_3_1f60ec9b7d.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/kit-test-covid",
+                  "name": "Kit Test Covid",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/kit_test_covid_level_3_anh_that_a4a7e228ea.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/may-do-sp-o2",
+                  "name": "Máy đo SpO2",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/may_do_spo2_level_3_anh_that_81c8bb7fae.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/trang-thiet-bi-y-te/dung-cu-so-cuu",
+              "name": "Dụng cụ sơ cứu",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Dung_cu_so_cuu_277b6974b1.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/bang-y-te",
+                  "name": "Băng y tế",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bang_y_te_level_3_723e6fe8ea.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/bong-y-te",
+                  "name": "Bông y tế",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/bong_y_te_level_3_f5f1e97bfe.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/con-va-nuoc-sat-trung",
+                  "name": "Cồn, nước sát trùng, nước muối",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/con_va_nuoc_sat_trung_level_3_14cf1667c6.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/cham-soc-vet-thuong",
+                  "name": "Chăm sóc vết thương",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/cham_soc_vet_thuong_level_3_0d9f2632cc.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/xit-giam-dau",
+                  "name": "Xịt giảm đau, kháng viêm",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/xit_giam_dau_level_3_556e16eb7f.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/mieng-dan-giam-dau",
+                  "name": "Miếng dán giảm đau, hạ sốt",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/mieng_dan_giam_dau_level_3_f348574869.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            },
+            {
+              "fullPathSlug": "/trang-thiet-bi-y-te/khau-trang",
+              "name": "Khẩu trang",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Khau_trang_1fedf5b9be.png",
+                "alt": "",
+                "name": ""
+              },
+              "children": [
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/khau-trang-vai",
+                  "name": "Khẩu trang vải",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/khau_trang_vai_level_3_09b76a7c62.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                },
+                {
+                  "fullPathSlug": "/trang-thiet-bi-y-te/khau-trang-y-te",
+                  "name": "Khẩu trang y tế",
+                  "image": {
+                    "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/khau_trang_y_te_level_3_dd6078fcdc.png",
+                    "alt": "",
+                    "name": ""
+                  },
+                  "children": []
+                }
+              ],
+              "products": []
+            }
+          ]
+        },
+        {
+          "__component": "menu.menu-link",
+          "fullPathSlug": "https://tiemchunglongchau.com.vn/",
+          "name": "Tiêm chủng ",
+          "children": []
+        },
+        {
+          "__component": "menu.menu-link",
+          "fullPathSlug": "https://nhathuoclongchau.com.vn/chuyen-trang-suc-khoe",
+          "name": "Bệnh & Góc sức khỏe",
+          "children": [
+            {
+              "name": "Góc sức khỏe",
+              "fullPathSlug": "/bai-viet",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/icon_Menu_c5fc94ebc9.png",
+                "alt": "",
+                "name": ""
+              }
+            },
+            {
+              "name": "Chuyên trang ung thư",
+              "fullPathSlug": "https://nhathuoclongchau.com.vn/chuyen-trang-ung-thu",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/icon_Menu_c5fc94ebc9.png",
+                "alt": "",
+                "name": ""
+              }
+            },
+            {
+              "name": "Bệnh thường gặp",
+              "fullPathSlug": "/benh",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Chuyen_trang_9f4523a8b6.png",
+                "alt": "",
+                "name": ""
+              }
+            },
+            {
+              "name": "Tin khuyến mại",
+              "fullPathSlug": "https://nhathuoclongchau.com.vn/bai-viet/tin-khuyen-mai",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Tin_khuyen_mai_87bca39cdb.png",
+                "alt": "",
+                "name": ""
+              }
+            },
+            {
+              "name": "Truyền Thông",
+              "fullPathSlug": "https://nhathuoclongchau.com.vn/bai-viet/truyen-thong",
+              "image": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Truyen_thong_3daad9cfc8.png",
+                "alt": "",
+                "name": ""
+              }
+            }
+          ]
+        },
+        {
+          "__component": "menu.menu-link",
+          "fullPathSlug": "/he-thong-cua-hang",
+          "name": "Hệ thống nhà thuốc",
+          "children": []
+        }
+      ],
+      "topBar": {
+        "id": 4,
+        "redirectUrl": "https://tiemchunglongchau.com.vn/",
+        "content": "Trung tâm tiêm chủng Long Châu",
+        "isVisible": true,
+        "icon": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Search_721457adc3.png",
+        "btnText": "Tìm hiểu ngay"
+      },
+      "charityBanner": {
+        "id": 1,
+        "title": "Đồng hành cùng chiến binh nhí",
+        "description": "để những vòng dây tuổi thơ của các bệnh nhi là trò chơi chứ không còn là dây truyền thuốc",
+        "ctaText": "Tham gia ngay",
+        "isVisible": true,
+        "redirectUrl": "/vi-cong-dong/chien-binh-nhi",
+        "desktopIcon": {
+          "data": {
+            "id": 399988,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Layer_1_40cee7af9a_c0a00fb44a_477cf74ff2.png",
+              "alternativeText": null,
+              "width": 310,
+              "height": 124
+            }
+          }
+        },
+        "mobileIcon": {
+          "data": {
+            "id": 399989,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Group_e5ab3767c1_acbd6b51f3_aa080c5412.png",
+              "alternativeText": null,
+              "width": 155,
+              "height": 63
+            }
+          }
+        },
+        "desktopBackground": {
+          "data": {
+            "id": 399991,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/Popup_06071f732d_804a82e54f_e966ac084e.png",
+              "alternativeText": null,
+              "width": 1040,
+              "height": 290
+            }
+          }
+        },
+        "mobileBackground": {
+          "data": {
+            "id": 399993,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/Variant3_26ceae829e_79b78f594c_449bf0e1cf.png",
+              "alternativeText": null,
+              "width": 343,
+              "height": 164
+            }
+          }
+        }
+      },
+      "chatThirdPartyProvider": "FCI",
+      "loginManagement": {
+        "name": "Prod VNeID",
+        "type": "POPUP",
+        "redirectUrl": null,
+        "popupSections": [
+          {
+            "id": 2,
+            "__component": "login-section.icon-block",
+            "isVisible": true,
+            "items": [
+              {
+                "id": 64,
+                "title": "Miễn phí vận chuyển",
+                "redirectUrl": null,
+                "icon": {
+                  "id": 522059,
+                  "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/mienphivanchuyen_fbd735ba15.png",
+                  "alternativeText": null
+                }
+              },
+              {
+                "id": 63,
+                "title": "Số 1 thuốc kê đơn",
+                "redirectUrl": null,
+                "icon": {
+                  "id": 522060,
+                  "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/so1thuockedon_7b349ba6e6.png",
+                  "alternativeText": null
+                }
+              },
+              {
+                "id": 65,
+                "title": "Giao nhanh trong 1 giờ",
+                "redirectUrl": null,
+                "icon": {
+                  "id": 522061,
+                  "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/giaohangnhanh1h_43c154300f.png",
+                  "alternativeText": null
+                }
+              }
+            ]
+          },
+          {
+            "id": 8,
+            "__component": "login-section.phone-method",
+            "isVisible": true,
+            "name": "Nhập số điện thoại",
+            "type": "PHONE_NUMBER",
+            "url": null,
+            "icon": {
+              "data": null
+            }
+          },
+          {
+            "id": 2,
+            "__component": "login-section.external",
+            "isVisible": true,
+            "methods": [
+              {
+                "id": 4,
+                "isVisible": true,
+                "name": "VNeID",
+                "type": "XID",
+                "url": "https://sso.dancuquocgia.gov.vn/auth",
+                "icon": {
+                  "id": 0,
+                  "url": "",
+                  "alternativeText": null
+                }
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "__component": "login-section.social-network",
+            "isVisible": true,
+            "methods": [
+              {
+                "id": 21,
+                "isVisible": true,
+                "name": "FPTID",
+                "type": "FID",
+                "url": null,
+                "icon": {
+                  "id": 522147,
+                  "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/ic_fptid_f2ec0a5365_fb4abd078e_5e264413d6.webp",
+                  "alternativeText": null
+                }
+              },
+              {
+                "id": 18,
+                "isVisible": true,
+                "name": "FB",
+                "type": "FACEBOOK",
+                "url": null,
+                "icon": {
+                  "id": 522148,
+                  "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/ic_facebook_b054dcc379_92501676df_511e89f330.webp",
+                  "alternativeText": null
+                }
+              },
+              {
+                "id": 19,
+                "isVisible": true,
+                "name": "GG",
+                "type": "GOOGLE",
+                "url": null,
+                "icon": {
+                  "id": 522150,
+                  "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/ic_google_a9a2850fe1_f08cbf0f4d_60f432f0a9.webp",
+                  "alternativeText": null
+                }
+              },
+              {
+                "id": 20,
+                "isVisible": true,
+                "name": "AppleID",
+                "type": "APPLE",
+                "url": null,
+                "icon": {
+                  "id": 522149,
+                  "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/ic_apple_52f5ae14ef_51cd67d9a7_8c8a4780b8.webp",
+                  "alternativeText": null
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "aiSearchEnable": true,
+      "voiceSearchEnable": true,
+      "searchHint": {
+        "id": 2,
+        "isVisible": true,
+        "hints": [
+          {
+            "id": 8,
+            "hint": "Freeship qua ứng dụng"
+          },
+          {
+            "id": 9,
+            "hint": "Giao hàng nhanh trong 1h"
+          },
+          {
+            "id": 10,
+            "hint": "Đổi trả trong 30 ngày"
+          },
+          {
+            "id": 11,
+            "hint": "Mua trước trả sau 0% lãi suất"
+          },
+          {
+            "id": 12,
+            "hint": "Tìm tên thuốc, bệnh lý, TPCN..."
+          }
+        ]
+      },
+      "legalDeclaration": "https://nhathuoclongchau.com.vn/bai-viet/cach-tra-cuu-thong-tin-dang-ky-thuoc.html",
+      "popupAnnouncement": {
+        "id": 1,
+        "isVisible": false,
+        "redirectUrl": "https://nhathuoclongchau.com.vn/bai-viet/uu-dai-dac-biet-vong-quay-nhan-diem-chiu-quay-trieu-thuong-co-hoi-nhan-10-diem-fsell.html",
+        "resetKey": "02012",
+        "desktopImage": {
+          "data": {
+            "id": 547821,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/G_D_Popup_Banner_960x1120_a5bb1cd94f.png",
+              "alternativeText": null,
+              "width": 960,
+              "height": 1120
+            }
+          }
+        },
+        "responsiveImage": {
+          "data": {
+            "id": 547822,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/G_M_Popup_Banner_654x900_80f2baeacd.png",
+              "alternativeText": null,
+              "width": 654,
+              "height": 900
+            }
+          }
+        }
+      },
+      "legalDeclarationBadge": {
+        "data": {
+          "id": 513751,
+          "attributes": {
+            "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Badge_52ad415e46.png",
+            "alternativeText": null,
+            "width": 216,
+            "height": 270
+          }
+        }
+      },
+      "flashSaleCampaign": {
+        "id": 1,
+        "isVisible": true,
+        "note": null,
+        "redirectUrl": "bai-viet/the-le-chuong-trinh-flash-sale-2.html",
+        "primaryTextColor": "#FFFFFF",
+        "secondaryTextColor": "#0042B6",
+        "backgroundColor": "#EDF6FF",
+        "webBackground": {
+          "data": {
+            "id": 577073,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/Banner_Detail_page_Dessk_584x80_e42247ea70.png",
+              "alternativeText": null,
+              "width": 584,
+              "height": 80
+            }
+          }
+        },
+        "mobileBackground": {
+          "data": {
+            "id": 577074,
+            "attributes": {
+              "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/Banner_Detail_page_App_343x64_88a2f31509.png",
+              "alternativeText": null,
+              "width": 686,
+              "height": 128
+            }
+          }
+        }
+      },
+      "multipleBanners": [
+        {
+          "id": 45,
+          "redirectUrl": null,
+          "webImage": {
+            "data": {
+              "id": 522042,
+              "attributes": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/D_USP_394x176_1_efcfbcab8b.png",
+                "alternativeText": null,
+                "width": 1182,
+                "height": 528
+              }
+            }
+          },
+          "mobileImage": {
+            "data": {
+              "id": 522037,
+              "attributes": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/M_USP_327x164_1_c58bd97496.png",
+                "alternativeText": null,
+                "width": 981,
+                "height": 492
+              }
+            }
+          }
+        },
+        {
+          "id": 46,
+          "redirectUrl": null,
+          "webImage": {
+            "data": {
+              "id": 522039,
+              "attributes": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/D_USP_394x176_2_1ed85999dc.png",
+                "alternativeText": null,
+                "width": 1182,
+                "height": 528
+              }
+            }
+          },
+          "mobileImage": {
+            "data": {
+              "id": 522038,
+              "attributes": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/M_USP_327x164_2_4576ad079c.png",
+                "alternativeText": null,
+                "width": 981,
+                "height": 492
+              }
+            }
+          }
+        },
+        {
+          "id": 47,
+          "redirectUrl": null,
+          "webImage": {
+            "data": {
+              "id": 522041,
+              "attributes": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/D_USP_394x176_3_da0c368a0e.png",
+                "alternativeText": null,
+                "width": 1182,
+                "height": 528
+              }
+            }
+          },
+          "mobileImage": {
+            "data": {
+              "id": 522040,
+              "attributes": {
+                "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/M_USP_327x164_3_e54d371b89.png",
+                "alternativeText": null,
+                "width": 981,
+                "height": 492
+              }
+            }
+          }
+        }
+      ],
+      "frameProduct": {
+        "frameProduct": {
+          "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/image_538_e2b7a70515.png",
+          "alternativeText": ""
+        },
+        "framePromotion": {
+          "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/gift_mobile_1_4a392016e7_8566912036.png",
+          "alternativeText": ""
+        }
+      },
+      "alertIcon": {
+        "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Icon_Thong_bao_2cce6a0d8a.png",
+        "alt": ""
+      },
+      "alertMessage": "Do cao điểm Tết Nguyên Đán 2026, thời gian giao hàng có thể kéo dài hơn dự kiến. Long Châu và đơn vị vận chuyển đang nỗ lực để giao hàng đến Quý khách. Cảm ơn Quý khách đã kiên nhẫn đồng hành!",
+      "alertStatus": false,
+      "cartNoticeEnabled": false,
+      "shipmentContent": {
+        "id": 1,
+        "isVisible": false,
+        "title": "Tiết kiệm nhiên liệu Tiết kiệm nhiên liệu Tiết kiệm nhiên liệu",
+        "titleColor": "#1250DC",
+        "message": "Long Châu gửi tặng bạn thêm 200 điểm thưởng như lời cảm ơn vì bạn đã chủ động lựa chọn cùng hàng triệu người chung tay tiết kiệm nhiên liệu cho quốc gia💙",
+        "messageColor": "#4A4F63",
+        "icon": {
+          "id": 572301,
+          "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Frame_2087327661_7326b786a8.png",
+          "alternativeText": null
+        },
+        "backgroundWeb": {
+          "id": 572299,
+          "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/web_2685b87acd_5017c75983.png",
+          "alternativeText": null
+        },
+        "backgroundRes": {
+          "id": 572298,
+          "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/mobile_26cb3554a4_ac753ff562.png",
+          "alternativeText": null
+        },
+        "fsellBadge": {
+          "id": 572300,
+          "url": "https://cdn.nhathuoclongchau.com.vn/v1/static/smalls/Badge_x2_diem_e2b3bad040.png",
+          "alternativeText": null
+        }
+      }
+    },
+    "__N_SSP": true
+  },
+  "page": "/product-category/[...slug]",
+  "query": {
+    "slug": [
+      "thuoc",
+      "thuoc-di-ung"
+    ]
+  },
+  "buildId": "kknqmMZUYFR-oPu3b93Pi",
+  "runtimeConfig": {
+    "API_PATH": {
+      "API_SSO": "https://api.nhathuoclongchau.com.vn/lccus/is",
+      "IDENTITY_CUSTOMER": "https://identity-customer.frt.vn",
+      "CUSTOMER_API": "https://api.nhathuoclongchau.com.vn/lccus/ecom-prod/customer-api",
+      "API_CMS": "https://api.nhathuoclongchau.com.vn/lccus/prod-cms/api/v2",
+      "API_CMS_LONG_FORM": "https://api.nhathuoclongchau.com.vn/lccus/prod-cms/api/v3",
+      "STORE_FRONT": "https://api.nhathuoclongchau.com.vn/lccus/ecom-prod/store-front",
+      "SEARCH_SERVICE": "https://api.nhathuoclongchau.com.vn/lccus/search-product-service/api",
+      "VAC_STORE_FRONT": "https://api.nhathuoclongchau.com.vn/lccus/v1/public/vac-storefront/",
+      "LC247": "https://api.nhathuoclongchau.com.vn/lccus/hc-prod/lc247-app-bff",
+      "AI_SEARCH": "https://api.nhathuoclongchau.com.vn/lccus/lc-ai/api"
+    },
+    "app": {
+      "ENVIRONMENT": "production",
+      "VERSION": "1.0.0",
+      "DOMAIN": "nhathuoclongchau.com.vn",
+      "CDN_DOMAIN": "https://cdn.nhathuoclongchau.com.vn",
+      "CDN1_DOMAIN": "https://cdn1.nhathuoclongchau.com.vn",
+      "GTM_ID": "GTM-TTSJNQS",
+      "GA_UA_ID": "UA-100357883-1",
+      "HTTP_METHOD": "https://",
+      "VOUCHER_PRIVATE_KEY": "0e080b2aae25962a",
+      "VOUCHER_IV_KEY": "7079614e1f611bb7",
+      "REQUEST_TIMEOUT": "60000",
+      "FLC_TENANT_ID": "D1B85F69-5565-4301-8602-0FAA88DB6F39",
+      "APP_DEEP_LINK": "https://dl.ntlc.com.vn/app/home",
+      "GATEWAY_TRACKING_SERVICE": "https://analytics.ntlc.com.vn",
+      "TRACKING_DC5": "https://octopus-stream01-cads.fpt.vn",
+      "ZALO_OA_ID": "3822805105108870889",
+      "FACEBOOK_APP_ID": "25545142278464756",
+      "SHORTLINK_AFFILIATE_VACCINE": "https://af.nhathuoclongchau.com.vn",
+      "FID_AUTHORITY": "https://accounts.fpt.vn",
+      "FID_CLIENT_SECRET": "9__3v@mS",
+      "FID_REDIRECT_URI": "https://nhathuoclongchau.com.vn/sso/fptid",
+      "SEMANTIC_SEARCH_DEBUGGER_ACTIVE": "false",
+      "FPT_APP_CODE": "79458c1ce872a5abe61d6f1a3d213521",
+      "XID_REDIRECT_URI": "https://nhathuoclongchau.com.vn/login-sso/vneid",
+      "XID_AUTHORITY": "https://sso.dancuquocgia.gov.vn",
+      "FPT_LIVE_CHAT_HOST": "frt-livechat.fpt.ai",
+      "LC_CHAT_WIDGET_EMBED_URL": "https://chat-widget.nhathuoclongchau.com.vn",
+      "FPT_CLOUD10_S3_DOMAIN": "s3-sgn10.fptcloud.com",
+      "FPT_CLOUD9_S3_DOMAIN": "s3-sgn9.fptcloud.com",
+      "INS_ACCOUNT_ID": "10012636",
+      "INS_API": "frtlongchauvn.api.useinsider.com"
+    }
+  },
+  "isFallback": false,
+  "isExperimentalCompile": false,
+  "dynamicIds": [
+    56685,
+    85187,
+    43762,
+    30515,
+    80978
+  ],
+  "gssp": true,
+  "appGip": true,
+  "scriptLoader": [
+    {
+      "id": "insider-queue",
+      "strategy": "afterInteractive",
+      "children": "\n  window.InsiderQueue = window.InsiderQueue || [];\n"
+    },
+    {
+      "id": "insider-script",
+      "strategy": "afterInteractive",
+      "src": "https://frtlongchauvn.api.useinsider.com/ins.js?id=10012636"
+    },
+    {
+      "id": "gtm-scrip",
+      "strategy": "afterInteractive",
+      "dangerouslySetInnerHTML": {
+        "__html": "\n(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\nj=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n})(window,document,'script','dataLayer','GTM-TTSJNQS');\n"
+      }
+    }
+  ]
+}
