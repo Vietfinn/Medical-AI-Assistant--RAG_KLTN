@@ -15,7 +15,6 @@ import {
   getSessions,
   getSessionMessages,
   deleteSession,
-  saveHealthProfile,
   getHealthProfile,
   getCorners,
   createCorner,
