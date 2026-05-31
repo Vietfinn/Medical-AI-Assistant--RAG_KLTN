@@ -253,7 +253,7 @@ code {
   font-family: var(--font-body);
   padding: 6px 12px;
   border-radius: var(--radius-md);
-  white-space: pre-wrap;
+  white-space: nowrap;
   text-align: left;
   line-height: 1.4;
   bottom: calc(100% + 8px);
