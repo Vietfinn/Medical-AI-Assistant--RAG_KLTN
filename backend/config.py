@@ -71,6 +71,9 @@ class Settings(BaseSettings):
     # CORS — thêm FRONTEND_URL (Vercel) vào danh sách Origins khi deploy
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "")
 
+    # Clerk Webhook Secret (for verifying incoming webhooks)
+    CLERK_WEBHOOK_SECRET: Optional[str] = os.getenv("CLERK_WEBHOOK_SECRET", None)
+
     @property
     def CORS_ORIGINS(self) -> list:
         origins = [

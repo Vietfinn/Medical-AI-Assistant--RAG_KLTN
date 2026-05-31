@@ -2,6 +2,9 @@ import logging
 import time
 import uuid
 import datetime
+import hmac
+import hashlib
+import base64
 from contextlib import asynccontextmanager
 from typing import Optional
 from unidecode import unidecode
@@ -2391,6 +2394,166 @@ async def delete_session(
     except Exception as e:
         logger.error(f"Error deleting session {session_id}: {e}")
         raise HTTPException(status_code=500, detail="Cannot delete session")
+
+
+def verify_clerk_signature(payload_bytes: bytes, svix_id: str, svix_timestamp: str, svix_signature: str) -> bool:
+    """
+    Verify Clerk webhook signature using HMAC-SHA256.
+    Ref: https://clerk.com/docs/webhooks/overview#verify-webhook-signatures
+    """
+    if not settings.CLERK_WEBHOOK_SECRET:
+        logger.error("CLERK_WEBHOOK_SECRET is not configured!")
+        return False
+
+    # Extract signing secret prefix if Clerk format is "whsec_..."
+    secret = settings.CLERK_WEBHOOK_SECRET
+    if secret.startswith("whsec_"):
+        secret = secret[6:]
+
+    try:
+        # Decode the base64 signing secret
+        secret_bytes = base64.b64decode(secret)
+
+        # Re-create signing payload: svix_id + "." + svix_timestamp + "." + raw_payload_bytes
+        signing_payload = f"{svix_id}.{svix_timestamp}.".encode("utf-8") + payload_bytes
+        
+        # Verify signature matching
+        mac = hmac.new(
+            key=secret_bytes,
+            msg=signing_payload,
+            digestmod=hashlib.sha256
+        )
+        
+        # The expected signature is Base64 encoded
+        expected_sig_b64 = base64.b64encode(mac.digest()).decode("utf-8")
+        
+        passed = False
+        for sig_token in svix_signature.split():
+            if sig_token.startswith("v1,"):
+                sig = sig_token[3:]
+                # Timing-safe comparison to prevent side-channel timing attacks
+                if hmac.compare_digest(sig.encode("utf-8"), expected_sig_b64.encode("utf-8")):
+                    passed = True
+                    break
+        return passed
+    except Exception as e:
+        logger.error(f"Error verifying Clerk signature: {e}")
+        return False
+
+
+from fastapi import Request
+
+@app.post("/api/webhooks/clerk")
+async def clerk_webhook(request: Request):
+    """
+    Clerk webhook receiver to synchronize user profiles and trigger cascade deletion.
+    Supports user.deleted and user.updated events.
+    """
+    svix_id = request.headers.get("svix-id")
+    svix_timestamp = request.headers.get("svix-timestamp")
+    svix_signature = request.headers.get("svix-signature")
+
+    if not svix_id or not svix_timestamp or not svix_signature:
+        logger.warning("Clerk Webhook: Missing required svix headers.")
+        raise HTTPException(status_code=400, detail="Missing required signature headers.")
+
+    # Read raw body bytes
+    body_bytes = await request.body()
+
+    # Verify signature
+    if not verify_clerk_signature(body_bytes, svix_id, svix_timestamp, svix_signature):
+        logger.warning("Clerk Webhook: Signature verification failed.")
+        raise HTTPException(status_code=401, detail="Invalid signature.")
+
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body.")
+
+    event_type = payload.get("type")
+    data = payload.get("data", {})
+    user_id = data.get("id")
+
+    if not user_id:
+        logger.warning("Clerk Webhook: Payload missing user id.")
+        return {"status": "success", "message": "No user ID to process."}
+
+    db = get_db()
+
+    # 1. USER DELETED EVENT
+    if event_type == "user.deleted":
+        logger.info(f"🗑️ Clerk Webhook: Cascade deleting data for user {user_id}...")
+        try:
+            # Delete across 5 collections
+            r1 = await db["users"].delete_one({"_id": user_id})
+            r2 = await db["sessions"].delete_many({"user_id": user_id})
+            r3 = await db["health_corners"].delete_many({"user_id": user_id})
+            r4 = await db["chat_feedbacks"].delete_many({"user_id": user_id})
+            r5 = await db["unsafe_logs"].delete_many({"user_id": user_id})
+            
+            logger.info(
+                f"  ✅ Cascade delete completed for user {user_id}: "
+                f"Profile={r1.deleted_count}, Sessions={r2.deleted_count}, "
+                f"Corners={r3.deleted_count}, Feedbacks={r4.deleted_count}, "
+                f"UnsafeLogs={r5.deleted_count}"
+            )
+            return {
+                "status": "success", 
+                "message": "Cascade delete completed.",
+                "deleted_counts": {
+                    "profile": r1.deleted_count,
+                    "sessions": r2.deleted_count,
+                    "corners": r3.deleted_count,
+                    "feedbacks": r4.deleted_count,
+                    "unsafe_logs": r5.deleted_count
+                }
+            }
+        except Exception as delete_err:
+            logger.error(f"  ❌ Error during cascade delete for user {user_id}: {delete_err}")
+            raise HTTPException(status_code=500, detail="Database deletion error.")
+
+    # 2. USER UPDATED EVENT
+    elif event_type == "user.updated":
+        logger.info(f"🔄 Clerk Webhook: Synchronizing profile metadata for user {user_id}...")
+        try:
+            # Extract first_name and email
+            email_addresses = data.get("email_addresses", [])
+            primary_email_id = data.get("primary_email_address_id")
+            
+            email = ""
+            if email_addresses:
+                # Find primary email, otherwise fallback to first email
+                primary_email_obj = next((e for e in email_addresses if e.get("id") == primary_email_id), None)
+                email = primary_email_obj.get("email_address", "") if primary_email_obj else email_addresses[0].get("email_address", "")
+
+            first_name = data.get("first_name") or ""
+            
+            # Check if user exists in database, if so, update their metadata
+            existing = await db["users"].find_one({"_id": user_id})
+            if existing:
+                update_fields = {}
+                if email and email != existing.get("email"):
+                    update_fields["email"] = email
+                if first_name and first_name != existing.get("first_name"):
+                    update_fields["first_name"] = first_name
+                
+                if update_fields:
+                    update_fields["updated_at"] = time.time()
+                    await db["users"].update_one({"_id": user_id}, {"$set": update_fields})
+                    logger.info(f"  ✅ Profile updated for user {user_id}: {update_fields}")
+                    return {"status": "success", "message": "Profile updated."}
+                else:
+                    return {"status": "success", "message": "Profile metadata already synchronized."}
+            else:
+                return {"status": "success", "message": "User not registered in database yet."}
+        except Exception as sync_err:
+            logger.error(f"  ❌ Error during profile metadata synchronization for user {user_id}: {sync_err}")
+            raise HTTPException(status_code=500, detail="Database update error.")
+
+    # 3. OTHER EVENTS
+    else:
+        logger.info(f"ℹ️ Clerk Webhook: Unhandled event type {event_type} ignored.")
+        return {"status": "success", "message": f"Event type {event_type} ignored."}
 
 if __name__ == "__main__":
     import uvicorn
