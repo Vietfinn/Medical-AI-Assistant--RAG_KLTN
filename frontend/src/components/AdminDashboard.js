@@ -1960,7 +1960,7 @@ const TABS = [
   { id: 'tuning',   label: 'Tinh chỉnh hệ thống', icon: <Wrench size={17} /> },
 ];
 
-const AdminDashboard = ({ onBack }) => {
+const AdminDashboard = ({ onBack, theme }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [stats, setStats] = useState(null);
@@ -2000,7 +2000,7 @@ const AdminDashboard = ({ onBack }) => {
         <div className="sidebar-header">
           {!isSidebarCollapsed ? (
             <>
-              <img src="/images/Logo_name.png" alt="A.I.M Care Logo" className="admin-sidebar-logo" />
+              <img src={theme === 'dark' ? '/images/Logo_name.png' : '/images/logo_name_dark.png'} alt="A.I.M Care Logo" className="admin-sidebar-logo" />
               <button className="icon-btn toggle-sidebar-btn" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
                 <Menu size={20} />
               </button>

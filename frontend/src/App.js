@@ -579,6 +579,7 @@ function AuthenticatedApp() {
           <AdminDashboard 
             onBack={() => setShowAdmin(false)} 
             onClose={() => setShowAdmin(false)} 
+            theme={theme}
           />
         ) : currentView === 'search' ? (
           <SearchCanvas
