@@ -280,13 +280,6 @@ async def root():
     }
 
 
-@app.get("/sentry-debug")
-async def trigger_error():
-    """Trigger a division by zero error for Sentry testing"""
-    logger.error("Triggering intentional sentry-debug exception...")
-    division_by_zero = 1 / 0
-
-
 @app.get("/health", response_model=HealthStatus)
 async def health_check():
     """Health check endpoint"""
