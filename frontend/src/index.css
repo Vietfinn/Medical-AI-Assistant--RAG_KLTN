@@ -253,7 +253,7 @@ code {
   font-family: var(--font-body);
   padding: 6px 12px;
   border-radius: var(--radius-md);
-  white-space: nowrap;
+  white-space: pre-wrap;
   text-align: left;
   line-height: 1.4;
   bottom: calc(100% + 8px);
@@ -263,9 +263,9 @@ code {
 }
 
 .sidebar-user-container[data-tooltip]::before {
-  white-space: pre-line !important;
-  width: max-content;
-  max-width: 260px;
+  white-space: pre-wrap !important;
+  width: max-content !important;
+  max-width: 280px !important;
 }
 
 /* Tooltip arrow */
