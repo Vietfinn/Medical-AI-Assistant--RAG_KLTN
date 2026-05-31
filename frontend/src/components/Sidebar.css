@@ -1547,10 +1547,10 @@ body.no-scroll .health-corner-view {
   line-height: 1.5;
   pointer-events: none;
   
-  bottom: auto;
-  top: 50%;
+  /* Align bottom to prevent clipping by the bottom of the screen */
+  bottom: 0;
+  top: auto;
   left: calc(100% + 12px);
-  transform: translateY(-50%);
   width: max-content;
   max-width: 280px;
 }
@@ -1558,9 +1558,9 @@ body.no-scroll .health-corner-view {
 .custom-user-tooltip::after {
   content: '';
   position: absolute;
-  top: 50%;
+  bottom: 15px; /* Align arrow with the center of the user avatar button */
+  top: auto;
   left: -10px;
-  transform: translateY(-50%);
   border: 5px solid transparent;
   border-right-color: #474747;
 }
