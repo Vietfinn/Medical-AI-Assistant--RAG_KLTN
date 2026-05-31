@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, Clock, MessageSquare, Menu, ArrowLeft } from 'lucide-react';
+import { Search, X, Clock, MessageSquare, Menu } from 'lucide-react';
 import { searchSessions } from '../services/api';
 import './SearchCanvas.css';
 
@@ -138,9 +138,6 @@ const SearchCanvas = ({ recentSessions = [], onSelectSession, onClose, onToggleM
             </button>
           )}
           <div className="search-input-container">
-            <button className="search-back-btn" onClick={onClose} type="button" aria-label="Quay lại">
-              <ArrowLeft size={18} />
-            </button>
             <Search size={18} className="search-input-icon" />
             <input
               ref={inputRef}
