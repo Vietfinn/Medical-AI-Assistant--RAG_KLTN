@@ -57,7 +57,7 @@ function AuthenticatedApp() {
   const streamingRef = useRef('');
   const abortControllerRef = useRef(null);
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('appTheme') || 'dark';
+    return localStorage.getItem('appTheme') || 'light';
   });
   const [currentView, setCurrentView] = useState('chat'); // 'chat', 'search', 'corner', 'corner-create'
 
