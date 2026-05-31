@@ -24,7 +24,7 @@ const Homepage = () => {
       {/* Header */}
       <header className="hp-header">
         <div className="hp-logo">
-          <img src="/images/logo_name_dark.png" alt="A.I.M Care Logo" className="hp-logo-text" />
+          <img src="/images/Logo_name.png" alt="A.I.M Care Logo" className="hp-logo-text" />
         </div>
         <div className="hp-header-actions">
           <button className="hp-ghost-btn" onClick={() => navigate('/about')}>

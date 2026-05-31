@@ -42,7 +42,7 @@ const Sidebar = ({
   const [isAssigning, setIsAssigning] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: null, bottom: null, left: 0 });
   const [moreCornersPosition, setMoreCornersPosition] = useState({ bottom: 0, left: 0, width: 0 });
-  
+
   // Modals state
   const [renameData, setRenameData] = useState(null); // { id: string, title: string }
   const [deleteData, setDeleteData] = useState(null); // { id: string, title: string }
@@ -232,7 +232,7 @@ const Sidebar = ({
         <div className="sidebar-overlay desktop-only" onClick={onToggle} />
       )}
 
-      <aside 
+      <aside
         className={`sidebar ${isOpen ? 'open' : 'collapsed'} ${isMobileSidebarOpen ? 'mobile-open' : ''}`}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -241,10 +241,10 @@ const Sidebar = ({
           <div className="sidebar-branding">
             {isOpen ? (
               <>
-                <img src={theme === 'dark' ? '/images/Logo_name_light.png?v=20260527-2346' : '/images/logo_name_dark.png?v=20260527-2346'} alt="A.I.M Care" className="sidebar-logo-name" />
-                <button 
-                  className="sidebar-toggle open-toggle" 
-                  onClick={window.innerWidth <= 768 ? onCloseMobileSidebar : onToggle} 
+                <img src={theme === 'dark' ? '/images/logo_name_dark.png?v=20260527-2346' : '/images/Logo_name_light.png?v=20260527-2346'} alt="A.I.M Care" className="sidebar-logo-name" />
+                <button
+                  className="sidebar-toggle open-toggle"
+                  onClick={window.innerWidth <= 768 ? onCloseMobileSidebar : onToggle}
                 >
                   <X size={20} />
                 </button>
@@ -259,8 +259,8 @@ const Sidebar = ({
             )}
           </div>
 
-          <button 
-            className={`new-chat-btn ${(!currentSessionId && !activeCorner && currentView === 'chat' && !isProfileOpen) ? 'active' : ''}`} 
+          <button
+            className={`new-chat-btn ${(!currentSessionId && !activeCorner && currentView === 'chat' && !isProfileOpen) ? 'active' : ''}`}
             onClick={onNewChat}
             data-tooltip={!isOpen ? "Cuộc trò chuyện mới" : undefined}
           >
@@ -268,8 +268,8 @@ const Sidebar = ({
             <span>Cuộc trò chuyện mới</span>
           </button>
 
-          <button 
-            className={`search-history-btn ${currentView === 'search' && !isProfileOpen ? 'active' : ''}`} 
+          <button
+            className={`search-history-btn ${currentView === 'search' && !isProfileOpen ? 'active' : ''}`}
             onClick={onOpenSearch}
             data-tooltip={!isOpen ? "Tìm kiếm cuộc trò chuyện" : undefined}
           >
@@ -277,8 +277,8 @@ const Sidebar = ({
             <span>Tìm kiếm cuộc trò chuyện</span>
           </button>
 
-          <button 
-            className={`profile-btn sidebar-profile-btn ${isProfileOpen ? 'active' : ''}`} 
+          <button
+            className={`profile-btn sidebar-profile-btn ${isProfileOpen ? 'active' : ''}`}
             onClick={onOpenProfile}
             data-tooltip={!isOpen ? "Hồ sơ sức khỏe" : undefined}
           >
@@ -289,7 +289,7 @@ const Sidebar = ({
         </div>
 
         {/* Unified Scroll Container */}
-        <div 
+        <div
           className="sidebar-scroll-container"
           style={{ overflowY: (activeMenuId !== null || activeCornerMenuId !== null || showAllCorners) ? 'hidden' : 'auto' }}
         >
@@ -318,7 +318,7 @@ const Sidebar = ({
                       <HeartPulse size={20} className="corner-item-icon" />
                       <span className="session-title">{corner.name}</span>
                     </div>
-                    
+
                     <button
                       className={`session-options-btn ${activeCornerMenuId === corner._id ? 'active' : ''}`}
                       onClick={(e) => handleCornerMenuClick(e, corner._id)}
@@ -330,7 +330,7 @@ const Sidebar = ({
               })}
 
               {healthCorners.length > 2 && (
-                <button 
+                <button
                   className={`corner-more-btn ${showAllCorners ? 'active' : ''}`}
                   onClick={handleMoreCornersClick}
                 >
@@ -381,12 +381,12 @@ const Sidebar = ({
 
         <div className="sidebar-bottom">
           <div className="sidebar-bottom-row">
-            <div 
+            <div
               className="sidebar-user-container"
               data-tooltip={user ? `Tài khoản Google\n${user.fullName || user.username || 'Tài khoản'}\n${user.primaryEmailAddress?.emailAddress || ''}` : 'Tài khoản'}
             >
               <div className="sidebar-user-btn-container">
-                <UserButton 
+                <UserButton
                   appearance={{
                     elements: {
                       avatarBox: { width: '32px', height: '32px' },
@@ -438,13 +438,13 @@ const Sidebar = ({
             </div>
 
             <div className="settings-wrapper">
-              <button 
-                className={`sidebar-settings-btn ${isSettingsOpen ? 'active' : ''}`} 
+              <button
+                className={`sidebar-settings-btn ${isSettingsOpen ? 'active' : ''}`}
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
               >
                 <Settings size={20} />
               </button>
-              
+
               {isSettingsOpen && (
                 <div className="sidebar-settings-dropdown fade-in">
                   <div className="dropdown-header">
@@ -452,8 +452,8 @@ const Sidebar = ({
                     <button onClick={() => setIsSettingsOpen(false)}><X size={16} /></button>
                   </div>
                   <div className="dropdown-menu">
-                    <button 
-                      className="dropdown-item" 
+                    <button
+                      className="dropdown-item"
                       onClick={() => {
                         onToggleTheme();
                         setIsSettingsOpen(false);
@@ -463,8 +463,8 @@ const Sidebar = ({
                       <span>Giao diện: {theme === 'dark' ? 'Tối' : 'Sáng'}</span>
                     </button>
                     {isAdmin && (
-                      <button 
-                        className="dropdown-item admin-nav-btn" 
+                      <button
+                        className="dropdown-item admin-nav-btn"
                         onClick={() => {
                           onOpenAdmin();
                           setIsSettingsOpen(false);
@@ -585,130 +585,130 @@ const Sidebar = ({
         </div>
       )}
 
-              {/* Sidebar Toast Notification */}
-              {sidebarToast && (
-                <div className="sidebar-toast-notification">
-                  <Check size={16} style={{ color: '#22c55e' }} />
-                  <span>{sidebarToast}</span>
-                </div>
-              )}
+      {/* Sidebar Toast Notification */}
+      {sidebarToast && (
+        <div className="sidebar-toast-notification">
+          <Check size={16} style={{ color: '#22c55e' }} />
+          <span>{sidebarToast}</span>
+        </div>
+      )}
 
-              {/* Floating Session Options Menu (Upwards) */}
-              {activeMenuId && (
-                (() => {
-                  const session = sessions?.find(s => s._id === activeMenuId);
-                  if (!session) return null;
-                  return (
-                    <div 
-                      className="session-options-menu floating" 
-                      style={{ 
-                        position: 'fixed', 
-                        top: 'auto',
-                        bottom: `${menuPosition.bottom}px`, 
-                        left: `${menuPosition.left}px`,
-                        zIndex: 10000
-                      }} 
-                      ref={menuRef} 
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <button className="option-item" onClick={(e) => handlePin(e, session)}>
-                        {session.is_pinned ? (
-                          <><PinOff size={14}/> Bỏ ghim</>
-                        ) : (
-                          <><Pin size={14}/> Ghim</>
-                        )}
-                      </button>
-                      <button className="option-item" onClick={(e) => openRename(e, session)}>
-                        <Edit2 size={14}/> Đổi tên
-                      </button>
-                      {healthCorners?.length > 0 && (
-                        <button className="option-item" onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveMenuId(null);
-                          setAssignSessionData({ id: session._id, title: session.title });
-                        }}>
-                          <FolderPlus size={14}/> Đưa vào Góc sức khỏe
-                        </button>
-                      )}
-                      <button className="option-item danger" onClick={(e) => openDelete(e, session)}>
-                        <Trash2 size={14}/> Xoá
-                      </button>
-                    </div>
-                  );
-                })()
+      {/* Floating Session Options Menu (Upwards) */}
+      {activeMenuId && (
+        (() => {
+          const session = sessions?.find(s => s._id === activeMenuId);
+          if (!session) return null;
+          return (
+            <div
+              className="session-options-menu floating"
+              style={{
+                position: 'fixed',
+                top: 'auto',
+                bottom: `${menuPosition.bottom}px`,
+                left: `${menuPosition.left}px`,
+                zIndex: 10000
+              }}
+              ref={menuRef}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="option-item" onClick={(e) => handlePin(e, session)}>
+                {session.is_pinned ? (
+                  <><PinOff size={14} /> Bỏ ghim</>
+                ) : (
+                  <><Pin size={14} /> Ghim</>
+                )}
+              </button>
+              <button className="option-item" onClick={(e) => openRename(e, session)}>
+                <Edit2 size={14} /> Đổi tên
+              </button>
+              {healthCorners?.length > 0 && (
+                <button className="option-item" onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveMenuId(null);
+                  setAssignSessionData({ id: session._id, title: session.title });
+                }}>
+                  <FolderPlus size={14} /> Đưa vào Góc sức khỏe
+                </button>
               )}
+              <button className="option-item danger" onClick={(e) => openDelete(e, session)}>
+                <Trash2 size={14} /> Xoá
+              </button>
+            </div>
+          );
+        })()
+      )}
 
-              {/* Floating Corner Options Menu (Downwards) */}
-              {activeCornerMenuId && (
-                (() => {
-                  const corner = healthCorners?.find(c => c._id === activeCornerMenuId);
-                  if (!corner) return null;
-                  return (
-                    <div 
-                      className="session-options-menu floating" 
-                      style={{ 
-                        position: 'fixed', 
-                        top: `${menuPosition.top}px`, 
-                        bottom: 'auto',
-                        left: `${menuPosition.left}px`,
-                        zIndex: 10000
-                      }} 
-                      ref={menuRef} 
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <button className="option-item" onClick={(e) => handleRenameCorner(e, corner)}>
-                        <Edit2 size={14}/> Đổi tên
-                      </button>
-                      <button className="option-item option-delete" onClick={(e) => handleDeleteCornerClick(e, corner)}>
-                        <Trash2 size={14}/> Xoá Góc
-                      </button>
-                    </div>
-                  );
-                })()
-              )}
+      {/* Floating Corner Options Menu (Downwards) */}
+      {activeCornerMenuId && (
+        (() => {
+          const corner = healthCorners?.find(c => c._id === activeCornerMenuId);
+          if (!corner) return null;
+          return (
+            <div
+              className="session-options-menu floating"
+              style={{
+                position: 'fixed',
+                top: `${menuPosition.top}px`,
+                bottom: 'auto',
+                left: `${menuPosition.left}px`,
+                zIndex: 10000
+              }}
+              ref={menuRef}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="option-item" onClick={(e) => handleRenameCorner(e, corner)}>
+                <Edit2 size={14} /> Đổi tên
+              </button>
+              <button className="option-item option-delete" onClick={(e) => handleDeleteCornerClick(e, corner)}>
+                <Trash2 size={14} /> Xoá Góc
+              </button>
+            </div>
+          );
+        })()
+      )}
 
-              {/* Floating All Corners Dropdown */}
-              {showAllCorners && (
-                (() => {
-                  return (
-                    <div 
-                      className="corner-more-dropdown floating" 
-                      style={{ 
-                        position: 'fixed', 
-                        top: `${moreCornersPosition.top}px`, 
-                        bottom: 'auto',
-                        left: `${moreCornersPosition.left}px`,
-                        maxHeight: '210px',
-                        overflowY: 'auto',
-                        zIndex: 10000
-                      }}
-                      ref={cornersDropdownRef} 
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {healthCorners.map(corner => {
-                        const isCornerActive = !isProfileOpen && (
-                          (currentView === 'corner' && activeCorner?._id === corner._id) ||
-                          (currentView === 'chat' && currentSession?.corner_id === corner._id)
-                        );
-                        return (
-                          <div
-                            key={corner._id}
-                            className={`corner-dropdown-item ${isCornerActive ? 'active' : ''}`}
-                            onClick={() => {
-                              onOpenCorner(corner);
-                              setShowAllCorners(false);
-                            }}
-                          >
-                            <HeartPulse size={16} className="corner-dropdown-icon" />
-                            <span className="corner-dropdown-name">{corner.name}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })()
-              )}
-            </>
+      {/* Floating All Corners Dropdown */}
+      {showAllCorners && (
+        (() => {
+          return (
+            <div
+              className="corner-more-dropdown floating"
+              style={{
+                position: 'fixed',
+                top: `${moreCornersPosition.top}px`,
+                bottom: 'auto',
+                left: `${moreCornersPosition.left}px`,
+                maxHeight: '210px',
+                overflowY: 'auto',
+                zIndex: 10000
+              }}
+              ref={cornersDropdownRef}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {healthCorners.map(corner => {
+                const isCornerActive = !isProfileOpen && (
+                  (currentView === 'corner' && activeCorner?._id === corner._id) ||
+                  (currentView === 'chat' && currentSession?.corner_id === corner._id)
+                );
+                return (
+                  <div
+                    key={corner._id}
+                    className={`corner-dropdown-item ${isCornerActive ? 'active' : ''}`}
+                    onClick={() => {
+                      onOpenCorner(corner);
+                      setShowAllCorners(false);
+                    }}
+                  >
+                    <HeartPulse size={16} className="corner-dropdown-icon" />
+                    <span className="corner-dropdown-name">{corner.name}</span>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()
+      )}
+    </>
   );
 };
 

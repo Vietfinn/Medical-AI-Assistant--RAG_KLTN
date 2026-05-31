@@ -58,9 +58,9 @@ const PIE_COLORS = [
 ];
 
 const STATUS_CONFIG = {
-  pending:  { label: 'Chờ xử lý',  icon: <Clock size={13} />,   className: 'status-pending' },
-  resolved: { label: 'Đã xử lý',   icon: <Check size={13} />,   className: 'status-resolved' },
-  ignored:  { label: 'Bỏ qua',     icon: <EyeOff size={13} />,  className: 'status-ignored' },
+  pending: { label: 'Chờ xử lý', icon: <Clock size={13} />, className: 'status-pending' },
+  resolved: { label: 'Đã xử lý', icon: <Check size={13} />, className: 'status-resolved' },
+  ignored: { label: 'Bỏ qua', icon: <EyeOff size={13} />, className: 'status-ignored' },
 };
 
 function MetricCard({ icon, label, value, sub, accent, trend }) {
@@ -203,7 +203,7 @@ function TabSafetyMonitor() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `unsafe_logs_${new Date().toISOString().slice(0,10)}.csv`;
+    link.download = `unsafe_logs_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -223,10 +223,10 @@ function TabSafetyMonitor() {
   return (
     <div className="tab-safety">
       <div className="tuning-grid safety-grid">
-        
+
         {/* === CỘT TRÁI: Biểu đồ & Top Risk Users === */}
         <div className="tuning-column" style={{ display: 'flex', flexDirection: 'column', gap: 24, height: '100%' }}>
-          
+
           {/* Biểu đồ */}
           <div className="tuning-card tuning-card--info" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <div className="tuning-card-header">
@@ -278,10 +278,10 @@ function TabSafetyMonitor() {
                     </div>
                   </>
                 )}
-                
+
                 {/* Nút mở Modal danh sách User */}
-                <button 
-                  className="btn-danger" 
+                <button
+                  className="btn-danger"
                   style={{ width: '100%', marginTop: 16, display: 'flex', justifyContent: 'center', background: 'var(--med-bg)', color: '#ef4444', border: '1px solid #ef4444' }}
                   onClick={() => setShowRiskUsersModal(true)}
                 >
@@ -301,9 +301,9 @@ function TabSafetyMonitor() {
                 <h3 style={{ margin: 0 }}>Nhật ký truy vấn</h3>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button className="icon-btn" onClick={handleExportCSV} data-tooltip="Xuất CSV"><Download size={14}/></button>
-                <button className="icon-btn" onClick={() => { fetchLogs(); fetchStats(); }} data-tooltip="Làm mới"><RefreshCw size={14}/></button>
-                <button className="icon-btn" onClick={() => setShowClearConfirm(true)} data-tooltip="Xóa tất cả" style={{ color: '#ef4444' }}><Trash size={14}/></button>
+                <button className="icon-btn" onClick={handleExportCSV} data-tooltip="Xuất CSV"><Download size={14} /></button>
+                <button className="icon-btn" onClick={() => { fetchLogs(); fetchStats(); }} data-tooltip="Làm mới"><RefreshCw size={14} /></button>
+                <button className="icon-btn" onClick={() => setShowClearConfirm(true)} data-tooltip="Xóa tất cả" style={{ color: '#ef4444' }}><Trash size={14} /></button>
               </div>
             </div>
 
@@ -325,8 +325,8 @@ function TabSafetyMonitor() {
                   onChange={(e) => setSearchInput(e.target.value)}
                   className="safety-search-input"
                 />
-                <button type="submit" className="icon-btn"><Search size={14}/></button>
-                {searchQuery && <button type="button" className="icon-btn" onClick={() => { setSearchInput(''); setSearchQuery(''); setPage(1); }}><X size={14}/></button>}
+                <button type="submit" className="icon-btn"><Search size={14} /></button>
+                {searchQuery && <button type="button" className="icon-btn" onClick={() => { setSearchInput(''); setSearchQuery(''); setPage(1); }}><X size={14} /></button>}
               </form>
             </div>
 
@@ -355,9 +355,9 @@ function TabSafetyMonitor() {
                     }}>{CATEGORY_LABELS[log.category] || log.category}</span>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <button className="icon-btn" onClick={() => setSelectedSafetyLog(log)} data-tooltip="Xem chi tiết" style={{ color: 'var(--med-blue, #6366f1)', padding: 4 }}>
-                        <Eye size={16}/>
+                        <Eye size={16} />
                       </button>
-                      <button className="icon-btn" onClick={() => setLogToDelete(log)} data-tooltip="Xóa" style={{ color: '#ef4444', padding: 4 }}><Trash size={16}/></button>
+                      <button className="icon-btn" onClick={() => setLogToDelete(log)} data-tooltip="Xóa" style={{ color: '#ef4444', padding: 4 }}><Trash size={16} /></button>
                     </div>
                   </div>
                 </div>
@@ -383,7 +383,7 @@ function TabSafetyMonitor() {
             <p style={{ color: 'var(--med-text-sub)', margin: '8px 0 20px' }}>Hành động này sẽ xóa vĩnh viễn toàn bộ dữ liệu unsafe logs và không thể hoàn tác.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
               <button className="btn-cancel" onClick={() => setShowClearConfirm(false)}>Hủy</button>
-              <button className="btn-danger" onClick={handleClearAll}><Trash size={14}/> Xóa tất cả</button>
+              <button className="btn-danger" onClick={handleClearAll}><Trash size={14} /> Xóa tất cả</button>
             </div>
           </div>
         </div>
@@ -394,10 +394,10 @@ function TabSafetyMonitor() {
         <div className="modal-overlay" onClick={() => setShowRiskUsersModal(false)}>
           <div className="confirm-modal" style={{ maxWidth: 650, padding: '24px 24px 16px', textAlign: 'left' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}><AlertTriangle size={20} color="#ef4444"/> Tài khoản Rủi ro</h3>
-              <button className="icon-btn" onClick={() => setShowRiskUsersModal(false)}><X size={20}/></button>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}><AlertTriangle size={20} color="#ef4444" /> Tài khoản Rủi ro</h3>
+              <button className="icon-btn" onClick={() => setShowRiskUsersModal(false)}><X size={20} /></button>
             </div>
-            
+
             {riskUsers.length === 0 ? (
               <div style={{ padding: 40, textAlign: 'center', color: 'var(--med-text-sub)', fontSize: 14 }}>
                 <Shield size={40} style={{ marginBottom: 12, opacity: 0.3 }} />
@@ -439,7 +439,7 @@ function TabSafetyMonitor() {
                             onClick={() => setUserToBan(u)}
                             data-tooltip={u.is_banned ? 'Mở cấm' : 'Cấm tài khoản'}
                           >
-                            {u.is_banned ? <><Lock size={12}/> Đã cấm</> : <><ShieldAlert size={12}/> Cấm</>}
+                            {u.is_banned ? <><Lock size={12} /> Đã cấm</> : <><ShieldAlert size={12} /> Cấm</>}
                           </button>
                         </td>
                       </tr>
@@ -464,7 +464,7 @@ function TabSafetyMonitor() {
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
               <button className="btn-cancel" onClick={() => setLogToDelete(null)}>Hủy</button>
-              <button className="btn-danger" onClick={confirmDeleteLog}><Trash size={14}/> Xóa</button>
+              <button className="btn-danger" onClick={confirmDeleteLog}><Trash size={14} /> Xóa</button>
             </div>
           </div>
         </div>
@@ -487,11 +487,11 @@ function TabSafetyMonitor() {
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
               <button className="btn-cancel" onClick={() => setUserToBan(null)}>Hủy</button>
-              <button 
-                className={userToBan.is_banned ? 'btn-save' : 'btn-danger'} 
+              <button
+                className={userToBan.is_banned ? 'btn-save' : 'btn-danger'}
                 onClick={confirmBanToggle}
               >
-                {userToBan.is_banned ? <><Lock size={12}/> Mở cấm</> : <><ShieldAlert size={12}/> Xác nhận cấm</>}
+                {userToBan.is_banned ? <><Lock size={12} /> Mở cấm</> : <><ShieldAlert size={12} /> Xác nhận cấm</>}
               </button>
             </div>
           </div>
@@ -506,9 +506,9 @@ function TabSafetyMonitor() {
               <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--med-blue, #6366f1)', fontSize: 18 }}>
                 <ShieldAlert size={20} /> Chi tiết Truy vấn Rủi ro
               </h3>
-              <button className="icon-btn" onClick={() => setSelectedSafetyLog(null)}><X size={20}/></button>
+              <button className="icon-btn" onClick={() => setSelectedSafetyLog(null)}><X size={20} /></button>
             </div>
-            
+
             <div style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: 4, display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
                 <label style={{ display: 'block', fontSize: 12, color: 'var(--med-text-sub)', fontWeight: 600, marginBottom: 4, textTransform: 'uppercase' }}>Thời gian ghi nhận</label>
@@ -618,9 +618,9 @@ function TabOverview({ stats, onRefresh, loading }) {
       {/* Header Row with Refresh Button */}
       <div className="tab-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--med-text-main)' }}>Tổng quan hệ thống</h2>
-        <button 
-          className="icon-btn" 
-          onClick={onRefresh} 
+        <button
+          className="icon-btn"
+          onClick={onRefresh}
           disabled={loading}
           data-tooltip="Làm mới số liệu"
         >
@@ -671,10 +671,10 @@ function TabOverview({ stats, onRefresh, loading }) {
                     <Tooltip formatter={(val, name) => [val, name]} labelStyle={{ display: 'none' }} />
                   </PieChart>
                 </ResponsiveContainer>
-                <div style={{ 
-                  position: 'absolute', top: '50%', left: '50%', 
-                  transform: 'translate(-50%, -50%)', 
-                  textAlign: 'center', pointerEvents: 'none' 
+                <div style={{
+                  position: 'absolute', top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  textAlign: 'center', pointerEvents: 'none'
                 }}>
                   <div style={{ fontSize: 26, fontWeight: 700, color: 'var(--med-text-main)', lineHeight: 1 }}>
                     {tagChartData.reduce((acc, curr) => acc + curr.value, 0)}
@@ -799,7 +799,7 @@ function DetailPanel({ item, onClose, onSave, onDelete, onCopy }) {
       </div>
 
       <div className="detail-scroll detail-cards-layout">
-        
+
         {/* Cột Trái: Chat & RAG Context */}
         <div className="detail-card chat-context-card">
           <h4 className="card-title">Nội dung Giao tiếp</h4>
@@ -841,9 +841,9 @@ function DetailPanel({ item, onClose, onSave, onDelete, onCopy }) {
                 {item.retrieved_sources.map((src, i) => {
                   const doc_id = typeof src === 'string' ? src : src.doc_id;
                   const isExpanded = expandedSource === i;
-                  
+
                   return (
-                    <span 
+                    <span
                       key={i}
                       className={`source-chip ${isExpanded ? 'active' : ''}`}
                       onClick={() => setExpandedSource(isExpanded ? null : i)}
@@ -859,7 +859,7 @@ function DetailPanel({ item, onClose, onSave, onDelete, onCopy }) {
                   {(() => {
                     const src = item.retrieved_sources[expandedSource];
                     const isString = typeof src === 'string';
-                    
+
                     if (isString) {
                       return (
                         <div className="source-detail-box">
@@ -945,7 +945,7 @@ function DetailPanel({ item, onClose, onSave, onDelete, onCopy }) {
           <button className="btn-cancel" onClick={onClose}>Đóng</button>
           {item.rating !== 1 && (
             <button className="btn-save" onClick={handleSave} disabled={saving}>
-              {saving ? <RefreshCw size={15} className="spin" /> : <Save size={15} />} 
+              {saving ? <RefreshCw size={15} className="spin" /> : <Save size={15} />}
               {saving ? 'Đang lưu...' : 'Lưu Hồ Sơ'}
             </button>
           )}
@@ -955,15 +955,15 @@ function DetailPanel({ item, onClose, onSave, onDelete, onCopy }) {
   );
 }
 
-function DataPane({ 
-  title, 
-  items, 
-  loading, 
-  page, 
-  totalPages, 
-  setPage, 
-  selectedId, 
-  onRowClick, 
+function DataPane({
+  title,
+  items,
+  loading,
+  page,
+  totalPages,
+  setPage,
+  selectedId,
+  onRowClick,
   toolbar,
   isMaster,
   viewMode
@@ -977,7 +977,7 @@ function DataPane({
         </div>
         {toolbar}
       </div>
-      
+
       {loading ? (
         <div className="admin-loading"><RefreshCw size={18} className="spin" /> Đang tải...</div>
       ) : items.length === 0 ? (
@@ -990,8 +990,8 @@ function DataPane({
           {isMaster ? (
             <div className="compact-list">
               {items.map(item => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className={`compact-card ${selectedId === item.id ? 'selected' : ''} ${item.rating === -1 ? 'is-flagged' : 'is-verified'}`}
                   onClick={() => onRowClick(item)}
                 >
@@ -1025,8 +1025,8 @@ function DataPane({
                 {items.map(item => {
                   const isCritical = item.status === 'pending' && (item.reason_tags || []).some(t => t === 'wrong_medical_info' || t === 'ignored_allergy' || t === 'dangerous_advice' || t === 'hallucination');
                   return (
-                    <tr 
-                      key={item.id} 
+                    <tr
+                      key={item.id}
                       className={`${selectedId === item.id ? 'row-selected' : ''} ${item.rating === -1 ? 'row-dislike' : 'row-like'} ${isCritical ? 'row-critical' : ''}`}
                       onClick={() => onRowClick(item)}
                     >
@@ -1072,7 +1072,7 @@ function DataPane({
           )}
         </div>
       )}
-      
+
       {!loading && items.length > 0 && (
         <div className="pagination">
           <button className="page-btn" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
@@ -1115,7 +1115,7 @@ function TabFeedbackInbox({ onSaveNote }) {
       if (dateRange) params.date_range = dateRange;
       if (viewMode === 'flagged') params.rating = -1;
       if (viewMode === 'verified') params.rating = 1;
-      
+
       const data = await getAdminFeedbacks(params);
       setItems(data.items || []);
       setTotalPages(data.total_pages || 1);
@@ -1130,7 +1130,7 @@ function TabFeedbackInbox({ onSaveNote }) {
 
   const handleSave = async (id, payload) => {
     setItems(prev => prev.map(item => item.id === id ? { ...item, status: payload.status, admin_notes: payload.admin_notes } : item));
-    
+
     try {
       await onSaveNote(id, payload);
       setSelectedItem(null);
@@ -1197,7 +1197,7 @@ function TabFeedbackInbox({ onSaveNote }) {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       showToast(`Đã xuất ${exportItems.length} mẫu dữ liệu!`);
     } catch (e) {
       showToast('Lỗi xuất dữ liệu', 'error');
@@ -1207,8 +1207,8 @@ function TabFeedbackInbox({ onSaveNote }) {
   const isCriticalFilter = filterTag === 'wrong_medical_info' || filterTag === 'ignored_allergy' || filterTag === 'dangerous_advice' || filterTag === 'hallucination';
 
   const handleBulkResolve = () => {
-    const hasPendingNonCritical = items.some(item => 
-      item.rating === -1 && item.status === 'pending' && 
+    const hasPendingNonCritical = items.some(item =>
+      item.rating === -1 && item.status === 'pending' &&
       !(item.reason_tags || []).includes('wrong_medical_info') &&
       !(item.reason_tags || []).includes('ignored_allergy') &&
       !(item.reason_tags || []).includes('dangerous_advice') &&
@@ -1236,7 +1236,7 @@ function TabFeedbackInbox({ onSaveNote }) {
       setBulkResolving(false);
     }
   };
-  
+
   const isDeepDive = selectedItem !== null;
 
   return (
@@ -1250,13 +1250,13 @@ function TabFeedbackInbox({ onSaveNote }) {
       {/* Unified Filters Header */}
       <div className="unified-toolbar">
         <div className="view-mode-tabs">
-          <button className={`view-mode-btn ${viewMode === 'all' ? 'active' : ''}`} onClick={() => {setViewMode('all'); setPage(1);}}>
+          <button className={`view-mode-btn ${viewMode === 'all' ? 'active' : ''}`} onClick={() => { setViewMode('all'); setPage(1); }}>
             Tất cả
           </button>
-          <button className={`view-mode-btn ${viewMode === 'flagged' ? 'active' : ''}`} onClick={() => {setViewMode('flagged'); setPage(1);}}>
+          <button className={`view-mode-btn ${viewMode === 'flagged' ? 'active' : ''}`} onClick={() => { setViewMode('flagged'); setPage(1); }}>
             Cần Rà Soát
           </button>
-          <button className={`view-mode-btn ${viewMode === 'verified' ? 'active' : ''}`} onClick={() => {setViewMode('verified'); setPage(1);}}>
+          <button className={`view-mode-btn ${viewMode === 'verified' ? 'active' : ''}`} onClick={() => { setViewMode('verified'); setPage(1); }}>
             Đạt Chuẩn
           </button>
         </div>
@@ -1277,9 +1277,9 @@ function TabFeedbackInbox({ onSaveNote }) {
             </select>
           )}
           {viewMode !== 'verified' && (
-            <button 
-              className="btn-bulk-resolve" 
-              onClick={handleBulkResolve} 
+            <button
+              className="btn-bulk-resolve"
+              onClick={handleBulkResolve}
               disabled={isCriticalFilter || bulkResolving}
               data-tooltip={isCriticalFilter ? "Bị khóa đối với lỗi an toàn lâm sàng" : "Đóng Hồ Sơ Hàng Loạt"}
             >
@@ -1290,9 +1290,9 @@ function TabFeedbackInbox({ onSaveNote }) {
           <button className="btn-export" onClick={handleExportJsonl} data-tooltip="Xuất Dữ Liệu Vàng (JSONL)">
             <Download size={15} /> Xuất Dữ Liệu
           </button>
-          <button 
-            className="icon-btn" 
-            onClick={fetchItems} 
+          <button
+            className="icon-btn"
+            onClick={fetchItems}
             disabled={loading}
             data-tooltip="Làm mới danh sách phản hồi"
           >
@@ -1302,8 +1302,8 @@ function TabFeedbackInbox({ onSaveNote }) {
       </div>
 
       <div className={`bifurcated-layout ${isDeepDive ? 'deep-dive-state' : 'equilibrium-state'}`}>
-        
-        <DataPane 
+
+        <DataPane
           title="Danh sách Phản hồi"
           isMaster={isDeepDive}
           items={items}
@@ -1319,13 +1319,13 @@ function TabFeedbackInbox({ onSaveNote }) {
         {/* Khung Phân Tích Sâu (Detail Pane) */}
         {isDeepDive && (
           <div className="detail-pane-wrapper fade-in">
-             <DetailPanel
-                item={selectedItem}
-                onClose={closeDetail}
-                onSave={handleSave}
-                onDelete={handleDelete}
-                onCopy={handleCopy}
-             />
+            <DetailPanel
+              item={selectedItem}
+              onClose={closeDetail}
+              onSave={handleSave}
+              onDelete={handleDelete}
+              onCopy={handleCopy}
+            />
           </div>
         )}
       </div>
@@ -1649,19 +1649,25 @@ function TabSystemTuning({ onDirtyChange }) {
 
 
 const DICT_SUB_TABS = [
-  { id: 'conditions', label: 'Bệnh mạn tính', fields: [
-    { key: 'icd_code', label: 'Mã ICD-10', required: true },
-    { key: 'label', label: 'Tên bệnh', required: true },
-    { key: 'category', label: 'Nhóm bệnh', required: true },
-  ]},
-  { id: 'medications', label: 'Thuốc', fields: [
-    { key: 'drug_name', label: 'Tên thuốc', required: true },
-    { key: 'ingredients', label: 'Hoạt chất (cách nhau bởi dấu phẩy)', required: false },
-    { key: 'category', label: 'Nhóm thuốc', required: true },
-  ]},
-  { id: 'ingredients', label: 'Hoạt chất', fields: [
-    { key: 'name', label: 'Tên hoạt chất', required: true },
-  ]},
+  {
+    id: 'conditions', label: 'Bệnh mạn tính', fields: [
+      { key: 'icd_code', label: 'Mã ICD-10', required: true },
+      { key: 'label', label: 'Tên bệnh', required: true },
+      { key: 'category', label: 'Nhóm bệnh', required: true },
+    ]
+  },
+  {
+    id: 'medications', label: 'Thuốc', fields: [
+      { key: 'drug_name', label: 'Tên thuốc', required: true },
+      { key: 'ingredients', label: 'Hoạt chất (cách nhau bởi dấu phẩy)', required: false },
+      { key: 'category', label: 'Nhóm thuốc', required: true },
+    ]
+  },
+  {
+    id: 'ingredients', label: 'Hoạt chất', fields: [
+      { key: 'name', label: 'Tên hoạt chất', required: true },
+    ]
+  },
 ];
 
 const DICT_TABLE_COLS = {
@@ -1824,7 +1830,7 @@ function TabDictionary() {
           )}
           {subTab === 'ingredients' && (
             <div className="letter-filter-wrap">
-              <button 
+              <button
                 className={`btn-letter-filter ${letterFilter ? 'active' : ''}`}
                 onClick={() => setShowLetterPicker(!showLetterPicker)}
               >
@@ -1834,20 +1840,20 @@ function TabDictionary() {
               {showLetterPicker && (
                 <div className="letter-picker-popover">
                   <div className="letter-picker-header">
-                    <span style={{fontWeight: 600, fontSize: '13px', color: 'var(--med-text-main)'}}>Lọc theo chữ cái</span>
-                    <button className="icon-btn" onClick={() => setShowLetterPicker(false)}><X size={14}/></button>
+                    <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--med-text-main)' }}>Lọc theo chữ cái</span>
+                    <button className="icon-btn" onClick={() => setShowLetterPicker(false)}><X size={14} /></button>
                   </div>
                   <div className="letter-picker-grid">
-                    <button 
-                      className={`letter-btn ${!letterFilter ? 'active' : ''}`} 
+                    <button
+                      className={`letter-btn ${!letterFilter ? 'active' : ''}`}
                       onClick={() => { setLetterFilter(''); setShowLetterPicker(false); setPage(1); }}
                     >
                       Tất cả
                     </button>
                     {ALPHABET.map(l => (
-                      <button 
-                        key={l} 
-                        className={`letter-btn ${letterFilter === l ? 'active' : ''}`} 
+                      <button
+                        key={l}
+                        className={`letter-btn ${letterFilter === l ? 'active' : ''}`}
                         onClick={() => { setLetterFilter(l); setShowLetterPicker(false); setPage(1); }}
                       >
                         {l}
@@ -1954,13 +1960,13 @@ function TabDictionary() {
 
 const TABS = [
   { id: 'overview', label: 'Tổng quan', icon: <LayoutDashboard size={17} /> },
-  { id: 'safety',   label: 'Giám sát An toàn', icon: <ShieldAlert size={17} /> },
-  { id: 'inbox',    label: 'Quản lý phản hồi', icon: <Inbox size={17} /> },
+  { id: 'safety', label: 'Giám sát An toàn', icon: <ShieldAlert size={17} /> },
+  { id: 'inbox', label: 'Quản lý phản hồi', icon: <Inbox size={17} /> },
   { id: 'dictionary', label: 'Từ điển Y khoa', icon: <BookOpen size={17} /> },
-  { id: 'tuning',   label: 'Tinh chỉnh hệ thống', icon: <Wrench size={17} /> },
+  { id: 'tuning', label: 'Tinh chỉnh hệ thống', icon: <Wrench size={17} /> },
 ];
 
-const AdminDashboard = ({ onBack, theme }) => {
+const AdminDashboard = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [stats, setStats] = useState(null);
@@ -2000,7 +2006,7 @@ const AdminDashboard = ({ onBack, theme }) => {
         <div className="sidebar-header">
           {!isSidebarCollapsed ? (
             <>
-              <img src={theme === 'dark' ? '/images/Logo_name.png' : '/images/logo_name_dark.png'} alt="A.I.M Care Logo" className="admin-sidebar-logo" />
+              <img src="/images/Logo_name.png" alt="A.I.M Care Logo" className="admin-sidebar-logo" />
               <button className="icon-btn toggle-sidebar-btn" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
                 <Menu size={20} />
               </button>
@@ -2012,7 +2018,7 @@ const AdminDashboard = ({ onBack, theme }) => {
             </button>
           )}
         </div>
-        
+
         <nav className="sidebar-nav">
           {TABS.map((tab) => (
             <button
@@ -2036,7 +2042,7 @@ const AdminDashboard = ({ onBack, theme }) => {
 
         <div className="sidebar-footer">
           <button className="btn-exit" onClick={onBack} data-tooltip={isSidebarCollapsed ? "Quay lại" : undefined}>
-            <ChevronLeft size={16} /> 
+            <ChevronLeft size={16} />
             {!isSidebarCollapsed && <span>Quay lại</span>}
           </button>
         </div>
@@ -2049,7 +2055,7 @@ const AdminDashboard = ({ onBack, theme }) => {
             <span className="search-placeholder"></span>
           </div>
           <div className="header-actions">
-            <UserButton 
+            <UserButton
               appearance={{
                 elements: {
                   avatarBox: { width: '36px', height: '36px' },

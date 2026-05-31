@@ -576,10 +576,9 @@ function AuthenticatedApp() {
         )}
 
         {showAdmin && isAdmin ? (
-          <AdminDashboard 
-            onBack={() => setShowAdmin(false)} 
-            onClose={() => setShowAdmin(false)} 
-            theme={theme}
+          <AdminDashboard
+            onBack={() => setShowAdmin(false)}
+            onClose={() => setShowAdmin(false)}
           />
         ) : currentView === 'search' ? (
           <SearchCanvas
