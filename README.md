@@ -98,7 +98,21 @@ Hệ thống đã triển khai thành công các giải pháp kỹ thuật để
 
 ---
 
-## 5. Hướng Dẫn Cài Đặt & Triển Khai Hệ Thống (Installation & Deployment)
+## 5. Hệ Thống Giám Sát Lỗi (Sentry) & Nhật Ký Có Cấu Trúc (Structured Logging)
+
+Nhằm đảm bảo tính ổn định tối đa khi vận hành thực tế (Production), hệ thống tích hợp giải pháp giám sát lỗi chủ động và ghi log có cấu trúc:
+
+*   **Sentry Error Tracking (Backend & Frontend):** 
+    *   *Giám sát thời gian thực:* Phát hiện và bắt toàn bộ các ngoại lệ (Exceptions/Crashes) chưa được xử lý ở cả API Backend (FastAPI) và mã nguồn phía Client (React). Tự động gom nhóm lỗi và gửi thông báo cảnh báo tức thì tới email của Admin.
+    *   *Bảo vệ dữ liệu y tế nhạy cảm (PII Redaction):* Thiết lập hook đệ quy `before_send` ở backend và `beforeSend` ở frontend để tự động lọc và thay thế toàn bộ thông tin bệnh án nhạy cảm (như nội dung chat, tên bệnh nền, thuốc dị ứng, email...) thành `[REDACTED]` trước khi gửi về Sentry, đảm bảo an toàn thông tin y khoa tuyệt đối.
+    *   *Sentry ErrorBoundary:* Bọc ứng dụng React để ngăn lỗi component làm sập giao diện (trắng màn hình), hiển thị thông báo thay thế thân thiện cho người dùng.
+*   **Structured JSON Logging (Production logs):**
+    *   Khi chạy môi trường Production (`LOG_FORMAT=json`), hệ thống backend tự động chuyển đổi toàn bộ log thô dạng text sang dạng JSON có cấu trúc (gồm các trường: `timestamp`, `level`, `module`, `message`).
+    *   Log JSON có cấu trúc giúp các hệ thống thu thập log tập trung (như Hugging Face Logs) dễ dàng lọc, truy vấn và tìm kiếm sự cố nhanh chóng.
+
+---
+
+## 6. Hướng Dẫn Cài Đặt & Triển Khai Hệ Thống (Installation & Deployment)
 
 ### Yêu Cầu Hệ Thống
 *   Python 3.10 trở lên
@@ -137,6 +151,10 @@ CLERK_ISSUER=https://your-clerk-domain.clerk.accounts.dev
 GMAIL_SENDER=your-system-email@gmail.com
 GMAIL_APP_PASSWORD=your-app-password
 GOOGLE_APPS_SCRIPT_URL=https://script.google.com/macros/s/your-script-id/exec
+
+# Sentry & Observability Configuration
+SENTRY_DSN_BACKEND=https://your-sentry-dsn-for-backend@ingest.sentry.io/project-id
+LOG_FORMAT=json  # "json" cho production, "text" cho dev
 ```
 
 ### 2. Thiết lập Môi trường Backend & Chạy cơ sở dữ liệu
@@ -167,6 +185,9 @@ Tạo file `.env` tại thư mục `frontend` và định cấu hình API:
 ```env
 REACT_APP_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key_here
 REACT_APP_API_URL=http://localhost:8000
+
+# Sentry Integration
+REACT_APP_SENTRY_DSN=https://your-sentry-dsn-for-frontend@ingest.sentry.io/project-id
 ```
 Khởi chạy Frontend cục bộ:
 ```bash
@@ -181,7 +202,7 @@ npm start
 
 ---
 
-## 6. Kịch Bản Kiểm Thử & Kiểm Định (Testing & Verification)
+## 7. Kịch Bản Kiểm Thử & Kiểm Định (Testing & Verification)
 
 Hệ thống cung cấp bộ kịch bản kiểm thử tích hợp tự động toàn diện được thiết kế để xác minh sự đồng bộ giữa hệ thống đa tác nhân và cơ sở dữ liệu:
 
