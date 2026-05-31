@@ -1517,12 +1517,12 @@
   cursor: not-allowed;
 }
 
-/* ─── Universal Tooltip for [data-tooltip] ─── */
-[data-tooltip] {
+/* ─── Universal Tooltip for [data-tooltip] inside admin dashboard ─── */
+.admin-layout [data-tooltip] {
   position: relative;
 }
 
-[data-tooltip]::after {
+.admin-layout [data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: calc(100% + 8px);
@@ -1544,7 +1544,7 @@
   z-index: 1000;
 }
 
-[data-tooltip]::before {
+.admin-layout [data-tooltip]::before {
   content: "";
   position: absolute;
   bottom: calc(100% + 2px);
@@ -1560,13 +1560,13 @@
   z-index: 1000;
 }
 
-[data-tooltip]:hover::after {
+.admin-layout [data-tooltip]:hover::after {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);
 }
 
-[data-tooltip]:hover::before {
+.admin-layout [data-tooltip]:hover::before {
   opacity: 1;
   visibility: visible;
 }
