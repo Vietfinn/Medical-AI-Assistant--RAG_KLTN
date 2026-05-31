@@ -474,12 +474,18 @@ function AuthenticatedApp() {
     }
   };
 
-  const handleUpdateCorner = async (cornerId, name, emoji) => {
+  const handleUpdateCorner = async (cornerId, nameOrUpdateData, emoji) => {
     try {
-      await updateCorner(cornerId, { name, emoji });
+      let updatePayload = {};
+      if (typeof nameOrUpdateData === 'object' && nameOrUpdateData !== null) {
+        updatePayload = nameOrUpdateData;
+      } else {
+        updatePayload = { name: nameOrUpdateData, emoji };
+      }
+      await updateCorner(cornerId, updatePayload);
       await fetchCorners();
       if (activeCorner?._id === cornerId) {
-        setActiveCorner((prev) => ({ ...prev, name, emoji }));
+        setActiveCorner((prev) => ({ ...prev, ...updatePayload }));
       }
     } catch (error) {
       console.error('Error updating corner:', error);
