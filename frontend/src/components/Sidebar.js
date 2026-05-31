@@ -397,13 +397,6 @@ const Sidebar = ({
             <div
               className="sidebar-user-container"
               onMouseOver={handleUserHover}
-              data-tooltip={
-                user
-                  ? `Tài khoản Google
-${user.fullName || user.username || 'Tài khoản'}
-${user.primaryEmailAddress?.emailAddress || ''}`
-                  : 'Tài khoản'
-              }
             >
               <div className="sidebar-user-btn-container">
                 <UserButton
@@ -453,6 +446,13 @@ ${user.primaryEmailAddress?.emailAddress || ''}`
                   <span className="sidebar-username">
                     {user.fullName || user.username || user.primaryEmailAddress?.emailAddress || 'Tài khoản'}
                   </span>
+                </div>
+              )}
+              {user && (
+                <div className="custom-user-tooltip">
+                  <div className="tooltip-line title">Tài khoản Google</div>
+                  <div className="tooltip-line name">{user.fullName || user.username || 'Tài khoản'}</div>
+                  <div className="tooltip-line email">{user.primaryEmailAddress?.emailAddress || ''}</div>
                 </div>
               )}
             </div>
