@@ -74,6 +74,13 @@ class Settings(BaseSettings):
     # Clerk Webhook Secret (for verifying incoming webhooks)
     CLERK_WEBHOOK_SECRET: Optional[str] = os.getenv("CLERK_WEBHOOK_SECRET", None)
 
+    # Sentry Error Tracking
+    SENTRY_DSN_BACKEND: str = os.getenv("SENTRY_DSN_BACKEND", "")
+
+    # Logging format
+    LOG_FORMAT: str = os.getenv("LOG_FORMAT", "text")
+
+
     @property
     def CORS_ORIGINS(self) -> list:
         origins = [

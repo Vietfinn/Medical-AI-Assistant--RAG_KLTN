@@ -53,11 +53,14 @@ from services.email_service import configure_gmail, send_welcome_email
 from agents import TriageAgent, ClinicalRAGAgent, SafetyGuardAgent
 from auth import get_current_user, get_current_admin
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# Configure logging & Sentry (PHẢI gọi trước mọi thứ khác)
+from utils.logging_config import setup_logging
+from utils.sentry_config import init_sentry
+
+setup_logging()
+init_sentry()
 logger = logging.getLogger(__name__)
+
 
 # Global service instances
 embedding_service: Optional[EmbeddingService] = None
