@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, Clock, MessageSquare } from 'lucide-react';
+import { Search, X, Clock, MessageSquare, Menu, ArrowLeft } from 'lucide-react';
 import { searchSessions } from '../services/api';
 import './SearchCanvas.css';
 
@@ -49,7 +49,7 @@ const formatTimeLabel = (timestamp) => {
   return `${day} ${month} ${date.getFullYear()}`;
 };
 
-const SearchCanvas = ({ recentSessions = [], onSelectSession, onClose }) => {
+const SearchCanvas = ({ recentSessions = [], onSelectSession, onClose, onToggleMobileSidebar }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -127,22 +127,35 @@ const SearchCanvas = ({ recentSessions = [], onSelectSession, onClose }) => {
     <div className="search-canvas">
       {/* Search Header */}
       <div className="search-header">
-        <div className="search-input-container">
-
-          <Search size={18} className="search-input-icon" />
-          <input
-            ref={inputRef}
-            type="text"
-            className="search-input"
-            placeholder="Tìm kiếm trong các cuộc trò chuyện..."
-            value={query}
-            onChange={handleInputChange}
-          />
-          {query && (
-            <button className="search-clear-btn" onClick={handleClear} type="button">
-              <X size={18} />
+        <div className="search-header-row">
+          {onToggleMobileSidebar && (
+            <button
+              className="mobile-hamburger-btn search-hamburger-btn"
+              onClick={onToggleMobileSidebar}
+              aria-label="Mở menu"
+            >
+              <Menu size={20} />
             </button>
           )}
+          <div className="search-input-container">
+            <button className="search-back-btn" onClick={onClose} type="button" aria-label="Quay lại">
+              <ArrowLeft size={18} />
+            </button>
+            <Search size={18} className="search-input-icon" />
+            <input
+              ref={inputRef}
+              type="text"
+              className="search-input"
+              placeholder="Tìm kiếm trong các cuộc trò chuyện..."
+              value={query}
+              onChange={handleInputChange}
+            />
+            {query && (
+              <button className="search-clear-btn" onClick={handleClear} type="button">
+                <X size={18} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

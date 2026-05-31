@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, HeartPulse, Sparkles } from 'lucide-react';
+import { ArrowRight, HeartPulse, Sparkles, Menu, X } from 'lucide-react';
 import './HealthCornerCreate.css';
 
-const HealthCornerCreate = ({ onConfirm, onCancel }) => {
+const HealthCornerCreate = ({ onConfirm, onCancel, onToggleMobileSidebar }) => {
   const [name, setName] = useState('');
   const [emoji] = useState('🩺'); // Keep default emoji as 🩺, no longer selecting in creation screen
   const inputRef = useRef(null);
@@ -31,6 +31,26 @@ const HealthCornerCreate = ({ onConfirm, onCancel }) => {
 
   return (
     <div className="corner-create-canvas">
+      {/* Header bar with Hamburger (mobile only) and Close/Cancel (all) */}
+      <div className="corner-create-header">
+        {onToggleMobileSidebar && (
+          <button 
+            className="mobile-hamburger-btn corner-create-hamburger" 
+            onClick={onToggleMobileSidebar}
+            aria-label="Mở menu"
+          >
+            <Menu size={20} />
+          </button>
+        )}
+        <button 
+          className="corner-create-close-btn" 
+          onClick={onCancel}
+          aria-label="Hủy tạo góc sức khỏe"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
       <div className="corner-create-content">
         
         {/* HeartPulse Icon at the top (centered) */}

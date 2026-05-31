@@ -332,11 +332,41 @@
   padding: 0 2px;
 }
 
+.search-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.search-hamburger-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.search-hamburger-btn:hover {
+  background: var(--bg-hover);
+}
+
 /* ---- Responsive ---- */
 
 @media (max-width: 768px) {
   .search-header {
-    padding: 24px 16px 16px;
+    padding: 48px 16px 16px; /* Tăng từ 24px lên 48px để dời thanh tìm kiếm xuống dưới */
+  }
+
+  .search-hamburger-btn {
+    display: flex;
   }
 
   .search-results-area {
@@ -345,5 +375,6 @@
 
   .search-input-container {
     padding: 12px 16px;
+    flex: 1; /* Để ô tìm kiếm chiếm phần còn lại của hàng */
   }
 }

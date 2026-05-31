@@ -527,7 +527,7 @@
   }
 
   .chat-messages {
-    padding-bottom: 100px;
+    padding-bottom: 180px; /* Tăng padding để đẩy câu hỏi gợi ý lên trên, không bị textbox che khuất */
   }
 
   .typing-indicator {

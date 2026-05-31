@@ -585,6 +585,7 @@ function AuthenticatedApp() {
             recentSessions={chatSessions}
             onClose={() => setCurrentView('chat')}
             onSelectSession={handleSelectSession}
+            onToggleMobileSidebar={() => setIsMobileSidebarOpen(true)}
           />
         ) : currentView === 'corner-create' ? (
           <HealthCornerCreate
@@ -598,6 +599,7 @@ function AuthenticatedApp() {
               }
             }}
             onCancel={() => setCurrentView('chat')}
+            onToggleMobileSidebar={() => setIsMobileSidebarOpen(true)}
           />
         ) : currentView === 'corner' && activeCorner ? (
           <HealthCornerView
