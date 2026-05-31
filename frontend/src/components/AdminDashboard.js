@@ -2037,7 +2037,7 @@ const AdminDashboard = ({ onBack }) => {
         <div className="sidebar-header">
           {!isSidebarCollapsed ? (
             <>
-              <img src="/images/Logo_name.png" alt="A.I.M Care Logo" className="admin-sidebar-logo" />
+              <img src="/images/Logo_name_light.png?v=20260601-0250" alt="A.I.M Care Logo" className="admin-sidebar-logo" />
               <button className="icon-btn toggle-sidebar-btn" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
                 <Menu size={20} />
               </button>

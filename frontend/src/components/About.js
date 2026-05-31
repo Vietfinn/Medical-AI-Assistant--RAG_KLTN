@@ -17,7 +17,7 @@ const About = () => {
       {/* Header — reuses Homepage layout */}
       <header className="about-header">
         <div className="about-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          <img src="/images/Logo_name.png" alt="A.I.M Care Logo" className="about-logo-img" />
+          <img src="/images/Logo_name_light.png?v=20260601-0250" alt="A.I.M Care Logo" className="about-logo-img" />
         </div>
         <div className="about-header-actions">
           <button className="about-try-btn" onClick={handleAuthTrigger}>

@@ -254,7 +254,7 @@ const Sidebar = ({
           <div className="sidebar-branding">
             {isOpen ? (
               <>
-                <img src={theme === 'dark' ? '/images/logo_name_dark.png?v=20260527-2346' : '/images/Logo_name_light.png?v=20260527-2346'} alt="A.I.M Care" className="sidebar-logo-name" />
+                <img src={theme === 'dark' ? '/images/logo_name_dark.png?v=20260601-0250' : '/images/Logo_name_light.png?v=20260601-0250'} alt="A.I.M Care" className="sidebar-logo-name" />
                 <button
                   className="sidebar-toggle open-toggle"
                   onClick={window.innerWidth <= 768 ? onCloseMobileSidebar : onToggle}
