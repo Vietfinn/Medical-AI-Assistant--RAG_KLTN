@@ -506,6 +506,16 @@
   flex: 1;
 }
 
+/* Custom formatting for account button tooltip to support multiline text */
+.sidebar .sidebar-user-container[data-tooltip]::before {
+  white-space: pre-wrap !important;
+  max-width: 280px !important;
+  width: max-content !important;
+  text-align: left !important;
+  line-height: 1.6 !important;
+  font-size: 12px !important;
+}
+
 .sidebar-user-info {
   display: flex;
   flex-direction: column;

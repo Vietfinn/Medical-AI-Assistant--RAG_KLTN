@@ -31,6 +31,8 @@ const HealthCornerView = ({
   const [loadingAvailable, setLoadingAvailable] = useState(false);
   const [questionText, setQuestionText] = useState('');
   const [isAssigning, setIsAssigning] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchSessions = useCallback(async () => {
     if (!corner?._id) return;
@@ -187,9 +189,7 @@ const HealthCornerView = ({
               </button>
               <button className="option-item danger" onClick={() => {
                 setShowHeaderMenu(false);
-                if (window.confirm(`Bạn có chắc chắn muốn xóa Góc sức khỏe "${corner.name}" không? Các cuộc trò chuyện bên trong sẽ không bị xóa.`)) {
-                  onDeleteCorner(corner._id);
-                }
+                setShowDeleteConfirm(true);
               }}>
                 <Trash2 size={14} />
                 <span>Xóa Góc</span>
@@ -400,6 +400,47 @@ const HealthCornerView = ({
                   </div>
                 ))
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="modal-overlay" onClick={() => !isDeleting && setShowDeleteConfirm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Xóa Góc sức khỏe?</h3>
+            <p style={{ lineHeight: '1.6', fontSize: '0.92rem', color: 'var(--text-secondary, #94a3b8)' }}>
+              Bạn có chắc chắn muốn xóa Góc sức khỏe <strong>"{corner.name}"</strong> không?
+              <br />
+              <span style={{ color: 'var(--accent-blue, #3b82f6)', fontWeight: '500' }}>Lưu ý:</span> Các cuộc trò chuyện bên trong Góc sẽ <strong style={{ color: 'var(--text-primary, #e2e8f0)' }}>không bị xóa</strong>. Chúng sẽ được tự động chuyển ra danh sách "Gần đây" ở thanh bên.
+            </p>
+            <div className="modal-actions">
+              <button 
+                className="modal-btn cancel" 
+                onClick={() => setShowDeleteConfirm(false)} 
+                disabled={isDeleting}
+              >
+                Huỷ
+              </button>
+              <button 
+                className="modal-btn delete" 
+                onClick={async () => {
+                  if (isDeleting) return;
+                  setIsDeleting(true);
+                  try {
+                    await onDeleteCorner(corner._id);
+                  } catch (err) {
+                    console.error("Lỗi khi xóa góc:", err);
+                  } finally {
+                    setIsDeleting(false);
+                    setShowDeleteConfirm(false);
+                  }
+                }} 
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Đang xóa...' : 'Xóa'}
+              </button>
             </div>
           </div>
         </div>

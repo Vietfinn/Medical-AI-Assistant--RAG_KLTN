@@ -77,6 +77,13 @@ const Sidebar = ({
     }, 3000);
   };
 
+  const handleUserHover = (e) => {
+    const titleElems = e.currentTarget.querySelectorAll('[title]');
+    titleElems.forEach((el) => {
+      el.removeAttribute('title');
+    });
+  };
+
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -389,6 +396,7 @@ const Sidebar = ({
           <div className="sidebar-bottom-row">
             <div
               className="sidebar-user-container"
+              onMouseOver={handleUserHover}
               data-tooltip={user ? `Tài khoản Google\n${user.fullName || user.username || 'Tài khoản'}\n${user.primaryEmailAddress?.emailAddress || ''}` : 'Tài khoản'}
             >
               <div className="sidebar-user-btn-container">
