@@ -111,6 +111,7 @@ function TabSafetyMonitor() {
   const [logToDelete, setLogToDelete] = useState(null);
   const [userToBan, setUserToBan] = useState(null);
   const [selectedSafetyLog, setSelectedSafetyLog] = useState(null);
+  const [isActionProcessing, setIsActionProcessing] = useState(false);
 
   const CATEGORIES = ['SELF_HARM', 'ILLEGAL_DRUGS', 'HATE_SPEECH', 'ILLEGAL_PRACTICE', 'OTHER'];
   const CATEGORY_COLORS = {
@@ -161,31 +162,47 @@ function TabSafetyMonitor() {
   };
 
   const confirmDeleteLog = async () => {
-    if (!logToDelete) return;
+    if (!logToDelete || isActionProcessing) return;
+    setIsActionProcessing(true);
     try {
       await deleteUnsafeLog(logToDelete.id || logToDelete._id);
       setLogToDelete(null);
       fetchLogs();
       fetchStats();
-    } catch (e) { console.error('Xóa log thất bại:', e); }
+    } catch (e) {
+      console.error('Xóa log thất bại:', e);
+    } finally {
+      setIsActionProcessing(false);
+    }
   };
 
   const handleClearAll = async () => {
+    if (isActionProcessing) return;
+    setIsActionProcessing(true);
     try {
       await clearUnsafeLogs();
       setShowClearConfirm(false);
       setLogs([]);
       fetchStats();
-    } catch (e) { console.error('Xóa tất cả thất bại:', e); }
+    } catch (e) {
+      console.error('Xóa tất cả thất bại:', e);
+    } finally {
+      setIsActionProcessing(false);
+    }
   };
 
   const confirmBanToggle = async () => {
-    if (!userToBan) return;
+    if (!userToBan || isActionProcessing) return;
+    setIsActionProcessing(true);
     try {
       await toggleBanUser(userToBan.user_id);
       setUserToBan(null);
       fetchStats();
-    } catch (e) { console.error('Cấm user thất bại:', e); }
+    } catch (e) {
+      console.error('Cấm user thất bại:', e);
+    } finally {
+      setIsActionProcessing(false);
+    }
   };
 
   const handleExportCSV = () => {
@@ -376,14 +393,16 @@ function TabSafetyMonitor() {
 
       {/* Modal xác nhận xóa tất cả */}
       {showClearConfirm && (
-        <div className="modal-overlay" onClick={() => setShowClearConfirm(false)}>
+        <div className="modal-overlay" onClick={() => !isActionProcessing && setShowClearConfirm(false)}>
           <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
             <AlertTriangle size={32} style={{ color: '#ef4444', marginBottom: 12 }} />
             <h3>Xác nhận xóa tất cả?</h3>
             <p style={{ color: 'var(--med-text-sub)', margin: '8px 0 20px' }}>Hành động này sẽ xóa vĩnh viễn toàn bộ dữ liệu unsafe logs và không thể hoàn tác.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn-cancel" onClick={() => setShowClearConfirm(false)}>Hủy</button>
-              <button className="btn-danger" onClick={handleClearAll}><Trash size={14} /> Xóa tất cả</button>
+              <button className="btn-cancel" onClick={() => setShowClearConfirm(false)} disabled={isActionProcessing}>Hủy</button>
+              <button className="btn-danger" onClick={handleClearAll} disabled={isActionProcessing}>
+                <Trash size={14} /> {isActionProcessing ? 'Đang xóa...' : 'Xóa tất cả'}
+              </button>
             </div>
           </div>
         </div>
@@ -391,11 +410,11 @@ function TabSafetyMonitor() {
 
       {/* Modal hiển thị danh sách User rủi ro */}
       {showRiskUsersModal && (
-        <div className="modal-overlay" onClick={() => setShowRiskUsersModal(false)}>
+        <div className="modal-overlay" onClick={() => !isActionProcessing && setShowRiskUsersModal(false)}>
           <div className="confirm-modal" style={{ maxWidth: 650, padding: '24px 24px 16px', textAlign: 'left' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}><AlertTriangle size={20} color="#ef4444" /> Tài khoản Rủi ro</h3>
-              <button className="icon-btn" onClick={() => setShowRiskUsersModal(false)}><X size={20} /></button>
+              <button className="icon-btn" onClick={() => setShowRiskUsersModal(false)} disabled={isActionProcessing}><X size={20} /></button>
             </div>
 
             {riskUsers.length === 0 ? (
@@ -436,8 +455,9 @@ function TabSafetyMonitor() {
                         <td style={{ textAlign: 'center' }}>
                           <button
                             className={`btn-ban ${u.is_banned ? 'banned' : ''}`}
-                            onClick={() => setUserToBan(u)}
+                            onClick={() => !isActionProcessing && setUserToBan(u)}
                             data-tooltip={u.is_banned ? 'Mở cấm' : 'Cấm tài khoản'}
+                            disabled={isActionProcessing}
                           >
                             {u.is_banned ? <><Lock size={12} /> Đã cấm</> : <><ShieldAlert size={12} /> Cấm</>}
                           </button>
@@ -454,7 +474,7 @@ function TabSafetyMonitor() {
 
       {/* Modal xác nhận xóa log đơn lẻ */}
       {logToDelete && (
-        <div className="modal-overlay" style={{ zIndex: 10010 }} onClick={() => setLogToDelete(null)}>
+        <div className="modal-overlay" style={{ zIndex: 10010 }} onClick={() => !isActionProcessing && setLogToDelete(null)}>
           <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
             <AlertTriangle size={32} style={{ color: '#ef4444', marginBottom: 12 }} />
             <h3>Xác nhận xóa nhật ký?</h3>
@@ -463,8 +483,10 @@ function TabSafetyMonitor() {
               <strong style={{ color: 'var(--med-text-main)' }}>"{logToDelete.query}"</strong>
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn-cancel" onClick={() => setLogToDelete(null)}>Hủy</button>
-              <button className="btn-danger" onClick={confirmDeleteLog}><Trash size={14} /> Xóa</button>
+              <button className="btn-cancel" onClick={() => setLogToDelete(null)} disabled={isActionProcessing}>Hủy</button>
+              <button className="btn-danger" onClick={confirmDeleteLog} disabled={isActionProcessing}>
+                <Trash size={14} /> {isActionProcessing ? 'Đang xóa...' : 'Xóa'}
+              </button>
             </div>
           </div>
         </div>
@@ -472,7 +494,7 @@ function TabSafetyMonitor() {
 
       {/* Modal xác nhận cấm/mở cấm tài khoản */}
       {userToBan && (
-        <div className="modal-overlay" style={{ zIndex: 10020 }} onClick={() => setUserToBan(null)}>
+        <div className="modal-overlay" style={{ zIndex: 10020 }} onClick={() => !isActionProcessing && setUserToBan(null)}>
           <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
             <ShieldAlert size={32} style={{ color: userToBan.is_banned ? '#10b981' : '#ef4444', marginBottom: 12 }} />
             <h3>{userToBan.is_banned ? 'Xác nhận mở cấm tài khoản?' : 'Xác nhận cấm tài khoản?'}</h3>
@@ -486,12 +508,17 @@ function TabSafetyMonitor() {
               )}
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn-cancel" onClick={() => setUserToBan(null)}>Hủy</button>
+              <button className="btn-cancel" onClick={() => setUserToBan(null)} disabled={isActionProcessing}>Hủy</button>
               <button
                 className={userToBan.is_banned ? 'btn-save' : 'btn-danger'}
                 onClick={confirmBanToggle}
+                disabled={isActionProcessing}
               >
-                {userToBan.is_banned ? <><Lock size={12} /> Mở cấm</> : <><ShieldAlert size={12} /> Xác nhận cấm</>}
+                {userToBan.is_banned ? (
+                  isActionProcessing ? 'Đang xử lý...' : <><Lock size={12} /> Mở cấm</>
+                ) : (
+                  isActionProcessing ? 'Đang xử lý...' : <><ShieldAlert size={12} /> Xác nhận cấm</>
+                )}
               </button>
             </div>
           </div>
@@ -1224,6 +1251,7 @@ function TabFeedbackInbox({ onSaveNote }) {
   };
 
   const handleBulkResolveConfirm = async () => {
+    if (bulkResolving) return;
     setShowBulkResolveConfirm(false);
     setBulkResolving(true);
     try {
@@ -1331,7 +1359,7 @@ function TabFeedbackInbox({ onSaveNote }) {
       </div>
 
       {showBulkResolveConfirm && (
-        <div className="modal-overlay" onClick={() => setShowBulkResolveConfirm(false)}>
+        <div className="modal-overlay" onClick={() => !bulkResolving && setShowBulkResolveConfirm(false)}>
           <div className="confirm-modal" onClick={e => e.stopPropagation()}>
             <CheckCheck size={32} style={{ color: '#3ecf8e', marginBottom: 12 }} />
             <h3>Xác nhận đóng hàng loạt?</h3>
@@ -1339,8 +1367,8 @@ function TabFeedbackInbox({ onSaveNote }) {
               Bạn có chắc chắn muốn Đóng Hồ Sơ Hàng Loạt tất cả các phản hồi hiện tại (ngoại trừ các lỗi lâm sàng nghiêm trọng đã được bảo vệ)?
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn-cancel" onClick={() => setShowBulkResolveConfirm(false)}>Hủy</button>
-              <button className="btn-save" onClick={handleBulkResolveConfirm}>Đồng ý</button>
+              <button className="btn-cancel" onClick={() => setShowBulkResolveConfirm(false)} disabled={bulkResolving}>Hủy</button>
+              <button className="btn-save" onClick={handleBulkResolveConfirm} disabled={bulkResolving}>{bulkResolving ? 'Đang xử lý...' : 'Đồng ý'}</button>
             </div>
           </div>
         </div>
@@ -1396,6 +1424,7 @@ function TabSystemTuning({ onDirtyChange }) {
   }, [topK, simThreshold, strictMode, fallbackMessage, initialSettings, onDirtyChange]);
 
   const handleSaveSettings = async () => {
+    if (saving) return;
     setSaving(true);
     setSaveResult(null);
     try {
@@ -1417,6 +1446,7 @@ function TabSystemTuning({ onDirtyChange }) {
   };
 
   const handleRefreshCache = async () => {
+    if (refreshing) return;
     setRefreshing(true);
     setRefreshResult(null);
     try {
@@ -1752,6 +1782,7 @@ function TabDictionary() {
   };
 
   const handleSave = async () => {
+    if (saving) return;
     setSaving(true);
     try {
       let dataToSend = { ...formData };

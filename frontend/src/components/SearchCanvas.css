@@ -27,6 +27,8 @@
   border-radius: 28px;
   padding: 14px 20px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-input-container:focus-within {

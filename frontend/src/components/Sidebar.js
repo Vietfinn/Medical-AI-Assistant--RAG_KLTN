@@ -46,6 +46,7 @@ const Sidebar = ({
   // Modals state
   const [renameData, setRenameData] = useState(null); // { id: string, title: string }
   const [deleteData, setDeleteData] = useState(null); // { id: string, title: string }
+  const [isActionProcessing, setIsActionProcessing] = useState(false);
 
   const [showAllCorners, setShowAllCorners] = useState(false);
   const cornersDropdownRef = useRef(null);
@@ -175,7 +176,8 @@ const Sidebar = ({
   };
 
   const handleRenameSave = async () => {
-    if (!renameData.title.trim()) return;
+    if (!renameData.title.trim() || isActionProcessing) return;
+    setIsActionProcessing(true);
     try {
       if (renameData.type === 'corner') {
         if (onUpdateCorner) {
@@ -188,6 +190,7 @@ const Sidebar = ({
     } catch (error) {
       console.error('Lỗi khi đổi tên:', error);
     } finally {
+      setIsActionProcessing(false);
       setRenameData(null);
     }
   };
@@ -203,6 +206,8 @@ const Sidebar = ({
   };
 
   const handleDeleteConfirm = async () => {
+    if (isActionProcessing) return;
+    setIsActionProcessing(true);
     try {
       if (deleteData.type === 'corner') {
         if (onDeleteCorner) {
@@ -216,6 +221,7 @@ const Sidebar = ({
     } catch (error) {
       console.error('Lỗi khi xoá:', error);
     } finally {
+      setIsActionProcessing(false);
       setDeleteData(null);
     }
   };
@@ -499,8 +505,8 @@ const Sidebar = ({
               }}
             />
             <div className="modal-actions">
-              <button className="modal-btn cancel-text" onClick={handleRenameCancel}>Huỷ</button>
-              <button className="modal-btn save-text" onClick={handleRenameSave}>Đổi tên</button>
+              <button className="modal-btn cancel-text" onClick={handleRenameCancel} disabled={isActionProcessing}>Huỷ</button>
+              <button className="modal-btn save-text" onClick={handleRenameSave} disabled={isActionProcessing}>{isActionProcessing ? 'Đang lưu...' : 'Đổi tên'}</button>
             </div>
           </div>
         </div>
@@ -519,8 +525,8 @@ const Sidebar = ({
                   <span style={{ color: 'var(--accent-blue, #3b82f6)', fontWeight: '500' }}>Lưu ý:</span> Các cuộc trò chuyện bên trong Góc sẽ <strong style={{ color: 'var(--text-primary, #e2e8f0)' }}>không bị xóa</strong>. Chúng sẽ được tự động chuyển ra danh sách "Gần đây" ở thanh bên.
                 </p>
                 <div className="modal-actions">
-                  <button className="modal-btn cancel" onClick={handleDeleteCancel}>Huỷ</button>
-                  <button className="modal-btn delete" onClick={handleDeleteConfirm}>Xóa</button>
+                  <button className="modal-btn cancel" onClick={handleDeleteCancel} disabled={isActionProcessing}>Huỷ</button>
+                  <button className="modal-btn delete" onClick={handleDeleteConfirm} disabled={isActionProcessing}>{isActionProcessing ? 'Đang xóa...' : 'Xóa'}</button>
                 </div>
               </>
             ) : (
@@ -528,8 +534,8 @@ const Sidebar = ({
                 <h3>Xoá cuộc hội thoại?</h3>
                 <p>Bạn có chắc chắn muốn xoá cuộc hội thoại <strong>"{deleteData.title}"</strong> không? Hành động này không thể hoàn tác.</p>
                 <div className="modal-actions">
-                  <button className="modal-btn cancel" onClick={handleDeleteCancel}>Huỷ</button>
-                  <button className="modal-btn delete" onClick={handleDeleteConfirm}>Xoá</button>
+                  <button className="modal-btn cancel" onClick={handleDeleteCancel} disabled={isActionProcessing}>Huỷ</button>
+                  <button className="modal-btn delete" onClick={handleDeleteConfirm} disabled={isActionProcessing}>{isActionProcessing ? 'Đang xóa...' : 'Xoá'}</button>
                 </div>
               </>
             )}

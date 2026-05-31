@@ -5,6 +5,7 @@ import './HealthCornerCreate.css';
 const HealthCornerCreate = ({ onConfirm, onCancel, onToggleMobileSidebar }) => {
   const [name, setName] = useState('');
   const [emoji] = useState('🩺'); // Keep default emoji as 🩺, no longer selecting in creation screen
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -16,7 +17,8 @@ const HealthCornerCreate = ({ onConfirm, onCancel, onToggleMobileSidebar }) => {
 
   const handleSubmit = () => {
     const trimmed = name.trim();
-    if (trimmed) {
+    if (trimmed && !isSubmitting) {
+      setIsSubmitting(true);
       onConfirm(trimmed, emoji);
     }
   };
@@ -78,7 +80,7 @@ const HealthCornerCreate = ({ onConfirm, onCancel, onToggleMobileSidebar }) => {
           <button
             className={`corner-create-submit-btn ${name.trim() ? 'visible' : ''}`}
             onClick={handleSubmit}
-            disabled={!name.trim()}
+            disabled={!name.trim() || isSubmitting}
             title="Tạo Góc sức khỏe"
           >
             <ArrowRight size={22} />
