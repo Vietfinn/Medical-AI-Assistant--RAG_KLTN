@@ -1534,14 +1534,12 @@ body.no-scroll .health-corner-view {
 .custom-user-tooltip {
   display: none;
   position: absolute;
-  background-color: rgba(30, 31, 32, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: #f1f5f9;
+  background-color: #474747;
+  color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 12px;
+  font-size: 13px;
   font-family: inherit;
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   z-index: 10000;
@@ -1557,13 +1555,6 @@ body.no-scroll .health-corner-view {
   max-width: 280px;
 }
 
-[data-theme="light"] .custom-user-tooltip {
-  background-color: rgba(255, 255, 255, 0.95);
-  color: #0f172a;
-  border-color: rgba(14, 165, 233, 0.2);
-  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.15);
-}
-
 .custom-user-tooltip::after {
   content: '';
   position: absolute;
@@ -1571,11 +1562,7 @@ body.no-scroll .health-corner-view {
   left: -10px;
   transform: translateY(-50%);
   border: 5px solid transparent;
-  border-right-color: rgba(30, 31, 32, 0.94);
-}
-
-[data-theme="light"] .custom-user-tooltip::after {
-  border-right-color: rgba(255, 255, 255, 0.95);
+  border-right-color: #474747;
 }
 
 .sidebar-user-container:hover .custom-user-tooltip {
@@ -1589,24 +1576,23 @@ body.no-scroll .health-corner-view {
 }
 
 .tooltip-line.title {
-  color: var(--text-muted, #94a3b8);
-  font-size: 11px;
+  color: #ffffff;
+  font-size: 13px;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   margin-bottom: 2px;
 }
 
 .tooltip-line.name {
-  color: var(--text-primary, #f1f5f9);
+  color: #c4c7c5;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
+  margin-bottom: 2px;
 }
 
 .tooltip-line.email {
-  color: var(--text-secondary, #94a3b8);
-  font-size: 12px;
-  margin-top: 1px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 @keyframes tooltipFadeIn {

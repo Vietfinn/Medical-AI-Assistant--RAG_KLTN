@@ -330,6 +330,32 @@ code {
   transform: translateY(-50%) translateX(0);
 }
 
+/* ============ Chat Canvas Tooltips (Open Downwards) ============ */
+
+/* Tooltip box */
+.message-list [data-tooltip]::before {
+  bottom: auto;
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.message-list [data-tooltip]:hover::before {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip arrow */
+.message-list [data-tooltip]::after {
+  bottom: auto;
+  top: calc(100% - 2px);
+  transform: translateX(-50%) translateY(-4px);
+  border-top-color: transparent;
+  border-bottom-color: var(--tooltip-bg);
+}
+
+.message-list [data-tooltip]:hover::after {
+  transform: translateX(-50%) translateY(0);
+}
+
 /* ============ Recharts Tooltip Overrides ============ */
 
 .recharts-tooltip-wrapper {
