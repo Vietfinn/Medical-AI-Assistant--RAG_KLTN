@@ -32,10 +32,10 @@ def _build_welcome_html(email: str, first_name: Optional[str] = None, app_url: s
 
     Includes:
     - Personalized greeting with first_name
-    - Core feature highlights (triage, health profile, corners)
-    - Empathy quote and friendly signature
-    - Official Veracel App URL
-    - Modern warning/disclaimer footer
+    - Core feature highlights in a clean horizontal 3-column grid
+    - Numeric CSS badges instead of unicode emojis to avoid encoding issues
+    - Official Vercel App URL
+    - Clean signature and disclaimer footer
     """
     name_display = first_name if first_name else "bạn"
 
@@ -50,124 +50,99 @@ def _build_welcome_html(email: str, first_name: Optional[str] = None, app_url: s
   </style>
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc; padding:48px 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc; padding:32px 16px;">
     <tr>
       <td align="center">
         <!-- Main Card Container -->
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:24px; overflow:hidden; border: 1px solid #e2e8f0; box-shadow:0 8px 30px rgba(0,0,0,0.02);">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:20px; overflow:hidden; border: 1px solid #e2e8f0; box-shadow:0 4px 20px rgba(0,0,0,0.02);">
           
           <!-- Header Banner -->
           <tr>
-            <td style="background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); padding:56px 40px; text-align:center;">
-              <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: #ccfbf1; font-weight: 700; margin-bottom: 12px;">Hành Trình Chăm Sóc Sức Khỏe Số</div>
-              <h1 style="color:#ffffff; font-size:36px; font-weight:800; margin:0; letter-spacing:-0.5px; line-height: 1.2;">
+            <td style="background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); padding:40px 32px; text-align:center;">
+              <h1 style="color:#ffffff; font-size:30px; font-weight:800; margin:0; letter-spacing:-0.5px; line-height: 1.2;">
                 A.I.M Care
               </h1>
-              <p style="color:#e2fbf7; font-size:16px; margin:8px 0 0 0; font-weight: 500;">Người bạn đồng hành y khoa thông minh của bạn</p>
+              <p style="color:#ccfbf1; font-size:14px; margin:6px 0 0 0; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">Trợ Lý Y Tế Thông Minh</p>
             </td>
           </tr>
 
           <!-- Main Content -->
           <tr>
-            <td style="padding:48px 40px 40px 40px;">
-              <h2 style="color:#0f172a; font-size:22px; font-weight:700; margin:0 0 20px 0; letter-spacing: -0.3px;">
+            <td style="padding:40px 32px 32px 32px;">
+              <h2 style="color:#0f172a; font-size:20px; font-weight:700; margin:0 0 12px 0; letter-spacing: -0.3px;">
                 Xin chào {name_display},
               </h2>
-              <p style="color:#475569; font-size:16px; line-height:1.8; margin:0 0 24px 0;">
+              <p style="color:#475569; font-size:14px; line-height:1.7; margin:0 0 24px 0;">
                 Chúng tôi rất vui mừng chào đón bạn gia nhập cộng đồng <strong>A.I.M Care</strong>. 
-                Trong hành trình chăm sóc sức khỏe của bản thân và gia đình, A.I.M Care sẽ là trợ lý công nghệ luôn bên cạnh, hỗ trợ bạn tìm kiếm và giải đáp thông tin y khoa một cách khoa học, nhanh chóng và an toàn nhất.
+                A.I.M Care đồng hành cùng bạn để giải đáp thông tin sức khỏe khoa học, nhanh chóng và an toàn nhất qua kiến trúc Đa tác nhân (Multi-Agent).
               </p>
               
-              <!-- Divider -->
-              <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 32px 0;" />
-
-              <!-- Core Features List -->
-              <h3 style="color:#0f172a; font-size:15px; font-weight:700; margin:0 0 20px 0; text-transform: uppercase; letter-spacing: 1px;">Bạn có thể làm gì trên A.I.M Care?</h3>
-              
-              <!-- Feature 1 -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+              <!-- 3-Column Features Grid -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 24px; margin-bottom: 24px;">
                 <tr>
-                  <td width="44" valign="top" style="padding-top: 2px;">
-                    <div style="background-color: #ccfbf1; border-radius: 12px; width: 36px; height: 36px; text-align: center; line-height: 36px; font-size: 18px;">🩺</div>
+                  <!-- Column 1 -->
+                  <td width="168" valign="top" style="background-color: #fafbfb; border: 1px solid #f1f5f9; border-radius: 12px; padding: 16px 12px; text-align: center;">
+                    <div style="background-color: #ccfbf1; color: #0f766e; border-radius: 50%; width: 32px; height: 32px; text-align: center; line-height: 32px; font-size: 14px; font-weight: 700; margin: 0 auto 10px auto;">1</div>
+                    <h4 style="color:#0f172a; font-size:13px; font-weight:700; margin:0 0 6px 0; line-height: 1.3;">Tham vấn triệu chứng</h4>
+                    <p style="color:#64748b; font-size:11px; margin:0; line-height:1.4;">Hỏi đáp dấu hiệu sức khỏe qua Multi-Agent.</p>
                   </td>
-                  <td style="padding-left: 12px;">
-                    <h4 style="color:#0f172a; font-size:15px; font-weight:600; margin:0 0 4px 0;">Tham vấn Triệu chứng Đa tác nhân (Multi-Agent)</h4>
-                    <p style="color:#64748b; font-size:14px; margin:0; line-height:1.6;">Đặt câu hỏi về các dấu hiệu sức khỏe để nhận phân tích chuyên sâu từ hệ thống trợ lý phân luồng và tổng hợp y khoa.</p>
+                  <td width="16" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                  <!-- Column 2 -->
+                  <td width="168" valign="top" style="background-color: #fafbfb; border: 1px solid #f1f5f9; border-radius: 12px; padding: 16px 12px; text-align: center;">
+                    <div style="background-color: #ccfbf1; color: #0f766e; border-radius: 50%; width: 32px; height: 32px; text-align: center; line-height: 32px; font-size: 14px; font-weight: 700; margin: 0 auto 10px auto;">2</div>
+                    <h4 style="color:#0f172a; font-size:13px; font-weight:700; margin:0 0 6px 0; line-height: 1.3;">Hồ sơ sức khỏe</h4>
+                    <p style="color:#64748b; font-size:11px; margin:0; line-height:1.4;">Cảnh báo dị ứng và tương tác thuốc tự động.</p>
                   </td>
-                </tr>
-              </table>
-
-              <!-- Feature 2 -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
-                <tr>
-                  <td width="44" valign="top" style="padding-top: 2px;">
-                    <div style="background-color: #ccfbf1; border-radius: 12px; width: 36px; height: 36px; text-align: center; line-height: 36px; font-size: 18px;">📋</div>
-                  </td>
-                  <td style="padding-left: 12px;">
-                    <h4 style="color:#0f172a; font-size:15px; font-weight:600; margin:0 0 4px 0;">Cá nhân hóa theo Hồ sơ Sức khỏe</h4>
-                    <p style="color:#64748b; font-size:14px; margin:0; line-height:1.6;">Cập nhật tiền sử bệnh nền, dị ứng hoạt chất y tế để nhận cảnh báo chống chỉ định tự động, bảo vệ an toàn cho bạn.</p>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Feature 3 -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
-                <tr>
-                  <td width="44" valign="top" style="padding-top: 2px;">
-                    <div style="background-color: #ccfbf1; border-radius: 12px; width: 36px; height: 36px; text-align: center; line-height: 36px; font-size: 18px;">🌱</div>
-                  </td>
-                  <td style="padding-left: 12px;">
-                    <h4 style="color:#0f172a; font-size:15px; font-weight:600; margin:0 0 4px 0;">Tạo Góc Sức Khỏe riêng biệt</h4>
-                    <p style="color:#64748b; font-size:14px; margin:0; line-height:1.6;">Tự lập các chuyên mục theo dõi riêng cho bản thân hoặc các thành viên trong gia đình để dễ dàng quản lý thông tin hội thoại.</p>
+                  <td width="16" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                  <!-- Column 3 -->
+                  <td width="168" valign="top" style="background-color: #fafbfb; border: 1px solid #f1f5f9; border-radius: 12px; padding: 16px 12px; text-align: center;">
+                    <div style="background-color: #ccfbf1; color: #0f766e; border-radius: 50%; width: 32px; height: 32px; text-align: center; line-height: 32px; font-size: 14px; font-weight: 700; margin: 0 auto 10px auto;">3</div>
+                    <h4 style="color:#0f172a; font-size:13px; font-weight:700; margin:0 0 6px 0; line-height: 1.3;">Góc sức khỏe</h4>
+                    <p style="color:#64748b; font-size:11px; margin:0; line-height:1.4;">Tạo các chuyên mục theo dõi riêng cho gia đình.</p>
                   </td>
                 </tr>
               </table>
 
               <!-- CTA Area -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 36px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 24px; margin-bottom: 24px;">
                 <tr>
                   <td align="center">
                     <a href="{app_url}" target="_blank"
                        style="display:inline-block; background:linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
-                              color:#ffffff; text-decoration:none; font-size:16px; font-weight:600;
-                              padding:16px 40px; border-radius:14px;
-                              box-shadow:0 10px 20px rgba(15,118,110,0.25);">
+                              color:#ffffff; text-decoration:none; font-size:15px; font-weight:600;
+                              padding:14px 36px; border-radius:10px;
+                              box-shadow:0 4px 12px rgba(15,118,110,0.2);">
                       Bắt Đầu Khám Phá Ngay
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <!-- Friendly note -->
-              <p style="color:#475569; font-size:15px; line-height:1.8; margin:40px 0 0 0; text-align: center; font-style: italic; background-color: #f8fafc; padding: 20px; border-radius: 16px; border: 1px dashed #e2e8f0;">
-                "Sức khỏe không chỉ là việc không có bệnh tật, mà là trạng thái hoàn hảo về cả thể chất, tinh thần và xã hội." — Hãy để A.I.M Care đồng hành cùng bạn chăm sóc sức khỏe mỗi ngày!
-              </p>
-
               <!-- Outro -->
-              <p style="color:#334155; font-size:15px; line-height:1.7; margin:32px 0 0 0;">
+              <p style="color:#334155; font-size:14px; line-height:1.6; margin:24px 0 0 0;">
                 Chúc bạn luôn dồi dào sức khỏe,<br/>
-                <strong>Đội ngũ A.I.M Care</strong> ❤️
+                <strong>Đội ngũ A.I.M Care</strong>
               </p>
             </td>
           </tr>
 
           <!-- Footer / Disclaimer -->
           <tr>
-            <td style="background-color:#f8fafc; padding:32px 40px; border-top:1px solid #f1f5f9;">
+            <td style="background-color:#f8fafc; padding:24px 32px; border-top:1px solid #f1f5f9;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="background-color:#fffbeb; border-left:4px solid #f59e0b; border-radius:8px; padding:16px 20px; margin-bottom: 24px;">
-                    <p style="color:#b45309; font-size:13px; line-height:1.6; margin:0; font-weight: 500;">
-                      <strong>⚠️ Khuyến cáo y khoa:</strong> A.I.M Care cung cấp thông tin y tế dựa trên trí tuệ nhân tạo chỉ mang tính chất tham khảo, không thay thế cho tư vấn, chẩn đoán hay điều trị từ bác sĩ hoặc các nhân viên y tế có chuyên môn.
+                  <td style="background-color:#fffbeb; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom: 20px;">
+                    <p style="color:#b45309; font-size:12px; line-height:1.5; margin:0; font-weight: 500;">
+                      <strong>Khuyến cáo y khoa:</strong> A.I.M Care cung cấp thông tin y tế dựa trên trí tuệ nhân tạo chỉ mang tính chất tham khảo, không thay thế cho tư vấn, chẩn đoán hay điều trị từ bác sĩ hoặc nhân viên y tế có chuyên môn.
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <td align="center" style="padding-top: 24px;">
-                    <p style="color:#94a3b8; font-size:12px; line-height:1.6; margin:0;">
+                  <td align="center" style="padding-top: 16px;">
+                    <p style="color:#94a3b8; font-size:11px; line-height:1.5; margin:0;">
                       Email này được gửi tự động đến <strong>{email}</strong> vì bạn đã đăng ký tài khoản trên A.I.M Care.
                     </p>
-                    <p style="color:#94a3b8; font-size:12px; line-height:1.6; margin:8px 0 0 0;">
+                    <p style="color:#94a3b8; font-size:11px; line-height:1.5; margin:6px 0 0 0;">
                       © 2026 A.I.M Care. Mọi quyền được bảo lưu.<br/>
                       Hỗ trợ: <a href="mailto:aimcare.chat@gmail.com" style="color:#0f766e; text-decoration:none; font-weight: 600;">aimcare.chat@gmail.com</a>
                     </p>
