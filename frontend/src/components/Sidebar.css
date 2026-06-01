@@ -1605,3 +1605,39 @@ body.no-scroll .health-corner-view {
     transform: translateY(-50%) translateX(0);
   }
 }
+
+/* ==========================================
+   Custom tooltip for session titles (Upwards)
+   ========================================== */
+.sidebar .session-title-tooltip-wrapper[data-tooltip] {
+  position: relative;
+}
+
+.sidebar .session-title-tooltip-wrapper[data-tooltip]::before {
+  bottom: calc(100% + 8px) !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(4px) !important;
+  white-space: nowrap !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.sidebar .session-title-tooltip-wrapper[data-tooltip]::after {
+  bottom: calc(100% - 2px) !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(4px) !important;
+  border: 5px solid transparent !important;
+  border-top-color: var(--tooltip-bg) !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  border-left-color: transparent !important;
+}
+
+.sidebar .session-title-tooltip-wrapper[data-tooltip]:hover::before,
+.sidebar .session-title-tooltip-wrapper[data-tooltip]:hover::after {
+  transform: translateX(-50%) translateY(0) !important;
+}
