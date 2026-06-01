@@ -496,6 +496,7 @@ function AuthenticatedApp() {
     try {
       await deleteCorner(cornerId);
       await fetchCorners();
+      await fetchSessions();
       if (activeCorner?._id === cornerId) {
         setActiveCorner(null);
         setCurrentView('chat');
