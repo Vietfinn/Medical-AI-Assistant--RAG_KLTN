@@ -759,12 +759,12 @@ const Sidebar = ({
       {/* Floating Tooltip for Truncated Titles */}
       {hoveredTitle.text && hoveredTitle.rect && (
         <div
+          key={hoveredTitle.text}
           className="sidebar-floating-tooltip"
           style={{
             position: 'fixed',
             top: `${hoveredTitle.rect.top + hoveredTitle.rect.height / 2}px`,
             left: `${hoveredTitle.rect.left + hoveredTitle.rect.width + 12}px`,
-            transform: 'translateY(-50%)',
             zIndex: 100000,
             pointerEvents: 'none'
           }}
