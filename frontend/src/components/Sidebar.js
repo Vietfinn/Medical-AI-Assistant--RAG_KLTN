@@ -50,6 +50,7 @@ const Sidebar = ({
 
   const [showAllCorners, setShowAllCorners] = useState(false);
   const cornersDropdownRef = useRef(null);
+  const [hoveredTitle, setHoveredTitle] = useState({ text: '', rect: null });
 
   // Swipe to close logic
   const touchStartX = useRef(null);
@@ -78,17 +79,21 @@ const Sidebar = ({
   };
 
   const handleTitleMouseEnter = (e, title) => {
-    const wrapper = e.currentTarget;
-    const titleEl = wrapper.querySelector('.session-title, .corner-dropdown-name');
+    const item = e.currentTarget;
+    const titleEl = item.querySelector('.session-title, .corner-dropdown-name');
     if (titleEl && titleEl.scrollWidth > titleEl.clientWidth) {
-      wrapper.setAttribute('data-tooltip', title);
-    } else {
-      wrapper.removeAttribute('data-tooltip');
+      const rect = item.getBoundingClientRect();
+      setHoveredTitle({ text: title, rect });
     }
   };
 
-  const handleTitleMouseLeave = (e) => {
-    e.currentTarget.removeAttribute('data-tooltip');
+  const handleTitleMouseLeave = () => {
+    setHoveredTitle({ text: '', rect: null });
+  };
+
+  const handleOptionsBtnMouseEnter = (e) => {
+    e.stopPropagation();
+    setHoveredTitle({ text: '', rect: null });
   };
 
   const handleUserHover = (e) => {
@@ -351,6 +356,7 @@ const Sidebar = ({
                     <button
                       className={`session-options-btn ${activeCornerMenuId === corner._id ? 'active' : ''}`}
                       onClick={(e) => handleCornerMenuClick(e, corner._id)}
+                      onMouseEnter={handleOptionsBtnMouseEnter}
                     >
                       <MoreVertical size={16} />
                     </button>
@@ -399,6 +405,7 @@ const Sidebar = ({
                       <button
                         className={`session-options-btn ${activeMenuId === session._id ? 'active' : ''}`}
                         onClick={(e) => handleMenuClick(e, session._id)}
+                        onMouseEnter={handleOptionsBtnMouseEnter}
                       >
                         <MoreVertical size={16} />
                       </button>
@@ -747,6 +754,24 @@ const Sidebar = ({
             </div>
           );
         })()
+      )}
+
+      {/* Floating Tooltip for Truncated Titles */}
+      {hoveredTitle.text && hoveredTitle.rect && (
+        <div
+          className="sidebar-floating-tooltip"
+          style={{
+            position: 'fixed',
+            top: `${hoveredTitle.rect.top + hoveredTitle.rect.height / 2}px`,
+            left: `${hoveredTitle.rect.left + hoveredTitle.rect.width + 12}px`,
+            transform: 'translateY(-50%)',
+            zIndex: 100000,
+            pointerEvents: 'none'
+          }}
+        >
+          <div className="tooltip-arrow" />
+          <div className="tooltip-content">{hoveredTitle.text}</div>
+        </div>
       )}
     </>
   );
