@@ -208,7 +208,9 @@
   justify-content: center;
   gap: 12px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: -6px;
 }
 
 .hp-chip {
@@ -229,6 +231,8 @@
 }
 
 .hp-chip:hover {
+  position: relative;
+  z-index: 2;
   border-color: #2563eb;
   color: #2563eb;
   background: #ffffff;
