@@ -1,41 +1,43 @@
 # Hệ Thống Trợ Lý Y Khoa Thông Minh AIMCare (AIMCare Medical AI Assistant)
 
-**AIMCare** là hệ thống Trợ lý Y khoa Thông minh và là một giải pháp y tế số toàn diện được xây dựng trên kiến trúc đa tác nhân dị biến (Heterogeneous Multi-Agent) kết hợp với công nghệ truy xuất tăng cường sinh (Retrieval-Augmented Generation - RAG). Hệ thống AIMCare được thiết kế nhằm cung cấp các phản hồi y khoa chính xác, đảm bảo mức độ an toàn lâm sàng (Clinical Safety) cao dựa trên hồ sơ sức khỏe cá nhân của bệnh nhân, đồng thời hỗ trợ giao diện quản trị an toàn thông tin y tế và giám sát rủi ro theo thời gian thực.
+**AIMCare** là một hệ thống Trợ lý Y khoa Thông minh và giải pháp y tế số toàn diện được xây dựng trên kiến trúc **Đa tác nhân dị biến (Heterogeneous Multi-Agent)** kết hợp với công nghệ **Truy xuất tăng cường sinh (Retrieval-Augmented Generation - RAG)**. Hệ thống được thiết kế nhằm cung cấp các phản hồi y khoa chính xác, cá nhân hóa và đảm bảo mức độ an toàn lâm sàng (Clinical Safety) cao nhất dựa trên hồ sơ sức khỏe cá nhân của người bệnh, đồng thời cung cấp giao diện quản trị, giám sát rủi ro an toàn thông tin và tinh chỉnh hệ thống thời gian thực cho quản trị viên (Admin).
 
 ---
 
-## 1. Tổng Quan Kiến Trúc Hệ Thống (System Architecture)
+## 1. Tổng Quan Kiến Trúc & Công Nghệ (System Architecture & Tech Stack)
 
-Hệ thống được chia thành ba tầng kiến trúc độc lập nhằm đảm bảo khả năng mở rộng, tính chịu tải cao và phản hồi nhanh:
+Hệ thống được thiết kế theo mô hình 3 tầng độc lập, tối ưu hiệu năng và khả năng mở rộng:
 
-### Tầng Giao Diện Người Dùng (Frontend Layer)
-*   **React.js:** Thư viện cốt lõi để xây dựng giao diện ứng dụng đơn trang (Single Page Application).
-*   **Trải nghiệm tương tác thời gian thực:** Giao diện hỗ trợ nhận diện phản hồi dạng dòng chảy (SSE Streaming) từ mô hình ngôn ngữ lớn, cuộn trang tự động và tích hợp các công cụ hỗ trợ người dùng cuối.
-*   **Clerk Authentication:** Giải pháp xác thực người dùng đồng bộ (Single Sign-On qua Google, Github), hỗ trợ phân quyền vai trò người dùng (User) và quản trị viên (Admin) thông qua Clerk JWT Claims.
-*   **Vanilla CSS:** Thiết kế giao diện hiện đại sử dụng Glassmorphism, hỗ trợ chế độ giao diện sáng/tối (Light/Dark Mode) và tối ưu hóa phản hồi giao diện động.
+### 1.1. Tầng Giao Diện Người Dùng (Frontend Layer)
+*   **React.js (v18):** Thư viện chính để xây dựng giao diện ứng dụng đơn trang (SPA) phản hồi nhanh.
+*   **SSE Streaming:** Nhận phản hồi dạng dòng chảy ký tự trực tiếp từ mô hình ngôn ngữ lớn (LLM) để tối ưu thời gian phản hồi đầu tiên (Time To First Token).
+*   **Clerk Authentication:** Hệ thống xác thực đồng bộ (Single Sign-On qua Google, Email), phân quyền vai trò (User/Admin) qua Clerk JWT Claims được xác thực bảo mật tại Backend.
+*   **React Portals:** Sử dụng để render các tooltip động và menu tùy chọn nổi (`fixed` positioning) ra ngoài DOM con, giải quyết triệt để lỗi đè lớp hiển thị (`z-index` conflict) trong thanh bên.
+*   **Vanilla CSS:** Thiết kế giao diện hiện đại với phong cách Glassmorphism, hỗ trợ tự động đồng bộ chế độ sáng/tối (Light/Dark Mode).
 
-### Tầng Nghiệp Vụ & Trí Tuệ Nhân Tạo (Backend Layer)
-*   **FastAPI:** Framework hiệu năng cao hỗ trợ xử lý bất đồng bộ (Asynchronous) trong Python. Sử dụng Lifespan Context Manager để quản lý vòng đời ứng dụng, khởi tạo và giải phóng tài nguyên một cách tối ưu.
-*   **Multi-Agent Pipeline:** Quy trình xử lý câu hỏi y khoa chia nhỏ thành các vai trò chuyên biệt:
-    *   **Triage Agent:** Phân loại ý định người dùng (Medical vs. Non-Medical) và kiểm tra tính an toàn sơ bộ.
-    *   **Clinical RAG Agent (Gemini 2.5 Flash):** Tác nhân chính thực hiện truy xuất tài liệu chuyên môn và tổng hợp câu trả lời lâm sàng.
-    *   **Safety Guard Agent:** Tác nhân hậu kiểm chuyên chéo hồ sơ bệnh án cá nhân (dị ứng, bệnh lý nền) với câu trả lời dự thảo để phát hiện chống chỉ định y tế.
-*   **Smart Suggestion Engine:** Engine gợi ý hoạt chất dị ứng, bệnh mạn tính và thuốc thương mại chạy trực tiếp trên bộ nhớ RAM (In-Memory) để đảm bảo tốc độ phản hồi tối ưu dưới 2ms.
+### 1.2. Tầng Nghiệp Vụ & Trí Tuệ Nhân Tạo (Backend Layer)
+*   **FastAPI:** Framework Python hiệu năng cực cao, xử lý bất đồng bộ (`async/await`) để tối ưu hóa khả năng chịu tải.
+*   **Multi-Agent Orchestrator:** Điều phối luồng xử lý câu hỏi y khoa qua chuỗi tác nhân dị biến chuyên biệt:
+    *   **Triage Agent (Llama 3.3-70B via Groq):** Phân loại ý đồ câu hỏi (Medical vs. Non-Medical) và lọc sơ bộ các nội dung không phù hợp hoặc vi phạm an toàn.
+    *   **Clinical RAG Agent (Gemini 2.5 Flash):** Tác nhân cốt lõi thực hiện tổng hợp câu trả lời y học chuyên sâu dựa trên các tài liệu y khoa được truy xuất.
+    *   **Safety Guard Agent (Llama 3.3-70B via Groq):** Hậu kiểm câu trả lời dự thảo đối chiếu trực tiếp với hồ sơ dị ứng, bệnh lý nền của người dùng để đưa ra cảnh báo an toàn đỏ.
+*   **Smart Suggestion Engine (RapidFuzz):** Engine tìm kiếm mờ (Fuzzy Matching) chạy trực tiếp trên bộ nhớ RAM (In-Memory Cache), tối ưu tốc độ gợi ý tự động (Autocomplete) bệnh lý ICD-10 và dược phẩm dưới 2ms.
+*   **Sentry SDK & JSON Logging:** Giám sát lỗi thời gian thực và ghi log cấu trúc JSON phục vụ phân tích sự cố tự động.
 
-### Tầng Lưu Trữ & Cơ Sở Dữ Liệu (Storage Layer)
-*   **Qdrant Cloud:** Vector Database lưu trữ và truy xuất các vector nhúng (Embeddings) của bộ cơ sở dữ liệu tri thức y khoa. Sử dụng phương pháp tìm kiếm hỗn hợp (Hybrid Search) kết hợp Dense Vector (`vietnamese-bi-encoder`) và Sparse Vector (`fastembed` BM25), tích hợp thuật toán xếp hạng hợp nhất Reciprocal Rank Fusion (RRF).
-*   **MongoDB Atlas:** Cơ sở dữ liệu phi quan hệ (NoSQL) lưu trữ lịch sử hội thoại (Chat History), phiên làm việc (Sessions), thông tin hồ sơ sức khỏe người dùng (Health Profiles), cấu hình hệ thống động (System Settings), phản hồi chất lượng (Feedbacks) và nhật ký vi phạm an toàn thông tin (Unsafe Logs).
+### 1.3. Tầng Cơ Sở Dữ Liệu & Lưu Trữ (Storage Layer)
+*   **Qdrant Cloud (Vector Database):** Lưu trữ vector nhúng của bộ tri thức y khoa. Sử dụng phương pháp **Tìm kiếm hỗn hợp (Hybrid Search)** kết hợp giữa Dense Vector (`vietnamese-bi-encoder`) và Sparse Vector (`fastembed` BM25), chấm điểm bằng thuật toán xếp hạng hợp nhất **Reciprocal Rank Fusion (RRF)** và tinh chỉnh mức độ liên quan bằng **Cohere Reranker (Cross-Encoder)**.
+*   **MongoDB Atlas (CSDL NoSQL):** Lưu trữ lịch sử hội thoại (Chat History), phiên chat (Sessions), hồ sơ sức khỏe người dùng (Health Profiles), cấu hình hệ thống động (System Settings), phản hồi đánh giá (Feedbacks), danh mục từ điển y khoa và nhật ký vi phạm an toàn (Unsafe Logs).
 
 ---
 
-## 2. Quy Trình Xử Lý Đa Tác Nhân (Multi-Agent Processing Pipeline)
+## 2. Quy Trình Xử Lý Đa Tác Nhân (Multi-Agent RAG Pipeline)
 
-Quy trình xử lý một câu hỏi y tế được thực hiện qua bốn giai đoạn nghiêm ngặt:
+Quy trình xử lý một truy vấn y tế được kiểm định nghiêm ngặt qua 4 giai đoạn độc lập:
 
 ```mermaid
 sequenceDiagram
-    participant User as Người dùng
-    participant Auth as Auth Middleware
+    participant User as Người dùng (Client)
+    participant Auth as Auth Middleware (FastAPI)
     participant Mongo as MongoDB Atlas
     participant Triage as Triage Agent (Llama 3.3)
     participant Qdrant as Qdrant Vector DB
@@ -43,176 +45,217 @@ sequenceDiagram
     participant Gemini as Clinical Agent (Gemini)
     participant Safety as Safety Agent (Llama 3.3)
 
-    Người dùng->>Auth: Gửi câu hỏi + Token xác thực + Session ID
+    User->>Auth: Gửi câu hỏi + Token xác thực + Session ID
     Auth->>Mongo: Kiểm tra trạng thái cấm (Ban) & Tải hồ sơ bệnh án
-    Auth-->>Người dùng: Trả về 403 Forbidden (Nếu người dùng bị cấm)
-    
-    Triage->>Triage: Quét từ khóa cấm trong cấu hình hệ thống (Blacklist)
-    alt Khớp từ khóa cấm
-        Triage-->>Người dùng: Phản hồi từ chối y tế mặc định (Early Exit)
+    alt Người dùng bị cấm (Banned)
+        Auth-->>User: Trả về lỗi 403 Forbidden
     else Hợp lệ
-        Triage->>Triage: Phân loại ý định (Medical vs. Non-Medical)
-        alt Không liên quan y tế (Non-Medical)
-            Triage-->>Người dùng: Từ chối lịch sự & Hướng dẫn sử dụng đúng mục đích
-        else Liên quan y tế (Medical)
-            Triage->>Qdrant: Thực hiện tìm kiếm Hybrid Search
-            Qdrant-->>Triage: Trả về Top 30 tài liệu thô
-            Triage->>Cohere: Tiến hành Rerank (Tái xếp hạng Cross-Encoder)
-            Cohere-->>Triage: Chọn lọc Top N tài liệu liên quan nhất
-            Triage->>Gemini: Đưa tài liệu, lịch sử hội thoại & hồ sơ sức khỏe vào Prompt
-            Gemini-->>Triage: Trả về dự thảo câu trả lời (Draft Response) + Nguồn trích dẫn
-            Triage->>Safety: Đối chiếu dự thảo câu trả lời với bệnh án dị ứng của bệnh nhân
-            alt Phát hiện cảnh báo chống chỉ định
-                Safety-->>Người dùng: Trả về câu trả lời kèm nhãn cảnh báo đỏ (Warnings)
-            else Hoàn toàn an toàn
-                Safety-->>Người dùng: Trả về câu trả lời chuẩn y khoa lâm sàng
+        Auth->>Triage: Chuyển tiếp câu hỏi của người dùng
+        Triage->>Triage: Quét từ khóa cấm trong cấu hình hệ thống (Blacklist)
+        alt Khớp từ khóa cấm
+            Triage-->>User: Phản hồi từ chối y tế mặc định (Early Exit)
+        else Hợp lệ
+            Triage->>Triage: Phân loại ý định (Medical vs. Non-Medical)
+            alt Không liên quan y tế (Non-Medical)
+                Triage-->>User: Từ chối lịch sự & Hướng dẫn sử dụng đúng mục đích
+            else Liên quan y tế (Medical)
+                Triage->>Qdrant: Truy vấn Hybrid Search (Dense + Sparse Vector)
+                Qdrant-->>Triage: Trả về Top 30 tài liệu thô liên quan
+                Triage->>Cohere: Tiến hành Rerank (Tái xếp hạng Cross-Encoder)
+                Cohere-->>Triage: Chọn lọc Top N tài liệu phù hợp nhất
+                Triage->>Gemini: Gửi tài liệu, lịch sử chat & hồ sơ sức khỏe
+                Gemini-->>Triage: Trả về dự thảo câu trả lời (Draft Response) + Nguồn trích dẫn
+                Triage->>Safety: Đối chiếu dự thảo câu trả lời với hồ sơ bệnh án dị ứng
+                alt Phát hiện cảnh báo chống chỉ định y khoa
+                    Safety-->>User: Trả về câu trả lời kèm nhãn cảnh báo đỏ (Warnings)
+                else Hoàn toàn an toàn
+                    Safety-->>User: Trả về câu trả lời chuẩn lâm sàng
+                end
+                Safety->>Mongo: Lưu phiên chat & thông số hiệu năng RAG vào CSDL
             end
-            Safety->>Mongo: Lưu toàn bộ phiên chat & thông số hiệu năng RAG vào CSDL
         end
     end
 ```
 
 ---
 
-## 3. Công Cụ Gợi Ý Autocomplete & RAM Cache (Smart Suggestion Engine)
+## 3. Bản Đồ Tính Năng Chi Tiết (Feature Map)
 
-Để tối ưu hóa trải nghiệm điền thông tin bệnh án và giảm thiểu độ trễ, hệ thống ứng dụng công cụ gợi ý chạy trên bộ nhớ RAM (In-Memory Cache):
+### 3.1. Tính Năng Cho Người Dùng Cuối (User Features)
+*   **Trang chủ (Landing Page):** Thiết kế trực quan, hiện đại. Các thẻ gợi ý chủ đề (Suggestion Chips: Tra cứu triệu chứng, Tương tác thuốc, Dinh dưỡng, Sơ cứu) hỗ trợ tương tác hover mượt mà, chống lỗi tràn khung hiển thị.
+*   **Xác thực đồng bộ:** Đăng ký, đăng nhập nhanh qua Google hoặc Email thông qua Clerk Auth. Tự động hiển thị màn hình khảo sát hồ sơ sức khỏe (Onboarding) đối với người dùng đăng nhập lần đầu.
+*   **Hồ sơ sức khỏe cá nhân (Health Profile):** Cho phép khai báo tuổi, giới tính, tiền sử bệnh mạn tính (mã ICD-10), dị ứng hoạt chất y tế, danh sách thuốc thương mại đang sử dụng. Hỗ trợ autocomplete gợi ý nhanh từ cache RAM dưới 2ms.
+*   **Trò chuyện y khoa lâm sàng (Clinical Chat):**
+    *   Phản hồi dòng chảy (SSE Streaming) kèm thông số thời gian thực.
+    *   **Cảnh báo an toàn (Warnings):** Tự động phát hiện chống chỉ định (ví dụ: khuyên dùng hoạt chất mà người dùng dị ứng, hoặc khuyến nghị thuốc tương tác xấu với bệnh nền) và hiển thị cảnh báo đỏ nổi bật.
+    *   **Nguồn trích dẫn (Citations):** Hiển thị chi tiết tài liệu y văn chính thống được RAG truy xuất để chứng minh độ tin cậy của câu trả lời.
+    *   Chỉnh sửa câu hỏi cũ, tự động tái tạo luồng hội thoại.
+    *   Phản hồi chất lượng (Like/Dislike) kèm ghi chú đánh giá chi tiết.
+*   **Góc sức khỏe (Health Corners):**
+    *   Tạo các thư mục sức khỏe riêng biệt (như Tim mạch, Mắt, Dạ dày) kèm emoji sinh động.
+    *   Gán/Di chuyển cuộc hội thoại vào các Góc sức khỏe tương ứng.
+    *   Xóa góc sức khỏe (Bảo toàn các cuộc hội thoại bên trong, tự động chuyển ra danh mục "Gần đây" và đồng bộ hóa lập tức trên Sidebar).
+*   **Thanh điều hướng bên (Sidebar):**
+    *   Quản lý danh sách hội thoại gần đây (Recent) và hội thoại đã ghim (Pinned).
+    *   Tùy chọn nhanh: Ghim/Bỏ ghim, Đổi tên, Di chuyển vào Góc sức khỏe, Xóa hội thoại.
+    *   Tooltip nổi thông minh hiển thị đầy đủ tiêu đề bị cắt ngắn (Truncated Titles) sử dụng React Portals chống đè z-index và gỡ bỏ hoàn toàn lỗi nhấp nháy/nhảy vị trí nhờ keyframe cô lập.
+    *   Tích hợp Clerk UserButton tùy chỉnh thông tin tài khoản cá nhân.
+*   **Tìm kiếm lịch sử (Search Canvas):** Tra cứu nhanh các phiên trò chuyện cũ dựa trên từ khóa.
 
-*   **Tải dữ liệu thông minh:** Khi khởi động hệ thống (`lifespan startup`), toàn bộ dữ liệu danh mục bệnh mạn tính ICD-10, danh mục hoạt chất master và danh mục thuốc thương mại được nạp thẳng từ MongoDB lên RAM.
-*   **Chuẩn hóa trước (Pre-Normalization):** Các khóa tìm kiếm không dấu (ASCII) được tạo sẵn tại RAM để tránh việc chạy hàm chuẩn hóa unicode động `unidecode` O(N) trên mỗi ký tự người dùng nhập vào.
-*   **Chiến lược so khớp mờ (Fuzzy Matching):**
-    *   *Bệnh mạn tính:* Sử dụng chiến lược Prefix-first (ưu tiên từ bắt đầu) kết hợp Fuzzy match dự phòng bằng `RapidFuzz` để đảm bảo độ chính xác.
-    *   *Dị ứng hoạt chất:* Tự động hiển thị dạng danh sách cuộn A-Z khi chưa có ký tự nhập vào, và chuyển sang so khớp mờ khi có ký tự đầu vào.
-    *   *Thuốc thương mại:* Sử dụng thuật toán `fuzz.WRatio` cho phép tìm kiếm bất chấp sai sót chính tả thông thường của người dùng cuối.
-*   **Tối ưu hóa nhóm thuốc:** Danh sách nhóm thuốc độc nhất được tính toán và cache tĩnh dạng `O(1)` giúp phản hồi tức thì cho giao diện bộ lọc danh mục.
+### 3.2. Tính Năng Cho Quản Trị Viên (Admin Features)
+*   **Trang quản trị bảo mật (Admin Dashboard):** Chỉ hiển thị cho tài khoản có vai trò `admin` trong Clerk Metadata, bảo vệ bằng JWT validation tại API Backend.
+*   **Giám sát an toàn y tế (Safety Monitor):**
+    *   Giám sát thời gian thực nhật ký các câu hỏi độc hại hoặc nguy hiểm bị chặn bởi hệ thống (`unsafe_logs`).
+    *   Quản lý danh sách người dùng rủi ro cao. Hỗ trợ thao tác cấm/mở cấm tài khoản (`Ban/Unban`) hoạt động ổn định nhờ cơ chế Outer-Join thông tin người dùng từ bảng `users`, ngăn chặn lỗi "mất dấu tài khoản" (Deadlock) kể cả khi admin xóa sạch nhật ký vi phạm.
+*   **Quản lý từ điển y khoa (Medical Dictionary):**
+    *   Thêm, sửa, xóa (CRUD) danh mục bệnh mạn tính ICD-10, thuốc thương mại và hoạt chất dị ứng.
+    *   Tự động chuẩn hóa dữ liệu khi lưu (tách chuỗi nhập phân tách bằng dấu phẩy thành mảng hoạt chất thực tế) để bảo vệ tính nhất quán của dữ liệu RAG.
+*   **Tinh chỉnh hệ thống RAG (System Tuning):**
+    *   Điều chỉnh trực tiếp các thông số: Số lượng tài liệu truy xuất (`top_k`), Số lượng tài liệu tái xếp hạng (`top_k_rerank`), Ngưỡng tương đồng tối thiểu (`similarity_threshold`), và Tỷ lệ tìm kiếm hỗn hợp (`hybrid_alpha`).
+    *   Kích hoạt nạp lại dữ liệu từ điển y khoa lên bộ nhớ cache RAM bất đồng bộ thông qua `BackgroundTasks` của FastAPI để tránh treo luồng chính (Main Thread) của máy chủ.
+    *   Theo dõi biểu đồ hiệu năng hệ thống và số lượng bản ghi thực tế được đồng bộ tự động.
+*   **Hộp thư phản hồi (Feedback Inbox):**
+    *   Theo dõi toàn bộ đánh giá chất lượng (Like/Dislike) kèm ghi chú từ người dùng.
+    *   Biểu đồ thống kê trực quan xu hướng phản hồi 7 ngày qua đã được đồng bộ hóa lệch múi giờ (UTC+7).
+    *   **Xuất tập dữ liệu vàng (Dataset Export):** Hỗ trợ xuất dữ liệu chất lượng định dạng JSON Lines (JSONL) dưới dạng **Streaming Response** để tránh tràn bộ nhớ máy chủ (Out of Memory) khi tập dữ liệu phình to.
 
 ---
 
-## 4. Cơ Chế Kháng Lỗi Logic & Đồng Bộ Dữ Liệu (Safety & Consistency Implementations)
+## 4. Cơ Chế Kháng Lỗi & Đảm Bảo Nhất Quán (Safety & Consistency Implementations)
 
-Hệ thống đã triển khai thành công các giải pháp kỹ thuật để khắc phục triệt để các lỗi bất đồng bộ nghiêm trọng giữa môi trường User và Admin:
+Hệ thống triển khai các giải pháp kỹ thuật tối ưu nhằm loại bỏ các lỗi logic và đồng bộ:
 
-*   **Kháng lỗi mất bệnh án (PATCH Partial Update):** API cập nhật hồ sơ sức khỏe `/api/profile` được tách riêng luồng POST (ghi đè toàn bộ) và PATCH (cập nhật vi phân). Lệnh PATCH sử dụng toán tử `$set` của MongoDB kết hợp cấu trúc Dot-notation (Ví dụ: `health_profile.weight`), ngăn ngừa việc cập nhật một trường đơn lẻ làm xóa sạch dữ liệu bệnh nền, dị ứng đã điền trước đó.
-*   **Cách ly trạng thái cấm (Banned Isolation):** Giải quyết tình trạng tài khoản bị cấm (bị Ban) biến mất khỏi giao diện quản lý của Admin khi thực hiện thao tác xóa logs vi phạm an toàn. Danh sách tài khoản nguy hiểm (`/api/admin/unsafe-users`) tự động thực hiện truy vấn hợp nhất (Outer-Join) trạng thái cờ `is_banned` từ collection `users`, độc lập hoàn toàn với collection `unsafe_logs`.
-*   **Đồng bộ phía Client (On-Mount Fetch):** Khi ứng dụng Frontend khởi chạy, hệ thống tự động kéo thông tin hồ sơ sức khỏe thực tế từ MongoDB xuống bộ nhớ tạm `localStorage` để đồng bộ trạng thái, ngăn chặn việc đẩy ngược đối tượng trống lên server khi mở modal trên thiết bị mới.
+> [!IMPORTANT]
+> **1. Tránh mất dữ liệu bệnh án (PATCH Partial Update):**
+> API `/api/profile` sử dụng phương thức `PATCH` kết hợp cấu trúc Dot-notation trong MongoDB (Ví dụ: `{"$set": {"health_profile.weight": 65}}`). Điều này ngăn chặn việc cập nhật một trường đơn lẻ (như cân nặng) vô tình ghi đè và làm xóa sạch toàn bộ danh sách bệnh lý nền, dị ứng đã điền trước đó.
 
----
+> [!TIP]
+> **2. Đồng bộ bộ nhớ đệm Suggesion (RapidFuzz ASCII Pre-Normalization):**
+> Dữ liệu gợi ý được tải lên RAM lúc startup và chuẩn hóa sẵn sang không dấu (ASCII). Khi người dùng gõ từ khóa, hệ thống so khớp mờ trên dữ liệu đã chuẩn hóa giúp giảm độ phức tạp tính toán từ `O(N)` xuống `O(1)`, ngăn chặn tình trạng nghẽn CPU của backend và giật lag giao diện điền bệnh án của người dùng cuối.
 
-## 5. Hệ Thống Giám Sát Lỗi (Sentry) & Nhật Ký Có Cấu Trúc (Structured Logging)
+> [!WARNING]
+> **3. Đồng bộ hóa khi Mount thiết bị (On-Mount Sync):**
+> Khi người dùng đăng nhập trên thiết bị mới, ứng dụng frontend chủ động tải thông tin hồ sơ sức khỏe thực tế từ MongoDB Atlas về lưu trữ vào `localStorage`. Điều này ngăn chặn việc đẩy ngược đối tượng cấu hình trống lên server gây mất dữ liệu bệnh án cũ.
 
-Nhằm đảm bảo tính ổn định tối đa khi vận hành thực tế (Production), hệ thống tích hợp giải pháp giám sát lỗi chủ động và ghi log có cấu trúc:
-
-*   **Sentry Error Tracking (Backend & Frontend):** 
-    *   *Giám sát thời gian thực:* Phát hiện và bắt toàn bộ các ngoại lệ (Exceptions/Crashes) chưa được xử lý ở cả API Backend (FastAPI) và mã nguồn phía Client (React). Tự động gom nhóm lỗi và gửi thông báo cảnh báo tức thì tới email của Admin.
-    *   *Bảo vệ dữ liệu y tế nhạy cảm (PII Redaction):* Thiết lập hook đệ quy `before_send` ở backend và `beforeSend` ở frontend để tự động lọc và thay thế toàn bộ thông tin bệnh án nhạy cảm (như nội dung chat, tên bệnh nền, thuốc dị ứng, email...) thành `[REDACTED]` trước khi gửi về Sentry, đảm bảo an toàn thông tin y khoa tuyệt đối.
-    *   *Sentry ErrorBoundary:* Bọc ứng dụng React để ngăn lỗi component làm sập giao diện (trắng màn hình), hiển thị thông báo thay thế thân thiện cho người dùng.
-*   **Structured JSON Logging (Production logs):**
-    *   Khi chạy môi trường Production (`LOG_FORMAT=json`), hệ thống backend tự động chuyển đổi toàn bộ log thô dạng text sang dạng JSON có cấu trúc (gồm các trường: `timestamp`, `level`, `module`, `message`).
-    *   Log JSON có cấu trúc giúp các hệ thống thu thập log tập trung (như Hugging Face Logs) dễ dàng lọc, truy vấn và tìm kiếm sự cố nhanh chóng.
+> [!NOTE]
+> **4. Cô lập hoạt ảnh Tooltip (Keyframe Collision Fix):**
+> Đổi tên `@keyframes tooltipFadeIn` của thanh bên thành `sidebarTooltipFadeIn` và cấu hình hoạt ảnh ở chế độ `forwards`. Việc này ngăn chặn sự chồng chéo với hoạt ảnh của bong bóng chat trong `MessageList.css` (vốn dịch chuyển theo trục X), loại bỏ lỗi tooltip của thanh bên nhảy giật từ giữa màn hình về lề phải khi người dùng hover.
 
 ---
 
-## 6. Hướng Dẫn Cài Đặt & Triển Khai Hệ Thống (Installation & Deployment)
+## 5. Giám Sát & Vận Hành Hệ Thống (Observability & Monitoring)
+
+### 5.1. Sentry Error Tracking (Frontend & Backend)
+*   **Phát hiện sự cố tức thì:** Bắt toàn bộ các ngoại lệ (Uncaught Exceptions), lỗi kết nối API và sập giao diện (Component Crashes). Tự động phân loại và gửi cảnh báo tới quản trị viên.
+*   **Bảo vệ thông tin nhạy cảm (PII Redaction):** Cấu hình hook `before_send` ở backend và frontend để lọc bỏ toàn bộ thông tin bệnh án, nội dung trò chuyện y khoa, thuốc dị ứng, email cá nhân... Thay thế bằng nhãn `[REDACTED]` trước khi gửi dữ liệu lỗi về máy chủ Sentry, đảm bảo tuân thủ an toàn thông tin y tế toàn diện.
+*   **React ErrorBoundary:** Bọc ứng dụng bằng ErrorBoundary của Sentry để hiển thị màn hình báo lỗi thân thiện thay vì làm trắng màn hình giao diện của người dùng.
+
+### 5.2. JSON Logging có cấu trúc
+*   Khi cấu hình biến môi trường `LOG_FORMAT=json`, backend FastAPI sẽ tự động định dạng toàn bộ log hệ thống sang cấu trúc JSON.
+*   Định dạng JSON giúp các hệ thống gom log tập trung (như Datadog, ELK, hoặc Hugging Face Logs) dễ dàng truy vấn, lọc log theo `level` (INFO, WARNING, ERROR) hoặc `module` để xử lý sự cố nhanh chóng.
+
+---
+
+## 6. Hướng Dẫn Cài Đặt & Triển Khai (Installation & Setup)
 
 ### Yêu Cầu Hệ Thống
 *   Python 3.10 trở lên
-*   Node.js 18 trở lên (để build Frontend)
-*   Tài khoản và API keys hoạt động: Gemini, Groq, Cohere, Clerk.
+*   Node.js 18 trở lên
+*   Đăng ký tài khoản và lấy các API keys hoạt động cho: Gemini, Groq, Cohere, Clerk, Sentry.
 
-### 1. Cấu hình biến môi trường (`.env` cho Backend)
-Tạo file `.env` tại thư mục `backend` với cấu hình mẫu sau:
+### Giai Đoạn 1: Cấu hình Backend (FastAPI)
+1.  Di chuyển vào thư mục backend và tạo môi trường ảo Python:
+    ```bash
+    cd backend
+    python -m venv venv
+    source venv/bin/activate  # Trên Windows dùng: venv\Scripts\activate
+    ```
+2.  Cài đặt các thư viện phụ thuộc:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3.  Tạo tệp cấu hình `.env` tại thư mục `backend` theo mẫu sau:
+    ```env
+    # Model APIs
+    GEMINI_API_KEY=your_gemini_api_key
+    GEMINI_MODEL=gemini-2.5-flash
+    GROQ_API_KEY1=your_groq_api_key_1
+    GROQ_API_KEY2=your_groq_api_key_2
+    GROQ_MODEL=llama-3.3-70b-versatile
 
-```env
-# AI Models Configuration
-GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.5-flash
-GROQ_API_KEY1=your_groq_key_1_here
-GROQ_API_KEY2=your_groq_key_2_here
-GROQ_MODEL=llama-3.3-70b-versatile
+    # Cohere Reranker API
+    COHERE_API_KEY=your_cohere_api_key
+    RERANKER_MODEL=rerank-v4.0-pro
 
-# Cohere Reranker API
-COHERE_API_KEY=your_cohere_key_here
-RERANKER_MODEL=rerank-v4.0-pro
+    # Qdrant Vector DB
+    QDRANT_MODE=cloud
+    QDRANT_CLOUD_URL=https://your-qdrant-cluster-url.qdrant.io:6333
+    QDRANT_API_KEY=your_qdrant_api_key
+    QDRANT_COLLECTION=vnhealthqa
 
-# Qdrant Vector Database
-QDRANT_MODE=cloud
-QDRANT_CLOUD_URL=https://your-qdrant-cluster-url.qdrant.io:6333
-QDRANT_API_KEY=your_qdrant_api_key
-QDRANT_COLLECTION=vnhealthqa
+    # MongoDB Connection
+    MONGODB_URL=mongodb+srv://admin:password@cluster.mongodb.net/?retryWrites=true&w=majority
 
-# MongoDB Atlas Url
-MONGODB_URL=mongodb+srv://admin:password@cluster.mongodb.net/?retryWrites=true&w=majority
+    # Authentication (Clerk)
+    CLERK_JWKS_URL=https://your-clerk-domain.clerk.accounts.dev/.well-known/jwks.json
+    CLERK_ISSUER=https://your-clerk-domain.clerk.accounts.dev
 
-# Authentication (Clerk JWKS)
-CLERK_JWKS_URL=https://your-clerk-domain.clerk.accounts.dev/.well-known/jwks.json
-CLERK_ISSUER=https://your-clerk-domain.clerk.accounts.dev
+    # SMTP / Google Script
+    GMAIL_SENDER=your-system-email@gmail.com
+    GOOGLE_APPS_SCRIPT_URL=https://script.google.com/macros/s/your-script-id/exec
 
-# SMTP Email Settings
-GMAIL_SENDER=your-system-email@gmail.com
-GMAIL_APP_PASSWORD=your-app-password
-GOOGLE_APPS_SCRIPT_URL=https://script.google.com/macros/s/your-script-id/exec
+    # Sentry & Log format
+    SENTRY_DSN_BACKEND=https://your-sentry-dsn@ingest.sentry.io/project-id
+    LOG_FORMAT=json
+    ```
+4.  Đẩy cơ sở dữ liệu tri thức y văn dạng vector nhúng vào Qdrant Cloud:
+    ```bash
+    python scripts/index_data.py
+    ```
+5.  Seed dữ liệu gợi ý bệnh mạn tính ICD-10 và dược phẩm thương mại vào MongoDB Atlas:
+    ```bash
+    python -m scripts.seed_clinical_conditions
+    python -m scripts.process_medications
+    ```
+6.  Khởi chạy máy chủ API Backend:
+    ```bash
+    uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    ```
 
-# Sentry & Observability Configuration
-SENTRY_DSN_BACKEND=https://your-sentry-dsn-for-backend@ingest.sentry.io/project-id
-LOG_FORMAT=json  # "json" cho production, "text" cho dev
-```
-
-### 2. Thiết lập Môi trường Backend & Chạy cơ sở dữ liệu
-```bash
-# Di chuyển vào thư mục backend
-cd backend
-
-# Khởi tạo môi trường ảo Python
-python -m venv venv
-source venv/bin/activate  # Trên Windows dùng: venv\Scripts\activate
-
-# Cài đặt thư viện phụ thuộc
-pip install -r requirements.txt
-
-# Tạo chỉ mục và đẩy dữ liệu Vector vào Qdrant Cloud
-python scripts/index_data.py
-
-# Seed dữ liệu gợi ý ICD-10 và Thuốc thương mại vào MongoDB Atlas
-python -m scripts.seed_clinical_conditions
-python -m scripts.process_medications
-
-# Khởi chạy máy chủ phát triển
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 3. Thiết lập Frontend
-Tạo file `.env` tại thư mục `frontend` và định cấu hình API:
-```env
-REACT_APP_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key_here
-REACT_APP_API_URL=http://localhost:8000
-
-# Sentry Integration
-REACT_APP_SENTRY_DSN=https://your-sentry-dsn-for-frontend@ingest.sentry.io/project-id
-```
-Khởi chạy Frontend cục bộ:
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### 4. Triển khai sản phẩm (Cloud Deployment)
-*   **Backend (Hugging Face Spaces):** Sử dụng cấu trúc Space chạy Docker SDK. Đảm bảo cấu hình các biến môi trường trong mục "Repository Secrets" tại HF Space Settings.
-*   **Frontend (Vercel):** Đẩy mã nguồn Frontend lên GitHub, liên kết dự án với Vercel, cấu hình thư mục gốc (Root directory) là `frontend` và thiết lập các biến môi trường tương tự như local.
+### Giai Đoạn 2: Cấu hình Frontend (React)
+1.  Di chuyển vào thư mục frontend và cài đặt các gói phụ thuộc:
+    ```bash
+    cd frontend
+    npm install
+    ```
+2.  Tạo tệp cấu hình `.env` tại thư mục `frontend` với nội dung:
+    ```env
+    REACT_APP_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_key
+    REACT_APP_API_URL=http://localhost:8000
+    REACT_APP_SENTRY_DSN=https://your-sentry-dsn@ingest.sentry.io/project-id
+    ```
+3.  Khởi chạy máy chủ thử nghiệm Frontend:
+    ```bash
+    npm start
+    ```
+4.  Biên dịch đóng gói sản phẩm (Production Build):
+    ```bash
+    npm run build
+    ```
 
 ---
 
 ## 7. Kịch Bản Kiểm Thử & Kiểm Định (Testing & Verification)
 
-Hệ thống cung cấp bộ kịch bản kiểm thử tích hợp tự động toàn diện được thiết kế để xác minh sự đồng bộ giữa hệ thống đa tác nhân và cơ sở dữ liệu:
+Hệ thống đi kèm bộ kiểm thử tích hợp tự động toàn diện được thiết kế để xác định khả năng liên thông dữ liệu và tính an toàn của luồng đa tác nhân:
 
-*   **Chạy toàn bộ ca kiểm thử:**
+*   **Lệnh chạy kiểm thử tự động:**
     ```bash
     python backend/scratch/system_comprehensive_test.py
     ```
-*   **Hạng mục kiểm định tự động:**
-    1.  *Health Check:* Đảm bảo tất cả các cổng kết nối API và Vector DB hoạt động bình thường.
-    2.  *Profile Sync & Overwrite:* Xác minh cơ chế PATCH và bảo toàn hồ sơ bệnh án cá nhân.
-    3.  *Dictionary CRUD:* Xác thực việc cập nhật cơ sở dữ liệu bệnh lý ICD-10 và trigger làm mới bộ nhớ đệm.
-    4.  *Chat Safety & Triage:* Kiểm chứng khả năng phân loại và chặn đứng các truy vấn vi phạm quy tắc an toàn thông tin hoặc ngoài luồng y học.
-    5.  *Deadlock Prevention:* Kiểm tra việc ban/unban người dùng rủi ro hoạt động chính xác ngay cả khi logs vi phạm đã bị xóa sạch hoàn toàn.
+*   **Nội dung kiểm định cốt lõi:**
+    1.  **Health Check:** Đảm bảo kết nối mạng đến các API ngoại vi, MongoDB Atlas và Qdrant Vector DB thông suốt.
+    2.  **Profile Sync & Partial Update:** Xác minh API `PATCH` cập nhật chính xác và bảo toàn các trường thông tin bệnh án cũ.
+    3.  **Dictionary CRUD & Cache Rebuilding:** Kiểm tra việc quản trị viên thêm mới từ điển bệnh ICD-10 và thuốc thương mại, xác minh trigger nạp lại RAM cache chạy ngầm không gây nghẽn.
+    4.  **Triage & RAG Safety Verification:** Mô phỏng các truy vấn y tế nguy hiểm, thông tin độc hại, hoặc câu hỏi ngoài lề y học để đảm bảo Triage Agent chặn đứng kịp thời. Xác minh Safety Agent gắn chính xác nhãn cảnh báo lâm sàng (Warnings) khi phát hiện chống chỉ định.
+    5.  **Ban/Unban Isolation Check:** Mô phỏng thao tác cấm người dùng, xóa sạch lịch sử log vi phạm và xác nhận admin vẫn thực hiện gỡ cấm (unban) thành công bình thường mà không bị rơi vào trạng thái lỗi treo tài khoản (deadlock).
