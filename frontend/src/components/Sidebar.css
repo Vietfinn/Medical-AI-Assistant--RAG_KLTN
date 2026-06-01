@@ -1613,8 +1613,7 @@ body.no-scroll .health-corner-view {
   display: flex;
   align-items: center;
   pointer-events: none;
-  transform: translateY(-50%); /* Căn giữa dọc cố định tại CSS class */
-  animation: tooltipFadeIn 0.12s ease-out forwards; /* forwards giúp giữ trạng thái kết thúc */
+  animation: tooltipFadeIn 0.12s ease-out;
 }
 
 .sidebar-floating-tooltip .tooltip-content {
