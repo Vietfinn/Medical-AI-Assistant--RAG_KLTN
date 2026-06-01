@@ -19,7 +19,7 @@ Hệ thống được thiết kế theo mô hình 3 tầng độc lập, tối �
 *   **FastAPI:** Framework Python hiệu năng cực cao, xử lý bất đồng bộ (`async/await`) để tối ưu hóa khả năng chịu tải.
 *   **Multi-Agent Orchestrator:** Điều phối luồng xử lý câu hỏi y khoa qua chuỗi tác nhân dị biến chuyên biệt:
     *   **Triage Agent (Llama 3.3-70B via Groq):** Phân loại ý đồ câu hỏi (Medical vs. Non-Medical) và lọc sơ bộ các nội dung không phù hợp hoặc vi phạm an toàn.
-    *   **Clinical RAG Agent (Gemini 2.5 Flash):** Tác nhân cốt lõi thực hiện tổng hợp câu trả lời y học chuyên sâu dựa trên các tài liệu y khoa được truy xuất.
+    *   **Clinical RAG Agent (Llama 3.3 via Groq):** Tác nhân cốt lõi thực hiện tổng hợp câu trả lời y học chuyên sâu dựa trên các tài liệu y khoa được truy xuất.
     *   **Safety Guard Agent (Llama 3.3-70B via Groq):** Hậu kiểm câu trả lời dự thảo đối chiếu trực tiếp với hồ sơ dị ứng, bệnh lý nền của người dùng để đưa ra cảnh báo an toàn đỏ.
 *   **Smart Suggestion Engine (RapidFuzz):** Engine tìm kiếm mờ (Fuzzy Matching) chạy trực tiếp trên bộ nhớ RAM (In-Memory Cache), tối ưu tốc độ gợi ý tự động (Autocomplete) bệnh lý ICD-10 và dược phẩm dưới 2ms.
 *   **Sentry SDK & JSON Logging:** Giám sát lỗi thời gian thực và ghi log cấu trúc JSON phục vụ phân tích sự cố tự động.
@@ -42,7 +42,7 @@ sequenceDiagram
     participant Triage as Triage Agent (Llama 3.3)
     participant Qdrant as Qdrant Vector DB
     participant Cohere as Cohere Reranker
-    participant Gemini as Clinical Agent (Gemini)
+    participant Clinical as Clinical Agent (Llama 3.3)
     participant Safety as Safety Agent (Llama 3.3)
 
     User->>Auth: Gửi câu hỏi + Token xác thực + Session ID
@@ -63,8 +63,8 @@ sequenceDiagram
                 Qdrant-->>Triage: Trả về Top 30 tài liệu thô liên quan
                 Triage->>Cohere: Tiến hành Rerank (Tái xếp hạng Cross-Encoder)
                 Cohere-->>Triage: Chọn lọc Top N tài liệu phù hợp nhất
-                Triage->>Gemini: Gửi tài liệu, lịch sử chat & hồ sơ sức khỏe
-                Gemini-->>Triage: Trả về dự thảo câu trả lời (Draft Response) + Nguồn trích dẫn
+                Triage->>Clinical: Gửi tài liệu, lịch sử chat & hồ sơ sức khỏe
+                Clinical-->>Triage: Trả về dự thảo câu trả lời (Draft Response) + Nguồn trích dẫn
                 Triage->>Safety: Đối chiếu dự thảo câu trả lời với hồ sơ bệnh án dị ứng
                 alt Phát hiện cảnh báo chống chỉ định y khoa
                     Safety-->>User: Trả về câu trả lời kèm nhãn cảnh báo đỏ (Warnings)
@@ -161,7 +161,7 @@ Hệ thống triển khai các giải pháp kỹ thuật tối ưu nhằm loại
 ### Yêu Cầu Hệ Thống
 *   Python 3.10 trở lên
 *   Node.js 18 trở lên
-*   Đăng ký tài khoản và lấy các API keys hoạt động cho: Gemini, Groq, Cohere, Clerk, Sentry.
+*   Đăng ký tài khoản và lấy các API keys hoạt động cho: Groq, Cohere, Clerk, Sentry.
 
 ### Giai Đoạn 1: Cấu hình Backend (FastAPI)
 1.  Di chuyển vào thư mục backend và tạo môi trường ảo Python:
@@ -176,9 +176,7 @@ Hệ thống triển khai các giải pháp kỹ thuật tối ưu nhằm loại
     ```
 3.  Tạo tệp cấu hình `.env` tại thư mục `backend` theo mẫu sau:
     ```env
-    # Model APIs
-    GEMINI_API_KEY=your_gemini_api_key
-    GEMINI_MODEL=gemini-2.5-flash
+    # Model APIs (Groq)
     GROQ_API_KEY1=your_groq_api_key_1
     GROQ_API_KEY2=your_groq_api_key_2
     GROQ_MODEL=llama-3.3-70b-versatile
