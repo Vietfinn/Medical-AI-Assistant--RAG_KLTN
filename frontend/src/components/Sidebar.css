@@ -1606,36 +1606,42 @@ body.no-scroll .health-corner-view {
   }
 }
 
-/* =========================================================
-   Custom tooltip for session items & corner dropdown (Upwards)
-   ========================================================= */
+/* ========================================================================
+   Custom tooltip for session items & corner dropdown (Right side, multi-line)
+   ======================================================================== */
 .sidebar .session-item[data-tooltip],
 .sidebar .corner-dropdown-item[data-tooltip] {
   position: relative;
 }
 
+/* Override tooltip box to wrap text, set max-width and align to the right side of sidebar */
 .sidebar .session-item[data-tooltip]::before,
 .sidebar .corner-dropdown-item[data-tooltip]::before {
-  bottom: calc(100% + 8px) !important;
-  top: auto !important;
-  left: 50% !important;
+  bottom: auto !important;
+  top: 50% !important;
+  left: calc(100% + 12px) !important;
   right: auto !important;
-  transform: translateX(-50%) translateY(4px) !important;
-  white-space: nowrap !important;
-  width: auto !important;
-  max-width: none !important;
+  transform: translateY(-50%) translateX(-4px) !important;
+  white-space: normal !important;      /* Cho phép xuống dòng tự động */
+  width: max-content !important;
+  max-width: 280px !important;          /* Giới hạn chiều rộng tối đa */
+  line-height: 1.5 !important;
+  padding: 10px 14px !important;        /* Padding thoáng đẹp */
+  text-align: left !important;
+  word-wrap: break-word !important;
 }
 
+/* Override tooltip arrow pointing to the left side */
 .sidebar .session-item[data-tooltip]::after,
 .sidebar .corner-dropdown-item[data-tooltip]::after {
-  bottom: calc(100% - 2px) !important;
-  top: auto !important;
-  left: 50% !important;
+  bottom: auto !important;
+  top: 50% !important;
+  left: calc(100% + 2px) !important;
   right: auto !important;
-  transform: translateX(-50%) translateY(4px) !important;
+  transform: translateY(-50%) translateX(-4px) !important;
   border: 5px solid transparent !important;
-  border-top-color: var(--tooltip-bg) !important;
-  border-right-color: transparent !important;
+  border-right-color: var(--tooltip-bg) !important;  /* Mũi tên hướng về bên trái */
+  border-top-color: transparent !important;
   border-bottom-color: transparent !important;
   border-left-color: transparent !important;
 }
@@ -1644,7 +1650,7 @@ body.no-scroll .health-corner-view {
 .sidebar .session-item[data-tooltip]:hover::after,
 .sidebar .corner-dropdown-item[data-tooltip]:hover::before,
 .sidebar .corner-dropdown-item[data-tooltip]:hover::after {
-  transform: translateX(-50%) translateY(0) !important;
+  transform: translateY(-50%) translateX(0) !important;
 }
 
 /* Hide parent item tooltip when hovering the option button inside it to prevent overlapping */
