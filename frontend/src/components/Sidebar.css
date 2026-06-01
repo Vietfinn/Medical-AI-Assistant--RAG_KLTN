@@ -1606,14 +1606,16 @@ body.no-scroll .health-corner-view {
   }
 }
 
-/* ==========================================
-   Custom tooltip for session titles (Upwards)
-   ========================================== */
-.sidebar .session-title-tooltip-wrapper[data-tooltip] {
+/* =========================================================
+   Custom tooltip for session items & corner dropdown (Upwards)
+   ========================================================= */
+.sidebar .session-item[data-tooltip],
+.sidebar .corner-dropdown-item[data-tooltip] {
   position: relative;
 }
 
-.sidebar .session-title-tooltip-wrapper[data-tooltip]::before {
+.sidebar .session-item[data-tooltip]::before,
+.sidebar .corner-dropdown-item[data-tooltip]::before {
   bottom: calc(100% + 8px) !important;
   top: auto !important;
   left: 50% !important;
@@ -1624,7 +1626,8 @@ body.no-scroll .health-corner-view {
   max-width: none !important;
 }
 
-.sidebar .session-title-tooltip-wrapper[data-tooltip]::after {
+.sidebar .session-item[data-tooltip]::after,
+.sidebar .corner-dropdown-item[data-tooltip]::after {
   bottom: calc(100% - 2px) !important;
   top: auto !important;
   left: 50% !important;
@@ -1637,7 +1640,16 @@ body.no-scroll .health-corner-view {
   border-left-color: transparent !important;
 }
 
-.sidebar .session-title-tooltip-wrapper[data-tooltip]:hover::before,
-.sidebar .session-title-tooltip-wrapper[data-tooltip]:hover::after {
+.sidebar .session-item[data-tooltip]:hover::before,
+.sidebar .session-item[data-tooltip]:hover::after,
+.sidebar .corner-dropdown-item[data-tooltip]:hover::before,
+.sidebar .corner-dropdown-item[data-tooltip]:hover::after {
   transform: translateX(-50%) translateY(0) !important;
+}
+
+/* Hide parent item tooltip when hovering the option button inside it to prevent overlapping */
+.sidebar .session-item[data-tooltip]:has(.session-options-btn:hover)::before,
+.sidebar .session-item[data-tooltip]:has(.session-options-btn:hover)::after {
+  visibility: hidden !important;
+  opacity: 0 !important;
 }

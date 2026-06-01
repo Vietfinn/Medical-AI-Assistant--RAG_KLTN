@@ -340,17 +340,12 @@ const Sidebar = ({
                     key={corner._id}
                     className={`session-item ${isCornerActive ? 'active' : ''}`}
                     onClick={() => onOpenCorner(corner)}
+                    onMouseEnter={(e) => handleTitleMouseEnter(e, corner.name)}
+                    onMouseLeave={handleTitleMouseLeave}
                   >
                     <div className="session-title-wrap">
                       <HeartPulse size={20} className="corner-item-icon" />
-                      <span
-                        className="session-title-tooltip-wrapper"
-                        onMouseEnter={(e) => handleTitleMouseEnter(e, corner.name)}
-                        onMouseLeave={handleTitleMouseLeave}
-                        style={{ flex: 1, minWidth: 0, display: 'inline-flex' }}
-                      >
-                        <span className="session-title">{corner.name}</span>
-                      </span>
+                      <span className="session-title">{corner.name}</span>
                     </div>
 
                     <button
@@ -391,17 +386,12 @@ const Sidebar = ({
                       key={session._id}
                       className={`session-item ${isSessionActive ? 'active' : ''}`}
                       onClick={() => onSelectSession(session._id)}
+                      onMouseEnter={(e) => handleTitleMouseEnter(e, session.title)}
+                      onMouseLeave={handleTitleMouseLeave}
                     >
                       <div className="session-title-wrap">
-                        <span
-                          className="session-title-tooltip-wrapper"
-                          onMouseEnter={(e) => handleTitleMouseEnter(e, session.title)}
-                          onMouseLeave={handleTitleMouseLeave}
-                          style={{ flex: 1, minWidth: 0, display: 'inline-flex' }}
-                        >
-                          <span className={`session-title ${session.is_pinned ? 'is-pinned' : ''}`}>
-                            {session.title}
-                          </span>
+                        <span className={`session-title ${session.is_pinned ? 'is-pinned' : ''}`}>
+                          {session.title}
                         </span>
                         {session.is_pinned && <Pin size={12} className="pinned-icon" />}
                       </div>
@@ -746,16 +736,11 @@ const Sidebar = ({
                       onOpenCorner(corner);
                       setShowAllCorners(false);
                     }}
+                    onMouseEnter={(e) => handleTitleMouseEnter(e, corner.name)}
+                    onMouseLeave={handleTitleMouseLeave}
                   >
                     <HeartPulse size={16} className="corner-dropdown-icon" />
-                    <span
-                      className="session-title-tooltip-wrapper"
-                      onMouseEnter={(e) => handleTitleMouseEnter(e, corner.name)}
-                      onMouseLeave={handleTitleMouseLeave}
-                      style={{ flex: 1, minWidth: 0, display: 'inline-flex' }}
-                    >
-                      <span className="corner-dropdown-name">{corner.name}</span>
-                    </span>
+                    <span className="corner-dropdown-name">{corner.name}</span>
                   </div>
                 );
               })}
