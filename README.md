@@ -179,6 +179,7 @@ Hệ thống triển khai các giải pháp kỹ thuật tối ưu nhằm loại
     # Model APIs (Groq)
     GROQ_API_KEY1=your_groq_api_key_1
     GROQ_API_KEY2=your_groq_api_key_2
+    GROQ_API_KEY3=your_groq_api_key_3
     GROQ_MODEL=llama-3.3-70b-versatile
 
     # Cohere Reranker API

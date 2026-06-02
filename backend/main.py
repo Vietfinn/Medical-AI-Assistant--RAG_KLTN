@@ -67,7 +67,8 @@ embedding_service: Optional[EmbeddingService] = None
 retriever: Optional[HybridRetriever] = None
 reranker: Optional[Reranker] = None
 clinical_llm_service: Optional[ClinicalLLMService] = None
-groq_service: Optional[GroqService] = None
+triage_groq_service: Optional[GroqService] = None
+safety_groq_service: Optional[GroqService] = None
 qdrant_client: Optional[QdrantClient] = None
 
 
@@ -84,7 +85,7 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting Medical AI Assistant API (Multi-Agent RAG)...")
 
-    global embedding_service, retriever, reranker, clinical_llm_service, groq_service
+    global embedding_service, retriever, reranker, clinical_llm_service, triage_groq_service, safety_groq_service
     global qdrant_client, triage_agent, clinical_rag_agent, safety_guard_agent
 
     try:
@@ -181,23 +182,30 @@ async def lifespan(app: FastAPI):
         )
         clinical_llm_service.configure()
 
-        # ===== Initialize Groq Service (Triage + Safety Agents) =====
-        logger.info("Configuring Groq API (Llama 3)...")
-        groq_service = GroqService(
+        # ===== Initialize Groq Service (Triage Agent) =====
+        logger.info("Configuring Groq API for Triage Agent...")
+        triage_groq_service = GroqService(
             api_key=settings.GROQ_API_KEY1, model_name=settings.GROQ_MODEL
         )
-        groq_service.configure()
+        triage_groq_service.configure()
+
+        # ===== Initialize Groq Service (Safety Guard Agent) =====
+        logger.info("Configuring Groq API for Safety Guard Agent...")
+        safety_groq_service = GroqService(
+            api_key=settings.GROQ_API_KEY3, model_name=settings.GROQ_MODEL
+        )
+        safety_groq_service.configure()
 
         # ===== Initialize Agents =====
         logger.info("Initializing Multi-Agent system...")
 
-        triage_agent = TriageAgent(groq_service=groq_service)
+        triage_agent = TriageAgent(groq_service=triage_groq_service)
         logger.info("  ✅ Triage Agent (Llama 3 / Groq) initialized")
 
         clinical_rag_agent = ClinicalRAGAgent(llm_service=clinical_llm_service)
         logger.info("  ✅ Clinical RAG Agent (Llama 3.3 / Groq) initialized")
 
-        safety_guard_agent = SafetyGuardAgent(groq_service=groq_service)
+        safety_guard_agent = SafetyGuardAgent(groq_service=safety_groq_service)
         logger.info("  ✅ Safety Guard Agent (Llama 3 / Groq) initialized")
 
         logger.info("=" * 60)
@@ -291,7 +299,8 @@ async def health_check():
         and embedding_service.is_loaded(),
         reranker_loaded=reranker is not None and reranker.is_loaded(),
         gemini_configured=clinical_llm_service is not None and clinical_llm_service.is_configured(),
-        groq_configured=groq_service is not None and groq_service.is_configured(),
+        groq_configured=triage_groq_service is not None and triage_groq_service.is_configured()
+        and safety_groq_service is not None and safety_groq_service.is_configured(),
     )
 
 
