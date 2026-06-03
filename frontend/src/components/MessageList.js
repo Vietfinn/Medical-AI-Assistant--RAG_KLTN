@@ -41,6 +41,22 @@ const CitationBadge = ({ number, citation, onCitationClick }) => {
 
 const SUGGESTIONS_DELIMITER = '[SUGGESTIONS]';
 
+const stripMarkdown = (md) => {
+  if (!md) return '';
+  return md
+    .replace(/```[a-zA-Z]*\n([\s\S]*?)```/g, '$1') // Bỏ ký hiệu code block but giữ nội dung
+    .replace(/^#+\s+/gm, '') // Bỏ headers
+    .replace(/(\*\*|__)(.*?)\1/g, '$2') // Bỏ bold
+    .replace(/(\*|_)(.*?)\1/g, '$2') // Bỏ italic
+    .replace(/^\s*>\s+/gm, '') // Bỏ blockquote
+    .replace(/`([^`]+)`/g, '$1') // Bỏ inline code
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Bỏ links
+    .replace(/^\s*[-*+]\s+/gm, '') // Bỏ bullet points
+    .replace(/^\s*\d+\.\s+/gm, '') // Bỏ numbered list
+    .replace(/\n{3,}/g, '\n\n') // Bỏ dòng trống thừa
+    .trim();
+};
+
 const MessageList = ({
   messages,
   streamingContent,
@@ -83,11 +99,35 @@ const MessageList = ({
     return content;
   };
 
-  const handleCopy = useCallback((text, index) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2000);
-    });
+  const handleCopy = useCallback((rawMarkdown, index) => {
+    const plainText = stripMarkdown(rawMarkdown);
+    
+    try {
+      // Chuyển đổi markdown cơ bản thành HTML đơn giản để dán có định dạng
+      const htmlContent = rawMarkdown
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br/>');
+
+      const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+      const blobText = new Blob([plainText], { type: 'text/plain' });
+      
+      const data = [new ClipboardItem({
+        'text/html': blobHtml,
+        'text/plain': blobText
+      })];
+      
+      navigator.clipboard.write(data).then(() => {
+        setCopiedIndex(index);
+        setTimeout(() => setCopiedIndex(null), 2000);
+      });
+    } catch (err) {
+      // Fallback nếu trình duyệt cũ không hỗ trợ ClipboardItem phức tạp hoặc lỗi bảo mật clipboard
+      navigator.clipboard.writeText(plainText).then(() => {
+        setCopiedIndex(index);
+        setTimeout(() => setCopiedIndex(null), 2000);
+      });
+    }
   }, []);
 
   useEffect(() => {
