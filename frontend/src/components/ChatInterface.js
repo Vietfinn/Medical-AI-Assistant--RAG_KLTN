@@ -520,7 +520,7 @@ const ChatInterface = ({
               </div>
             </form>
             <p className="disclaimer">
-              Thông tin chỉ mang tính tham khảo. Vui lòng tham khảo ý kiến bác sĩ chuyên khoa.
+              <strong>A.I.M Care</strong> - Trợ lý y tế AI thông minh. Thông tin cung cấp chỉ mang tính chất tham khảo, không thay thế chẩn đoán từ bác sĩ chuyên khoa.
             </p>
           </div>
         </div>
