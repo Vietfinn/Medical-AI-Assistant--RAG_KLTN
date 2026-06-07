@@ -393,7 +393,7 @@ async def chat(
         logger.info("━━━ Giai đoạn 1: Triage Agent ━━━")
 
         if settings.ENABLE_TRIAGE_AGENT:
-            triage_result = triage_agent.execute(query=query.query)
+            triage_result = triage_agent.execute(query=query.query, chat_history=chat_history)
             pipeline_meta["triage_time"] = triage_result.latency
 
             if is_new_session and triage_result.suggested_title:
@@ -737,7 +737,7 @@ async def chat_stream(
             yield sse_event("status", {"message": "Đang phân tích câu hỏi..."})
 
             if settings.ENABLE_TRIAGE_AGENT:
-                triage_result = triage_agent.execute(query=query.query)
+                triage_result = triage_agent.execute(query=query.query, chat_history=chat_history)
                 pipeline_meta["triage_time"] = triage_result.latency
 
                 if is_new_session and triage_result.suggested_title:

@@ -136,12 +136,13 @@ YÊU CẦU BẮT BUỘC:
         super().__init__(name="TriageAgent")
         self.groq_service = groq_service
 
-    def execute(self, query: str) -> TriageResult:
+    def execute(self, query: str, chat_history: list = None) -> TriageResult:
         """
         Multi-task classification: Medical/Non-Medical + Safe/Unsafe.
 
         Args:
             query: User's input query
+            chat_history: Optional list of past chat messages to provide context
 
         Returns:
             TriageResult with classification, safety flag, and optional unsafe category
@@ -151,8 +152,20 @@ YÊU CẦU BẮT BUỘC:
         try:
             self.logger.info(f"Classifying query: {query[:80]}...")
 
+            # Format chat history context if available to help Triage Agent remember conversation topic
+            history_context = ""
+            if chat_history:
+                history_context = "Lịch sử trò chuyện gần đây:\n"
+                for msg in chat_history:
+                    role_label = "Người dùng" if msg.get("role") == "user" else "Trợ lý"
+                    content = msg.get("content", "").strip()
+                    history_context += f"{role_label}: {content}\n"
+                history_context += "\n"
+
+            prompt = f"{history_context}Câu hỏi hiện tại của người dùng: {query}\nTrả lời:"
+
             response_text = self.groq_service.generate(
-                prompt=f"Câu hỏi: {query}\nTrả lời:",
+                prompt=prompt,
                 system_prompt=self.SYSTEM_PROMPT,
                 temperature=0.1,
                 max_tokens=300,
