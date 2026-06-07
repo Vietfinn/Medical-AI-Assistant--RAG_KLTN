@@ -78,3 +78,14 @@ frontend/dist/
 
 # Ignore root-level lock file (React uses nested frontend/package-lock.json)
 /package-lock.json
+
+# Evaluation temporary files & checkpoints
+*checkpoint.json
+*failed_cases.json
+*failed_cases_inputs.json
+
+# PDF and planning/plan files
+*.pdf
+*plan.md
+*plan*.md
+*_plan.md
