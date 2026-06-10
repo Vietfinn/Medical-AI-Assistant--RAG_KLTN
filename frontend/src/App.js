@@ -624,6 +624,7 @@ function AuthenticatedApp() {
             onRefreshCorners={fetchCorners}
             onNewChatInCorner={handleNewChatInCorner}
             onDeleteSession={handleDeleteSession}
+            onRefreshSessions={fetchSessions}
             onToggleMobileSidebar={() => setIsMobileSidebarOpen(true)}
           />
         ) : (

@@ -370,6 +370,26 @@ async def chat(
         if any(word.lower() in query_lower for word in active_settings["blacklist"]):
             logger.info(f"Query matches blacklist keyword. Early exit with fallback message.")
             processing_time = time.time() - start_time
+            
+            # Lưu lịch sử chat
+            created_at = time.time()
+            assistant_msg_id = str(uuid.uuid4())
+            await db["sessions"].update_one(
+                {"_id": session_id, "user_id": current_user["user_id"]},
+                {
+                    "$push": {
+                        "messages": {
+                            "$each": [
+                                {"id": str(uuid.uuid4()), "role": "user", "content": query.query, "created_at": created_at - 0.001},
+                                {"id": assistant_msg_id, "role": "assistant", "content": active_settings["fallback_message"], "citations": [], "warnings": [], "created_at": created_at},
+                            ]
+                        }
+                    },
+                    "$set": {"updated_at": created_at}
+                }
+            )
+            await touch_corner_recency(db, session_id, current_user["user_id"], query.corner_id)
+            
             return ChatResponse(
                 answer=active_settings["fallback_message"],
                 citations=[],
@@ -421,6 +441,26 @@ async def chat(
             if not triage_result.is_medical:
                 processing_time = time.time() - start_time
                 logger.info("Query classified as NON_MEDICAL/UNSAFE → Early Exit")
+                
+                # Lưu lịch sử chat
+                created_at = time.time()
+                assistant_msg_id = str(uuid.uuid4())
+                await get_db()["sessions"].update_one(
+                    {"_id": session_id, "user_id": current_user["user_id"]},
+                    {
+                        "$push": {
+                            "messages": {
+                                "$each": [
+                                    {"id": str(uuid.uuid4()), "role": "user", "content": query.query, "created_at": created_at - 0.001},
+                                    {"id": assistant_msg_id, "role": "assistant", "content": triage_result.response, "citations": [], "warnings": [], "created_at": created_at},
+                                ]
+                            }
+                        },
+                        "$set": {"updated_at": created_at}
+                    }
+                )
+                await touch_corner_recency(get_db(), session_id, current_user["user_id"], query.corner_id)
+                
                 return ChatResponse(
                     answer=triage_result.response,
                     citations=[],
@@ -433,6 +473,7 @@ async def chat(
                         generation_agent=settings.GROQ_MODEL,
                         safety_agent=settings.GROQ_MODEL,
                     ),
+                    session_id=session_id
                 )
         else:
             pipeline_meta["triage_time"] = 0.0
@@ -2399,6 +2440,10 @@ async def delete_session(
         
         if result.deleted_count == 0:
             raise HTTPException(status_code=403, detail="Cannot delete session: Not found or unauthorized")
+            
+        # Cascade delete feedbacks and unsafe logs associated with this session
+        await get_db()["chat_feedbacks"].delete_many({"session_id": session_id, "user_id": user_id})
+        await get_db()["unsafe_logs"].delete_many({"session_id": session_id, "user_id": user_id})
             
         return {"status": "success", "message": f"Session {session_id} deleted."}
     except HTTPException:

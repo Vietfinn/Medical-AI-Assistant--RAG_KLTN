@@ -779,3 +779,47 @@
     font-size: 0.78rem !important;
   }
 }
+
+/* Error banner styled to match dark/light themes */
+.hp-error-banner {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  padding: 10px 16px;
+  border-radius: 12px;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 550;
+  animation: hpFadeIn 0.2s ease-out;
+}
+
+[data-theme="light"] .hp-error-banner {
+  background-color: rgba(217, 48, 37, 0.08);
+  border-color: rgba(217, 48, 37, 0.2);
+  color: #d93025;
+}
+
+.hp-error-banner span {
+  flex: 1;
+}
+
+.hp-error-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.hp-error-close:hover {
+  opacity: 1;
+}
+

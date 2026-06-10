@@ -1,22 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Send, FileText, MoreHorizontal, Trash2,
-  X, CornerUpLeft, Edit2, FolderPlus, Menu, Plus, MoreVertical
+  X, CornerUpLeft, Edit2, FolderPlus, Menu, Plus, MoreVertical, HeartPulse
 } from 'lucide-react';
 import { getCornerSessions, assignSessionToCorner, getSessions, renameSession } from '../services/api';
 import './HealthCornerView.css';
 
 const HealthCornerView = ({
   corner,
+  healthCorners = [],
   refreshTrigger,
   onSelectSession,
   onNewChatInCorner,
   onBack,
   onDeleteCorner,
   onUpdateCorner,
+  onAssignSession,
   onUnassignSession,
   onDeleteSession,
   onRefreshCorners,
+  onRefreshSessions,
   onToggleMobileSidebar,
 }) => {
   const [sessions, setSessions] = useState([]);
@@ -33,6 +36,12 @@ const HealthCornerView = ({
   const [isAssigning, setIsAssigning] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // States for session modals
+  const [renameSessionData, setRenameSessionData] = useState(null); // { id: string, title: string }
+  const [moveSessionData, setMoveSessionData] = useState(null); // { id: string, title: string }
+  const [deleteSessionData, setDeleteSessionData] = useState(null); // { id: string, title: string }
+  const [isActionProcessing, setIsActionProcessing] = useState(false);
 
   const fetchSessions = useCallback(async () => {
     if (!corner?._id) return;
@@ -77,10 +86,13 @@ const HealthCornerView = ({
 
   const handleUnassignSession = async (sessionId) => {
     try {
-      await assignSessionToCorner(sessionId, null);
-      setSessions(prev => prev.filter(s => s._id !== sessionId));
-      if (onUnassignSession) onUnassignSession(sessionId);
-      if (onRefreshCorners) onRefreshCorners();
+      if (onAssignSession) {
+        await onAssignSession(sessionId, null);
+      } else {
+        await assignSessionToCorner(sessionId, null);
+        setSessions(prev => prev.filter(s => s._id !== sessionId));
+        if (onRefreshCorners) onRefreshCorners();
+      }
     } catch (error) {
       console.error('Error unassigning session:', error);
     }
@@ -310,13 +322,7 @@ const HealthCornerView = ({
                       <div className="corner-session-dropdown">
                         <button onClick={(e) => {
                           e.stopPropagation();
-                          const newCornerId = window.prompt("Nhập ID của Góc khác:");
-                          if (newCornerId) {
-                            assignSessionToCorner(session._id, newCornerId).then(() => {
-                              setSessions(prev => prev.filter(s => s._id !== session._id));
-                              if (onRefreshCorners) onRefreshCorners();
-                            });
-                          }
+                          setMoveSessionData({ id: session._id, title: session.title });
                           setActiveSessionMenu(null);
                         }}>
                           <FolderPlus size={14} />
@@ -331,22 +337,16 @@ const HealthCornerView = ({
                         </button>
                         <button onClick={(e) => {
                           e.stopPropagation();
+                          setRenameSessionData({ id: session._id, title: session.title });
                           setActiveSessionMenu(null);
-                          const newName = window.prompt("Đổi tên cuộc trò chuyện:", session.title);
-                          if (newName && newName.trim() && newName !== session.title) {
-                            renameSession(session._id, newName.trim()).then(() => {
-                              fetchSessions();
-                            });
-                          }
                         }}>
                           <Edit2 size={14} />
                           <span>Đổi tên</span>
                         </button>
                         <button className="danger" onClick={(e) => {
                           e.stopPropagation();
-                          if (window.confirm("Bạn có chắc chắn muốn xóa cuộc trò chuyện này?")) {
-                            handleDeleteSessionInCorner(session._id);
-                          }
+                          setDeleteSessionData({ id: session._id, title: session.title });
+                          setActiveSessionMenu(null);
                         }}>
                           <Trash2 size={14} />
                           <span>Xóa</span>
@@ -440,6 +440,191 @@ const HealthCornerView = ({
                 disabled={isDeleting}
               >
                 {isDeleting ? 'Đang xóa...' : 'Xóa'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rename Session Modal */}
+      {renameSessionData && (
+        <div className="modal-overlay" onClick={() => !isActionProcessing && setRenameSessionData(null)}>
+          <div className="modal-content rename-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Đổi tên cuộc trò chuyện</h3>
+            <input
+              autoFocus
+              className="modal-rename-input"
+              value={renameSessionData.title}
+              onChange={(e) => setRenameSessionData({ ...renameSessionData, title: e.target.value })}
+              onKeyDown={async (e) => {
+                if (e.key === 'Enter') {
+                  const trimmed = renameSessionData.title.trim();
+                  if (trimmed) {
+                    setIsActionProcessing(true);
+                    try {
+                      await renameSession(renameSessionData.id, trimmed);
+                      await fetchSessions();
+                      if (onRefreshSessions) onRefreshSessions();
+                      setRenameSessionData(null);
+                    } catch (err) {
+                      console.error("Error renaming session:", err);
+                    } finally {
+                      setIsActionProcessing(false);
+                    }
+                  }
+                }
+                if (e.key === 'Escape') setRenameSessionData(null);
+              }}
+              style={{
+                width: '100%',
+                background: 'var(--bg-primary)',
+                border: '1.5px solid var(--accent-blue, #3b82f6)',
+                color: 'var(--text-primary)',
+                padding: '12px 14px',
+                borderRadius: '8px',
+                fontSize: '15px',
+                outline: 'none',
+                marginBottom: '20px',
+                marginTop: '12px',
+                boxSizing: 'border-box'
+              }}
+            />
+            <div className="modal-actions">
+              <button 
+                className="modal-btn cancel-text" 
+                onClick={() => setRenameSessionData(null)} 
+                disabled={isActionProcessing}
+              >
+                Huỷ
+              </button>
+              <button 
+                className="modal-btn save-text" 
+                onClick={async () => {
+                  const trimmed = renameSessionData.title.trim();
+                  if (trimmed) {
+                    setIsActionProcessing(true);
+                    try {
+                      await renameSession(renameSessionData.id, trimmed);
+                      await fetchSessions();
+                      if (onRefreshSessions) onRefreshSessions();
+                      setRenameSessionData(null);
+                    } catch (err) {
+                      console.error("Error renaming session:", err);
+                    } finally {
+                      setIsActionProcessing(false);
+                    }
+                  }
+                }} 
+                disabled={isActionProcessing || !renameSessionData.title.trim()}
+              >
+                {isActionProcessing ? 'Đang lưu...' : 'Đổi tên'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Move Session Modal */}
+      {moveSessionData && (
+        <div className="modal-overlay" onClick={() => !isActionProcessing && setMoveSessionData(null)}>
+          <div className="modal-content assign-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="assign-modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0 }}>Di chuyển cuộc trò chuyện</h3>
+              <button 
+                className="close-btn" 
+                onClick={() => !isActionProcessing && setMoveSessionData(null)} 
+                disabled={isActionProcessing}
+                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <p className="assign-modal-sub" style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '8px 0 20px 0', lineHeight: '1.5' }}>
+              Chọn một Góc sức khỏe bạn muốn chuyển cuộc trò chuyện này vào
+            </p>
+            <div className="assign-corners-list">
+              {isActionProcessing ? (
+                <div className="assign-loading">
+                  <div className="corner-loading-spinner" />
+                  <p>Đang di chuyển cuộc trò chuyện...</p>
+                </div>
+              ) : (
+                healthCorners
+                  .filter(c => c._id !== corner._id)
+                  .map(c => (
+                    <button
+                      key={c._id}
+                      className="assign-corner-item"
+                      disabled={isActionProcessing}
+                      onClick={async () => {
+                        setIsActionProcessing(true);
+                        try {
+                          if (onAssignSession) {
+                            await onAssignSession(moveSessionData.id, c._id);
+                          } else {
+                            await assignSessionToCorner(moveSessionData.id, c._id);
+                          }
+                          setSessions(prev => prev.filter(s => s._id !== moveSessionData.id));
+                          if (onRefreshCorners) onRefreshCorners();
+                          setMoveSessionData(null);
+                        } catch (err) {
+                          console.error("Error moving session:", err);
+                        } finally {
+                          setIsActionProcessing(false);
+                        }
+                      }}
+                    >
+                      {c.emoji ? (
+                        <span style={{ fontSize: '1.2rem', marginRight: '6px' }}>{c.emoji}</span>
+                      ) : (
+                        <HeartPulse size={18} className="assign-corner-icon" style={{ marginRight: '6px' }} />
+                      )}
+                      <span className="assign-corner-name">{c.name}</span>
+                    </button>
+                  ))
+              )}
+              {!isActionProcessing && healthCorners.filter(c => c._id !== corner._id).length === 0 && (
+                <p style={{ textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)', margin: '20px 0' }}>
+                  Không có Góc sức khỏe nào khác để chuyển đến.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Session Confirmation Modal */}
+      {deleteSessionData && (
+        <div className="modal-overlay" onClick={() => !isActionProcessing && setDeleteSessionData(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Xoá cuộc hội thoại?</h3>
+            <p style={{ lineHeight: '1.6', fontSize: '0.92rem', color: 'var(--text-secondary, #94a3b8)', marginBottom: '24px' }}>
+              Bạn có chắc chắn muốn xoá cuộc hội thoại <strong>"{deleteSessionData.title}"</strong> không? Hành động này không thể hoàn tác.
+            </p>
+            <div className="modal-actions">
+              <button 
+                className="modal-btn cancel" 
+                onClick={() => setDeleteSessionData(null)} 
+                disabled={isActionProcessing}
+              >
+                Huỷ
+              </button>
+              <button 
+                className="modal-btn delete" 
+                onClick={async () => {
+                  setIsActionProcessing(true);
+                  try {
+                    await handleDeleteSessionInCorner(deleteSessionData.id);
+                    setDeleteSessionData(null);
+                  } catch (err) {
+                    console.error("Error deleting session:", err);
+                  } finally {
+                    setIsActionProcessing(false);
+                  }
+                }} 
+                disabled={isActionProcessing}
+              >
+                {isActionProcessing ? 'Đang xóa...' : 'Xoá'}
               </button>
             </div>
           </div>

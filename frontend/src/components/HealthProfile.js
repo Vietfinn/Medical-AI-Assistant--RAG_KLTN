@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Plus, Loader2, ClipboardList } from 'lucide-react';
+import { X, Plus, Loader2, ClipboardList, AlertTriangle } from 'lucide-react';
 import { 
   suggestConditions, 
   suggestIngredients, 
@@ -12,6 +12,7 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
   const [draft, setDraft] = useState(profile || {});
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState({});
+  const [error, setError] = useState(null);
   
   const [newDisease, setNewDisease] = useState('');
   const [newAllergy, setNewAllergy] = useState('');
@@ -30,8 +31,12 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
   }, [profile]);
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      setError(null);
+    } else {
+      document.body.style.overflow = '';
+    }
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
@@ -93,10 +98,10 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
           setIsSaving(false);
           onClose();
         }, 300);
-      } catch (error) {
-        console.error("Failed to sync profile:", error);
+      } catch (err) {
+        console.error("Failed to sync profile:", err);
         setIsSaving(false);
-        alert("Không thể lưu hồ sơ. Vui lòng thử lại.");
+        setError("Không thể lưu hồ sơ. Vui lòng thử lại.");
       }
     } else {
       onClose();
@@ -176,6 +181,15 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
         </div>
 
         <div className="hp-modal-body">
+          {error && (
+            <div className="hp-error-banner">
+              <AlertTriangle size={16} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+              <button onClick={() => setError(null)} className="hp-error-close">
+                <X size={14} />
+              </button>
+            </div>
+          )}
           {/* USER INFO */}
           <div className="profile-section">
             <div className="section-label"><h4>Thông tin cá nhân</h4></div>

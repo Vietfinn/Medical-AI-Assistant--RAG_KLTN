@@ -1128,6 +1128,7 @@ function TabFeedbackInbox({ onSaveNote }) {
   const [bulkResolving, setBulkResolving] = useState(false);
   const [toast, setToast] = useState(null);
   const [showBulkResolveConfirm, setShowBulkResolveConfirm] = useState(false);
+  const [feedbackToDelete, setFeedbackToDelete] = useState(null);
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
@@ -1185,15 +1186,7 @@ function TabFeedbackInbox({ onSaveNote }) {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Bạn chắc chắn muốn xóa phản hồi này?")) return;
-    try {
-      await deleteFeedback(id);
-      showToast('Đã xóa vĩnh viễn phản hồi!');
-      fetchItems();
-      setSelectedItem(null);
-    } catch (e) {
-      showToast('Lỗi khi xóa phản hồi', 'error');
-    }
+    setFeedbackToDelete(id);
   };
 
   const handleExportJsonl = async () => {
@@ -1369,6 +1362,33 @@ function TabFeedbackInbox({ onSaveNote }) {
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
               <button className="btn-cancel" onClick={() => setShowBulkResolveConfirm(false)} disabled={bulkResolving}>Hủy</button>
               <button className="btn-save" onClick={handleBulkResolveConfirm} disabled={bulkResolving}>{bulkResolving ? 'Đang xử lý...' : 'Đồng ý'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {feedbackToDelete && (
+        <div className="modal-overlay" onClick={() => setFeedbackToDelete(null)}>
+          <div className="confirm-modal" onClick={e => e.stopPropagation()}>
+            <Trash size={32} style={{ color: '#ef4444', marginBottom: 12 }} />
+            <h3>Xác nhận xóa phản hồi?</h3>
+            <p style={{ color: 'var(--med-text-sub)', margin: '8px 0 20px', lineHeight: '1.6' }}>
+              Bạn chắc chắn muốn xóa phản hồi này? Hành động này không thể hoàn tác.
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button className="btn-cancel" onClick={() => setFeedbackToDelete(null)}>Hủy</button>
+              <button className="btn-save" style={{ backgroundColor: '#ef4444' }} onClick={async () => {
+                try {
+                  await deleteFeedback(feedbackToDelete);
+                  showToast('Đã xóa vĩnh viễn phản hồi!');
+                  fetchItems();
+                  setSelectedItem(null);
+                } catch (e) {
+                  showToast('Lỗi khi xóa phản hồi', 'error');
+                } finally {
+                  setFeedbackToDelete(null);
+                }
+              }}>Xóa</button>
             </div>
           </div>
         </div>
@@ -1735,6 +1755,13 @@ function TabDictionary() {
   const [editingItem, setEditingItem] = useState(null); // null = thêm mới
   const [formData, setFormData] = useState({});
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
+  const showToast = useCallback((message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  }, []);
 
   const loadItems = useCallback(async () => {
     setLoading(true);
@@ -1772,13 +1799,7 @@ function TabDictionary() {
   };
 
   const handleDelete = async (item) => {
-    if (!window.confirm(`Bạn có chắc muốn xóa mục này?`)) return;
-    try {
-      await deleteDictionaryItem(subTab, item.id);
-      loadItems();
-    } catch (e) {
-      alert('Lỗi khi xóa.');
-    }
+    setItemToDelete(item);
   };
 
   const handleSave = async () => {
@@ -1794,13 +1815,15 @@ function TabDictionary() {
       }
       if (editingItem) {
         await updateDictionaryItem(subTab, editingItem.id, dataToSend);
+        showToast('Đã cập nhật mục từ điển thành công!');
       } else {
         await createDictionaryItem(subTab, dataToSend);
+        showToast('Đã tạo mới mục từ điển thành công!');
       }
       setModalOpen(false);
       loadItems();
     } catch (e) {
-      alert('Lỗi khi lưu.');
+      showToast('Lỗi khi lưu.', 'error');
     } finally {
       setSaving(false);
     }
@@ -1811,6 +1834,11 @@ function TabDictionary() {
 
   return (
     <div className="tab-dictionary">
+      {toast && (
+        <div className={`admin-toast ${toast.type} fade-in`}>
+          {toast.message}
+        </div>
+      )}
       {/* Sub-tabs */}
       <div className="dict-sub-tabs">
         {DICT_SUB_TABS.map(t => (
@@ -1981,6 +2009,32 @@ function TabDictionary() {
                 {saving ? <RefreshCw size={14} className="spin" /> : <Save size={14} />}
                 {saving ? ' Đang lưu...' : ' Lưu'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {itemToDelete && (
+        <div className="modal-overlay" onClick={() => setItemToDelete(null)}>
+          <div className="confirm-modal" onClick={e => e.stopPropagation()}>
+            <Trash size={32} style={{ color: '#ef4444', marginBottom: 12 }} />
+            <h3>Xác nhận xóa mục từ điển?</h3>
+            <p style={{ color: 'var(--med-text-sub)', margin: '8px 0 20px', lineHeight: '1.6' }}>
+              Bạn có chắc muốn xóa mục <strong>"{itemToDelete.name || itemToDelete.title || itemToDelete.drug_name || itemToDelete.label || itemToDelete.id}"</strong> không? Hành động này không thể hoàn tác.
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button className="btn-cancel" onClick={() => setItemToDelete(null)}>Hủy</button>
+              <button className="btn-save" style={{ backgroundColor: '#ef4444' }} onClick={async () => {
+                try {
+                  await deleteDictionaryItem(subTab, itemToDelete.id);
+                  showToast('Đã xóa vĩnh viễn mục từ điển!');
+                  loadItems();
+                } catch (e) {
+                  showToast('Lỗi khi xóa.', 'error');
+                } finally {
+                  setItemToDelete(null);
+                }
+              }}>Xóa</button>
             </div>
           </div>
         </div>
