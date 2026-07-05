@@ -4,6 +4,7 @@ import {
   suggestConditions, 
   suggestIngredients, 
   suggestMedications, 
+  getMedicationCategories,
   patchHealthProfile 
 } from '../services/api';
 import './HealthProfile.css';
@@ -25,6 +26,9 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
   const [showDiseaseSugg, setShowDiseaseSugg] = useState(false);
   const [showAllergySugg, setShowAllergySugg] = useState(false);
   const [showMedSugg, setShowMedSugg] = useState(false);
+  
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
     if (profile) setDraft(profile);
@@ -34,6 +38,17 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       setError(null);
+      
+      // Load drug categories when opening the modal
+      const loadCategories = async () => {
+        try {
+          const data = await getMedicationCategories();
+          setCategories(data || []);
+        } catch (err) {
+          console.error("Failed to load drug categories:", err);
+        }
+      };
+      loadCategories();
     } else {
       document.body.style.overflow = '';
     }
@@ -129,8 +144,8 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
   }, 300), []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchMed = useCallback(debounce(async (q) => {
-    const data = await suggestMedications(q);
+  const fetchMed = useCallback(debounce(async (q, cat) => {
+    const data = await suggestMedications(q, cat);
     setMedSugg(data.items || []);
   }, 300), []);
 
@@ -454,7 +469,7 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
                     setShowMedSugg(true);
                     setShowDiseaseSugg(false);
                     setShowAllergySugg(false);
-                    fetchMed(e.target.value);
+                    fetchMed(e.target.value, selectedCategory);
                   }}
                   onFocus={() => {
                     setShowMedSugg(true);
@@ -487,6 +502,22 @@ const HealthProfile = ({ profile, onProfileChange, isOpen, onClose }) => {
                   </div>
                 )}
               </div>
+              
+              <select 
+                className="category-select"
+                value={selectedCategory}
+                onChange={(e) => {
+                  const cat = e.target.value;
+                  setSelectedCategory(cat);
+                  fetchMed(newMedication, cat);
+                }}
+              >
+                <option value="">Tất cả nhóm thuốc</option>
+                {categories.map((cat, i) => (
+                  <option key={i} value={cat}>{cat}</option>
+                ))}
+              </select>
+
               <button onClick={() => {
                 addTag('current_medications', newMedication);
                 setNewMedication('');

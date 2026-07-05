@@ -823,3 +823,33 @@
   opacity: 1;
 }
 
+/* ========================================================
+   CATEGORY SELECT DROPDOWN (Medication suggestion filter)
+   ======================================================== */
+.category-select {
+  background-color: var(--hp-input-bg);
+  border: 1.5px solid var(--hp-input-border);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 0.7rem 2.2rem 0.7rem 1.1rem;
+  font-size: 0.92rem;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  max-width: 200px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23888888' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+}
+
+.category-select:focus {
+  border-color: var(--hp-accent);
+  background-color: var(--bg-primary);
+  box-shadow: 0 0 0 4px rgba(120, 217, 236, 0.12);
+}
+
+
