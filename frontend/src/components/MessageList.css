@@ -133,6 +133,31 @@
   line-height: 1.5;
 }
 
+.warning-reason p {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.warning-reason p:last-child {
+  margin-bottom: 0;
+}
+
+.warning-reason ul, .warning-reason ol {
+  margin: 4px 0 4px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.warning-reason strong {
+  font-weight: 600;
+}
+
+.warning-reason em {
+  font-style: italic;
+}
+
 .affected-conditions {
   margin-top: 8px;
   font-size: 12px;

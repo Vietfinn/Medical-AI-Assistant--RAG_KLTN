@@ -1,7 +1,7 @@
 import logging
 from typing import List, Dict, Optional
 from config import settings
-from utils.health_utils import calculate_bmi_status
+from utils.health_utils import calculate_bmi_status, is_profile_completed
 from groq import Groq
 
 logger = logging.getLogger(__name__)
@@ -48,12 +48,21 @@ class ClinicalLLMService:
             raise RuntimeError("Clinical Groq LLM not configured. Call configure() first.")
 
         context = self._build_context(documents)
+        profile_completed = is_profile_completed(health_profile)
         profile_text = (
             self._build_profile_text(health_profile)
             if health_profile
             else "Không có thông tin hồ sơ sức khỏe."
         )
-        prompt = self._build_prompt(query, context, profile_text, system_prompt, chat_history, strict_mode)
+        prompt = self._build_prompt(
+            query=query,
+            context=context,
+            profile_text=profile_text,
+            system_prompt=system_prompt,
+            chat_history=chat_history,
+            strict_mode=strict_mode,
+            profile_completed=profile_completed,
+        )
 
         try:
             response = self.client.chat.completions.create(
@@ -84,12 +93,22 @@ class ClinicalLLMService:
             raise RuntimeError("Clinical Groq LLM not configured. Call configure() first.")
 
         context = self._build_context(documents)
+        profile_completed = is_profile_completed(health_profile)
         profile_text = (
             self._build_profile_text(health_profile)
             if health_profile
             else "Không có thông tin hồ sơ sức khỏe."
         )
-        prompt = self._build_prompt(query, context, profile_text, system_prompt, chat_history, strict_mode, context_addon)
+        prompt = self._build_prompt(
+            query=query,
+            context=context,
+            profile_text=profile_text,
+            system_prompt=system_prompt,
+            chat_history=chat_history,
+            strict_mode=strict_mode,
+            context_addon=context_addon,
+            profile_completed=profile_completed,
+        )
 
         try:
             response = self.client.chat.completions.create(
@@ -171,6 +190,7 @@ Câu trả lời từ bác sĩ: {doc.get('answer', 'N/A')}
         chat_history: Optional[List[Dict]] = None,
         strict_mode: bool = True,
         context_addon: Optional[str] = None,
+        profile_completed: bool = False,
     ) -> str:
         """Build complete prompt"""
         if system_prompt is None:
@@ -199,7 +219,6 @@ NHIỆM VỤ CỐT LÕI:
      * Nếu một đoạn hoặc ý chính tổng hợp từ nhiều tài liệu, hãy chèn liền nhau, ví dụ: [1][3].
      * TUYỆT ĐỐI KHÔNG viết dạng dài như "[Tài liệu 1]" hay "[Nguồn 2]". Chỉ dùng ký hiệu ngắn gọn dạng [1], [2].
      * Nếu đoạn trả lời hoàn toàn do bạn tự tổng hợp từ kiến thức chung (không có tài liệu đối chiếu phù hợp nào), KHÔNG chèn bất kỳ ký hiệu trích dẫn nào cho đoạn đó.
-   - XỬ LÝ KHI THIẾU HỒ SƠ: NẾU phần [HỒ SƠ SỨC KHỎE] là "Không có thông tin hồ sơ sức khỏe.", bạn PHẢI bắt đầu câu trả lời bằng đúng 1 dòng in nghiêng này: *(Lưu ý: Không có hồ sơ sức khỏe cá nhân, thông tin dưới đây chỉ mang tính tham khảo)*.
    - SỬ DỤNG MARKDOWN:
      * Dùng `###` cho các tiêu đề phụ (Ví dụ: ### Nguyên nhân, ### Lời khuyên).
      * Dùng `*` để gạch đầu dòng các ý ngắn gọn, súc tích (không quá 2 câu mỗi ý).
@@ -258,6 +277,10 @@ VÍ DỤ TRÍCH DẪN CUỐI ĐOẠN:
 
 ---
 HÃY TRẢ LỜI:"""
+        disclaimer = ""
+        if not profile_completed:
+            disclaimer = "*(Lưu ý: Không có hồ sơ sức khỏe cá nhân, thông tin dưới đây chỉ mang tính tham khảo)*\n\n"
+        prompt = prompt.replace("HÃY TRẢ LỜI:", f"HÃY TRẢ LỜI:\n{disclaimer}")
         return prompt
 
     def is_configured(self) -> bool:

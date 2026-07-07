@@ -118,6 +118,7 @@ async def get_current_user(
             "updated_at": now,
         }
         await db["users"].insert_one(new_user_doc)
+        health_profile = new_user_doc["health_profile"]
         logger.info(f"🆕 New user registered: {email} (ID: {user_id})")
 
         # Đẩy thẳng vào Event Loop độc lập để không bị huỷ nếu Request bị lỗi 500

@@ -24,3 +24,25 @@ def calculate_bmi_status(height: Optional[float], weight: Optional[float]) -> st
     else: status = "Béo phì"
     
     return f"{bmi:.1f} - Thể trạng: {status}"
+
+
+def is_profile_completed(profile: Optional[dict]) -> bool:
+    """
+    Kiểm tra xem hồ sơ sức khỏe có chứa ít nhất 1 thông tin thực tế hay không.
+    Trả về False nếu profile là None hoặc tất cả các trường đều rỗng/None.
+    """
+    if not profile:
+        return False
+    has_list_data = any([
+        bool(profile.get("chronic_diseases")),
+        bool(profile.get("allergies")),
+        bool(profile.get("current_medications")),
+    ])
+    has_personal_data = any([
+        profile.get("age") is not None and profile.get("age") != "",
+        bool(profile.get("gender") and str(profile.get("gender")).strip()),
+        profile.get("height") is not None and profile.get("height") != "",
+        profile.get("weight") is not None and profile.get("weight") != "",
+    ])
+    return has_list_data or has_personal_data
+

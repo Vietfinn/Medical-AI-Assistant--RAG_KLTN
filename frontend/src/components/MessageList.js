@@ -482,9 +482,20 @@ const MessageList = ({
                           ) : (
                             <Info size={16} />
                           )}
-                          <strong>{warning.message}</strong>
+                          <strong>
+                            <ReactMarkdown
+                              allowedElements={['strong', 'em', 'code']}
+                              unwrapDisallowed={true}
+                            >
+                              {warning.message || ''}
+                            </ReactMarkdown>
+                          </strong>
                         </div>
-                        <p className="warning-reason">{warning.reason}</p>
+                        <div className="warning-reason">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {warning.reason || ''}
+                          </ReactMarkdown>
+                        </div>
                         {warning.affected_conditions &&
                           warning.affected_conditions.length > 0 && (
                             <div className="affected-conditions">
