@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { AlertTriangle, Info, Lightbulb, ThumbsUp, ThumbsDown, Copy, Check, FileSearch, Pencil } from 'lucide-react';
+import { AlertTriangle, Lightbulb, ThumbsUp, ThumbsDown, Copy, Check, FileSearch, Pencil } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
