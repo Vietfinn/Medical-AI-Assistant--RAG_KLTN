@@ -55,6 +55,7 @@ function AuthenticatedApp() {
   const [safetyReviewing, setSafetyReviewing] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const streamingRef = useRef('');
+  const replacedContentRef = useRef('');
   const abortControllerRef = useRef(null);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('appTheme') || 'light';
@@ -260,6 +261,7 @@ function AuthenticatedApp() {
     setSafetyReviewing(false);
     setSuggestions([]);
     streamingRef.current = '';
+    replacedContentRef.current = '';
 
     abortControllerRef.current = new AbortController();
 
@@ -288,6 +290,7 @@ function AuthenticatedApp() {
 
         onReplace: (newContent) => {
           setSafetyReviewing(true);
+          replacedContentRef.current = newContent;
           setTimeout(() => {
             streamingRef.current = newContent;
             setStreamingContent(newContent);
@@ -296,7 +299,7 @@ function AuthenticatedApp() {
         },
 
         onDone: (data) => {
-          const finalContent = streamingRef.current;
+          const finalContent = replacedContentRef.current || streamingRef.current;
 
           // Extract suggestions from [SUGGESTIONS] tag
           const sugDelimiter = '[SUGGESTIONS]';
@@ -324,6 +327,7 @@ function AuthenticatedApp() {
           setStatusMessage('');
           setIsStreaming(false);
           streamingRef.current = '';
+          replacedContentRef.current = '';
 
           if (data.session_id) {
             if (currentSessionId !== data.session_id) {
