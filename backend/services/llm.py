@@ -22,10 +22,46 @@ class ClinicalLLMService:
         self.model_name = model_name
         self.client = None
 
+        # Load API keys pool for rotation
+        try:
+            from config import settings
+            self.keys = [
+                k for k in [
+                    getattr(settings, "GROQ_API_KEY1", ""),
+                    getattr(settings, "GROQ_API_KEY2", ""),
+                    getattr(settings, "GROQ_API_KEY3", ""),
+                    getattr(settings, "GROQ_API_KEY", ""),
+                ] if k
+            ]
+        except Exception:
+            self.keys = []
+
+        if not self.keys:
+            self.keys = [api_key]
+        elif api_key not in self.keys:
+            self.keys.insert(0, api_key)
+        else:
+            self.keys.remove(api_key)
+            self.keys.insert(0, api_key)
+
+        self.current_key_idx = 0
+
+    def _rotate_client_on_failure(self) -> bool:
+        """Rotate to the next API key in the pool and reconfigure client"""
+        if len(self.keys) <= 1:
+            return False
+        self.current_key_idx = (self.current_key_idx + 1) % len(self.keys)
+        next_key = self.keys[self.current_key_idx]
+        logger.warning(
+            f"Rotating Clinical Groq API Key to key index {self.current_key_idx} due to rate limit/failure."
+        )
+        self.client = Groq(api_key=next_key)
+        return True
+
     def configure(self) -> bool:
         """Configure Groq client"""
         try:
-            self.client = Groq(api_key=self.api_key)
+            self.client = Groq(api_key=self.keys[self.current_key_idx])
             logger.info(f"Clinical Groq LLM configured with model: {self.model_name}")
             return True
         except Exception as e:
@@ -64,16 +100,24 @@ class ClinicalLLMService:
             profile_completed=profile_completed,
         )
 
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.3,
-            )
-            return response.choices[0].message.content or ""
-        except Exception as e:
-            logger.error(f"Error generating clinical response from Groq: {str(e)}")
-            raise
+        max_attempts = len(self.keys)
+        for attempt in range(max_attempts):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.3,
+                )
+                return response.choices[0].message.content or ""
+            except Exception as e:
+                err_msg = str(e).lower()
+                is_rate_limit = "rate_limit" in err_msg or "429" in err_msg or "too many requests" in err_msg
+
+                if is_rate_limit and attempt < max_attempts - 1:
+                    if self._rotate_client_on_failure():
+                        continue
+                logger.error(f"Error generating clinical response from Groq on attempt {attempt+1}: {str(e)}")
+                raise
 
     def generate_response_stream(
         self,
@@ -110,20 +154,29 @@ class ClinicalLLMService:
             profile_completed=profile_completed,
         )
 
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.3,
-                stream=True,
-            )
-            for chunk in response:
-                content = chunk.choices[0].delta.content
-                if content:
-                    yield content
-        except Exception as e:
-            logger.error(f"Error in streaming response from Clinical Groq: {str(e)}")
-            raise
+        max_attempts = len(self.keys)
+        for attempt in range(max_attempts):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.3,
+                    stream=True,
+                )
+                for chunk in response:
+                    content = chunk.choices[0].delta.content
+                    if content:
+                        yield content
+                return
+            except Exception as e:
+                err_msg = str(e).lower()
+                is_rate_limit = "rate_limit" in err_msg or "429" in err_msg or "too many requests" in err_msg
+
+                if is_rate_limit and attempt < max_attempts - 1:
+                    if self._rotate_client_on_failure():
+                        continue
+                logger.error(f"Error in streaming response from Clinical Groq on attempt {attempt+1}: {str(e)}")
+                raise
 
     def _build_context(self, documents: List[Dict]) -> str:
         """Build context text from documents"""
