@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     GROQ_API_KEY1: str = os.getenv("GROQ_API_KEY1", "")
     GROQ_API_KEY2: str = os.getenv("GROQ_API_KEY2", "")
     GROQ_API_KEY3: str = os.getenv("GROQ_API_KEY3", "")
+    GROQ_LIST: str = os.getenv("GROQ_LIST", "")
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
 
     # Cohere API (Reranker)

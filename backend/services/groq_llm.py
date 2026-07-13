@@ -21,27 +21,23 @@ class GroqService:
         self.model_name = model_name
         self.client = None
 
-        # Load API keys pool for rotation
+        # Load GROQ_LIST from settings/env as backup keys
+        backup_keys = []
         try:
             from config import settings
-            self.keys = [
-                k for k in [
-                    getattr(settings, "GROQ_API_KEY1", ""),
-                    getattr(settings, "GROQ_API_KEY2", ""),
-                    getattr(settings, "GROQ_API_KEY3", ""),
-                    getattr(settings, "GROQ_API_KEY", ""),
-                ] if k
-            ]
+            groq_list_str = getattr(settings, "GROQ_LIST", "") or ""
+            if not groq_list_str:
+                import os
+                groq_list_str = os.getenv("GROQ_LIST", "")
+            backup_keys = [k.strip() for k in groq_list_str.split(",") if k.strip()]
         except Exception:
-            self.keys = []
+            backup_keys = []
 
-        if not self.keys:
-            self.keys = [api_key]
-        elif api_key not in self.keys:
-            self.keys.insert(0, api_key)
-        else:
-            self.keys.remove(api_key)
-            self.keys.insert(0, api_key)
+        # Build final rotation pool: start with initial api_key, followed by backup keys
+        self.keys = [api_key]
+        for k in backup_keys:
+            if k not in self.keys:
+                self.keys.append(k)
 
         self.current_key_idx = 0
 
