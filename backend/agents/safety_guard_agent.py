@@ -227,11 +227,11 @@ Hãy rà soát bản nháp trên và trả về kết quả JSON."""
                 json_str = raw_response
 
         try:
-            return json.loads(json_str)
-        except json.JSONDecodeError:
+            return json.loads(json_str, strict=False)
+        except json.JSONDecodeError as e:
             self.logger.warning(
-                f"Failed to parse safety response as JSON, "
-                f"treating as safe. Raw: {raw_response[:200]}..."
+                f"Failed to parse safety response as JSON: {str(e)}. "
+                f"Treating as safe. Raw: {raw_response[:500]}..."
             )
             return {"is_safe": True, "warnings": [], "modified_response": None}
 
