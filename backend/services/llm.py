@@ -104,14 +104,24 @@ class ClinicalLLMService:
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.3,
                 )
-                return response.choices[0].message.content or ""
+                content = response.choices[0].message.content or ""
+                
+                # Check for Chinese characters (CJK Unified Ideographs: \u4e00 to \u9fff)
+                if any('\u4e00' <= char <= '\u9fff' for char in content):
+                    raise ValueError("Chứa ký tự tiếng Trung không mong muốn (Language Drift)")
+                    
+                return content
             except Exception as e:
                 err_msg = str(e).lower()
                 is_rate_limit = "rate_limit" in err_msg or "429" in err_msg or "too many requests" in err_msg
+                is_chinese_error = isinstance(e, ValueError) and "tiếng trung" in err_msg
 
-                if is_rate_limit and attempt < max_attempts - 1:
-                    if self._rotate_client_on_failure():
-                        continue
+                if (is_rate_limit or is_chinese_error) and attempt < max_attempts - 1:
+                    if is_rate_limit:
+                        self._rotate_client_on_failure()
+                    else:
+                        logger.warning(f"Retrying generation on attempt {attempt+1} due to: {str(e)}")
+                    continue
                 logger.error(f"Error generating clinical response from Groq on attempt {attempt+1}: {str(e)}")
                 raise
 
