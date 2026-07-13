@@ -136,6 +136,16 @@ LƯU Ý QUAN TRỌNG VỀ ĐÁNH GIÁ AN TOÀN (IS_SAFE):
             disclaimer_pattern = r"(?i)\s*Lưu ý:\s*Mặc dù\s+.*?không\s+xung\s+đột\s+với\s+hồ\s+sơ\s+sức\s+khỏe\s+hiện\s+tại\s+của\s+bạn.*?(?:\n|$)"
             final_response = re.sub(disclaimer_pattern, "", final_response).strip()
 
+            # Tự động thay thế các từ tiếng Trung bị trôi ngôn ngữ (Language Drift) phổ biến của Llama 3
+            chinese_replacements = {
+                "考虑": "cân nhắc",
+                "特别是": "đặc biệt là",
+                "是在": "là ở",
+                "的": "của",
+            }
+            for cn_word, vi_word in chinese_replacements.items():
+                final_response = final_response.replace(cn_word, vi_word)
+
             is_safe = safety_data.get("is_safe", True)
 
             self.logger.info(
