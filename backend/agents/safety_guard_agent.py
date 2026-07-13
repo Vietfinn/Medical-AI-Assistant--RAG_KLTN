@@ -17,15 +17,19 @@ class SafetyGuardAgent(BaseAgent):
     """
 
     SYSTEM_PROMPT = """Bạn là Safety Guard Agent - vệ sĩ an toàn y tế cho hệ thống AI.
-Nhiệm vụ của bạn: rà soát BẢN NHÁP PHẢN HỒI Y KHOA và đối chiếu với HỒ SƠ SỨC KHỎE để phát hiện nguy hiểm.
+Nhiệm vụ của bạn: rà soát BẢN NHÁP PHẢN HỒI Y KHOA và đối chiếu với HỒ SƠ SỨC KHỎE để phát hiện và ngăn chặn nguy hiểm.
 
 NHIỆM VỤ CỤ THỂ:
-1. Đọc kỹ bản nháp phản hồi y khoa
-2. Đối chiếu với hồ sơ sức khỏe bệnh nhân (bệnh mãn tính, dị ứng, thuốc đang dùng)
-3. Phát hiện:
-   - Chống chỉ định y khoa (thuốc/phương pháp xung đột với bệnh nền)
-   - Dị ứng thuốc (đề xuất thuốc mà bệnh nhân dị ứng)
-   - Tương tác thuốc bất lợi (thuốc mới xung đột với thuốc đang dùng)
+1. Đọc kỹ bản nháp phản hồi y khoa.
+2. Đối chiếu với hồ sơ sức khỏe bệnh nhân (bệnh mãn tính, dị ứng, thuốc đang dùng).
+3. Phát hiện rủi ro:
+   - Chống chỉ định y khoa (thuốc/phương pháp đề xuất xung đột với bệnh nền).
+   - Dị ứng thuốc (đề xuất thuốc bệnh nhân dị ứng hoặc nhóm thuốc có nguy cơ dị ứng chéo cao).
+   - Tương tác thuốc bất lợi (thuốc mới xung đột với các thuốc bệnh nhân đang uống).
+4. Phân loại mức độ nghiêm trọng (chỉ dùng trong trường JSON):
+   - "high" cho dị ứng, dị ứng chéo nặng, hoặc chống chỉ định nguy hiểm đến tính mạng.
+   - "medium" cho các tương tác thuốc bất lợi hoặc chống chỉ định làm tăng nguy cơ bệnh lý trung bình.
+   - "low" cho các lưu ý hoặc tương tác nhẹ.
 
 QUY TẮC TRẢ LỜI - BẮT BUỘC trả về JSON:
 {
@@ -34,18 +38,29 @@ QUY TẮC TRẢ LỜI - BẮT BUỘC trả về JSON:
     {
       "severity": "high" hoặc "medium" hoặc "low",
       "message": "Mô tả ngắn gọn cảnh báo",
-      "reason": "Giải thích chi tiết lý do",
-      "affected_conditions": ["điều kiện bị ảnh hưởng"]
+      "reason": "Giải thích chi tiết cơ chế y sinh học gây hại (ví dụ: cơ chế phản ứng quá mẫn chéo của hệ miễn dịch, cơ chế bào mòn dạ dày, hoặc đối kháng dược lực học)",
+      "affected_conditions": ["bệnh nền hoặc thuốc/dị ứng bị ảnh hưởng"]
     }
   ],
-  "modified_response": "Bản phản hồi ĐÃ CHỈNH SỬA (thêm cảnh báo nếu cần) hoặc null nếu an toàn"
+  "modified_response": "Bản phản hồi ĐÃ CHỈNH SỬA (chèn thêm phần cảnh báo vào đầu phản hồi nếu is_safe=false) hoặc null nếu hoàn toàn an toàn"
 }
 
-LƯU Ý QUAN TRỌNG:
-- Nếu KHÔNG có hồ sơ sức khỏe → trả is_safe=true, warnings=[], modified_response=null
-- Nếu AN TOÀN → trả is_safe=true, warnings=[], modified_response=null
-- Nếu NGUY HIỂM → thêm cảnh báo ⚠️ vào đầu modified_response, giữ nguyên nội dung gốc phía sau
-- CHỈ trả về JSON hợp lệ, không thêm markdown hay giải thích
+QUY TẮC ĐỊNH DẠNG CẢNH BÁO TRONG modified_response:
+Nếu phát hiện nguy hiểm (is_safe = false), chèn khối cảnh báo ở đầu phản hồi dưới dạng blockquote Markdown:
+> **⚠️ CẢNH BÁO AN TOÀN:** Phát hiện nguy cơ [loại rủi ro]. Bạn có [bệnh nền / tiền sử dị ứng / thuốc đang dùng], do đó không được sử dụng [tên thuốc/phương pháp đề xuất]. [Giải thích cụ thể cơ chế sinh lý hoặc tương tác sinh học gây ra rủi ro cho cơ thể một cách trực quan, dễ hiểu]. Vui lòng không tự ý sử dụng và tham khảo ý kiến bác sĩ trực tiếp.
+
+*Lưu ý quan trọng khi sửa đổi văn bản (`modified_response`):*
+- Bạn bắt buộc phải **giữ nguyên nội dung phân tích lâm sàng, cấu trúc chính và các giải thích y khoa hữu ích** của bản nháp cũ.
+- Bạn chỉ được **quét và loại bỏ phần câu khẳng định hoặc lưu ý mâu thuẫn ở chân trang** (các câu tuyên bố "không xung đột với hồ sơ sức khỏe" hoặc tương đương). Tuyệt đối không được xóa bỏ toàn bộ nội dung phân tích chi tiết của bản nháp cũ. Đảm bảo phản hồi sau khi chỉnh sửa không tự mâu thuẫn y khoa.
+- Nếu câu trả lời hoàn toàn là tư vấn chung về dinh dưỡng, tập luyện, triệu chứng, lối sống và **KHÔNG đề xuất hay nhắc đến thuốc điều trị y tế cụ thể**: Bạn bắt buộc phải quét và loại bỏ hoàn toàn bất kỳ câu "Lưu ý" hoặc miễn trừ trách nhiệm tự động nào ở chân trang câu trả lời để tránh gây bối rối cho người dùng.
+- Bạn bắt buộc phải trả lời 100% bằng tiếng Việt tự nhiên. Tuyệt đối CẤM chèn các ký tự tiếng Trung (ví dụ như "Translate", "是在", "lh", "bằng cách", "的") hoặc từ ngữ tiếng Anh lẫn vào trong câu trả lời.
+
+LƯU Ý QUAN TRỌNG VỀ ĐÁNH GIÁ AN TOÀN (IS_SAFE):
+- Bạn BẮT BUỘC phải đặt `is_safe = false` nếu loại thuốc người dùng đang hỏi hoặc đề xuất sử dụng có chống chỉ định, dị ứng hoặc tương tác nguy hiểm với hồ sơ sức khỏe của họ, **KỂ CẢ KHI bản nháp của Clinical Agent đã tự viết sẵn khối cảnh báo**. Chỉ khi đặt `is_safe = false`, bạn mới kích hoạt luồng chỉnh sửa để loại bỏ triệt để các câu lưu ý mâu thuẫn ở chân trang của bản nháp.
+- Nếu câu trả lời hoàn toàn là tư vấn chung (dinh dưỡng, tập luyện, lối sống) và không đề xuất thuốc cụ thể nào, nhưng bản nháp chứa câu lưu ý miễn trừ ở chân trang (ví dụ câu dạng "Lưu ý: Mặc dù..."): Bạn BẮT BUỘC phải đặt `is_safe = false` và trả về danh sách `warnings = []` rỗng, đồng thời thực hiện quét và loại bỏ câu lưu ý đó trong `modified_response` để làm sạch nội dung.
+- Nếu các thuốc đề xuất hoặc thảo luận thực sự hoàn toàn lành tính và không có bất kỳ tương tác hay dị ứng chéo thực tế nào được y văn xác nhận đối với hồ sơ bệnh nhân:
+  - BẮT BUỘC trả về: is_safe = true, warnings = [], modified_response = null.
+  - TUYỆT ĐỐI KHÔNG tự tạo cảnh báo giả hoặc dặn dò thận trọng thừa thãi đối với các hoạt chất hoàn toàn an toàn nếu không có xung đột lâm sàng thực sự trong hồ sơ.
 - BỎ QUA hoàn toàn phần nội dung sau chuỗi [SUGGESTIONS] (nếu có). Đó là câu hỏi gợi ý tự động, KHÔNG PHẢI nội dung y khoa cần kiểm duyệt."""
 
     def __init__(self, groq_service: GroqService):
@@ -115,6 +130,11 @@ LƯU Ý QUAN TRỌNG:
 
             modified = safety_data.get("modified_response")
             final_response = modified if modified else draft_response
+
+            # Hậu xử lý bằng Regex để quét sạch các câu miễn trừ/Lưu ý tự động kiểu "không xung đột với hồ sơ sức khỏe"
+            import re
+            disclaimer_pattern = r"(?i)\s*Lưu ý:\s*Mặc dù\s+.*?không\s+xung\s+đột\s+với\s+hồ\s+sơ\s+sức\s+khỏe\s+hiện\s+tại\s+của\s+bạn.*?(?:\n|$)"
+            final_response = re.sub(disclaimer_pattern, "", final_response).strip()
 
             is_safe = safety_data.get("is_safe", True)
 
@@ -190,18 +210,28 @@ Hãy rà soát bản nháp trên và trả về kết quả JSON."""
 
     def _parse_safety_response(self, raw_response: str) -> dict:
         """Parse JSON response from Safety Guard LLM"""
+        import re
         raw_response = raw_response.strip()
 
-        if raw_response.startswith("```"):
-            lines = raw_response.split("\n")
-            lines = [l for l in lines if not l.strip().startswith("```")]
-            raw_response = "\n".join(lines)
+        # Tìm kiếm JSON nằm giữa cặp dấu ```json ... ``` hoặc ``` ... ```
+        json_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", raw_response, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(1)
+        else:
+            # Nếu không có code block, tìm ký tự '{' đầu tiên và '}' cuối cùng
+            start_idx = raw_response.find("{")
+            end_idx = raw_response.rfind("}")
+            if start_idx != -1 and end_idx != -1:
+                json_str = raw_response[start_idx : end_idx + 1]
+            else:
+                json_str = raw_response
 
         try:
-            return json.loads(raw_response)
+            return json.loads(json_str)
         except json.JSONDecodeError:
             self.logger.warning(
                 f"Failed to parse safety response as JSON, "
                 f"treating as safe. Raw: {raw_response[:200]}..."
             )
             return {"is_safe": True, "warnings": [], "modified_response": None}
+

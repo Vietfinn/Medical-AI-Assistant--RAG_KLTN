@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 
@@ -22,6 +22,7 @@ class UserDocument(BaseModel):
     created_at: float = Field(default_factory=lambda: datetime.now().timestamp())
     updated_at: float = Field(default_factory=lambda: datetime.now().timestamp())
 
+
 class HealthProfile(BaseModel):
     """User health profile model"""
 
@@ -38,6 +39,13 @@ class HealthProfile(BaseModel):
     gender: Optional[str] = Field(None, description="Giới tính")
     height: Optional[float] = Field(None, description="Chiều cao (cm)")
     weight: Optional[float] = Field(None, description="Cân nặng (kg)")
+
+    @field_validator("height", "weight", "age", mode="before")
+    @classmethod
+    def empty_str_to_none(cls, v):
+        if v == "":
+            return None
+        return v
 
     class Config:
         json_schema_extra = {

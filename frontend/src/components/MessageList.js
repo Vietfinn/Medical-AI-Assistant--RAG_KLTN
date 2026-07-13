@@ -57,6 +57,79 @@ const stripMarkdown = (md) => {
     .trim();
 };
 
+const getStringContent = (children) => {
+  let text = '';
+  React.Children.forEach(children, (child) => {
+    if (typeof child === 'string') {
+      text += child;
+    } else if (child && child.props) {
+      if (typeof child.props.children === 'string') {
+        text += child.props.children;
+      } else if (Array.isArray(child.props.children) || React.isValidElement(child.props.children)) {
+        text += getStringContent(child.props.children);
+      }
+    }
+  });
+  return text;
+};
+
+const processAlertText = (children, isSafety) => {
+  return React.Children.map(children, (child) => {
+    if (typeof child === 'string') {
+      let text = child;
+      if (isSafety) {
+        text = text.replace(/⚠️\s*/g, '');
+        if (text.includes('CẢNH BÁO AN TOÀN')) {
+          const parts = text.split('CẢNH BÁO AN TOÀN:');
+          if (parts.length > 1) {
+            return (
+              <>
+                <strong>CẢNH BÁO AN TOÀN:</strong>
+                {parts.slice(1).join('CẢNH BÁO AN TOÀN:')}
+              </>
+            );
+          }
+        }
+      } else {
+        if (text.trim().startsWith('Lưu ý:')) {
+          const colonIndex = text.indexOf('Lưu ý:');
+          const pre = text.substring(0, colonIndex);
+          const post = text.substring(colonIndex + 6);
+          return (
+            <>
+              {pre}<strong>Lưu ý:</strong>{post}
+            </>
+          );
+        }
+      }
+      return text;
+    }
+    
+    if (React.isValidElement(child)) {
+      let childChildren = child.props.children;
+      if (child.type === 'strong' || child.type === 'b') {
+        let text = getStringContent(childChildren);
+        if (isSafety) {
+          text = text.replace(/⚠️\s*/g, '').replace(/CẢNH BÁO AN TOÀN:?\s*/g, 'CẢNH BÁO AN TOÀN:');
+          return <strong>{text}</strong>;
+        } else {
+          if (text.trim().startsWith('Lưu ý:')) {
+            text = text.replace(/Lưu ý:?\s*/g, 'Lưu ý:');
+            return <strong>{text}</strong>;
+          }
+        }
+      }
+      
+      if (childChildren) {
+        return React.cloneElement(child, {
+          children: processAlertText(childChildren, isSafety)
+        });
+      }
+    }
+    return child;
+  });
+};
+
 const MessageList = ({
   messages,
   streamingContent,
@@ -217,12 +290,46 @@ const MessageList = ({
     };
 
     return {
-      p: ({ children }) => <p>{processChildren(children)}</p>,
+      p: ({ children }) => {
+        const textContent = getStringContent(children);
+        if (textContent.includes('⚠️ CẢNH BÁO AN TOÀN') || textContent.includes('CẢNH BÁO AN TOÀN:')) {
+          return (
+            <div className="safety-alert-paragraph">
+              {processAlertText(processChildren(children), true)}
+            </div>
+          );
+        }
+        if (textContent.trim().startsWith('Lưu ý:')) {
+          return (
+            <div className="note-alert-paragraph">
+              {processAlertText(processChildren(children), false)}
+            </div>
+          );
+        }
+        return <p>{processChildren(children)}</p>;
+      },
       li: ({ children }) => <li>{processChildren(children)}</li>,
       h1: ({ children }) => <h1>{processChildren(children)}</h1>,
       h2: ({ children }) => <h2>{processChildren(children)}</h2>,
       h3: ({ children }) => <h3>{processChildren(children)}</h3>,
-      blockquote: ({ children }) => <blockquote>{processChildren(children)}</blockquote>,
+      blockquote: ({ children }) => {
+        const textContent = getStringContent(children);
+        if (textContent.includes('⚠️ CẢNH BÁO AN TOÀN') || textContent.includes('CẢNH BÁO AN TOÀN:')) {
+          return (
+            <div className="safety-alert-paragraph">
+              {processAlertText(processChildren(children), true)}
+            </div>
+          );
+        }
+        if (textContent.trim().startsWith('Lưu ý:')) {
+          return (
+            <div className="note-alert-paragraph">
+              {processAlertText(processChildren(children), false)}
+            </div>
+          );
+        }
+        return <blockquote>{processChildren(children)}</blockquote>;
+      },
     };
   }, [parseText, onCitationClick]);
 
@@ -468,50 +575,6 @@ const MessageList = ({
               </div>
 
               <div className="assistant-content">
-                {/* Warnings */}
-                {message.warnings && message.warnings.length > 0 && (
-                  <div className="warnings-container">
-                    {message.warnings.map((warning, wIndex) => (
-                      <div
-                        key={wIndex}
-                        className={`warning-box severity-${warning.severity}`}
-                      >
-                        <div className="warning-header">
-                          {warning.severity === 'high' ? (
-                            <AlertTriangle size={16} />
-                          ) : (
-                            <Info size={16} />
-                          )}
-                          <strong>
-                            <ReactMarkdown
-                              allowedElements={['strong', 'em', 'code']}
-                              unwrapDisallowed={true}
-                            >
-                              {warning.message || ''}
-                            </ReactMarkdown>
-                          </strong>
-                        </div>
-                        <div className="warning-reason">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {warning.reason || ''}
-                          </ReactMarkdown>
-                        </div>
-                        {warning.affected_conditions &&
-                          warning.affected_conditions.length > 0 && (
-                            <div className="affected-conditions">
-                              <span>Liên quan: </span>
-                              {warning.affected_conditions.map((cond, cIndex) => (
-                                <span key={cIndex} className="condition-tag">
-                                  {cond}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 {/* Markdown answer */}
                 <div className="answer-text markdown-body">
                   <ReactMarkdown
