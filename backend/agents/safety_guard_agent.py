@@ -136,9 +136,9 @@ LƯU Ý QUAN TRỌNG VỀ ĐÁNH GIÁ AN TOÀN (IS_SAFE):
             disclaimer_pattern = r"(?i)\s*Lưu ý:\s*Mặc dù\s+.*?không\s+xung\s+đột\s+với\s+hồ\s+sơ\s+sức\s+khỏe\s+hiện\s+tại\s+của\s+bạn.*?(?:\n|$)"
             final_response = re.sub(disclaimer_pattern, "", final_response).strip()
 
-            # Quét sạch bất kỳ thẻ tag nào liên quan đến [HỒ SƠ SỨC KHỎE...] xuất hiện trong văn bản
-            health_profile_tag_pattern = r"\[Hồ\s+sơ\s+sức\s+khỏe.*?\]"
-            final_response = re.sub(health_profile_tag_pattern, "", final_response, flags=re.IGNORECASE)
+            # Quét sạch bất kỳ trích dẫn ngoặc vuông nào không hợp lệ (không phải số trích dẫn [1] và không phải [SUGGESTIONS] hay markdown link [text](url))
+            invalid_brackets_pattern = r"\[(?!\d+\])(?!SUGGESTIONS\])([^\]]+)\](?!\()"
+            final_response = re.sub(invalid_brackets_pattern, "", final_response, flags=re.IGNORECASE)
             # Dọn dẹp khoảng trắng thừa trước dấu câu
             final_response = re.sub(r"\s+([.,;:!?])", r"\1", final_response)
             # Khử khoảng trắng kép (nhưng bảo toàn xuống dòng)
